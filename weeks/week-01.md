@@ -148,6 +148,12 @@ void loop() {
 
 <img width="655" height="642" alt="image" src="https://github.com/user-attachments/assets/72ffc608-3e57-4636-998a-bd2598b1dd59" />
 <img width="635" height="632" alt="image" src="https://github.com/user-attachments/assets/c6243c94-595f-42c5-9065-cf7e9d6b3f70" />
+<img width="618" height="574" alt="image" src="https://github.com/user-attachments/assets/252bec47-5b36-4fae-9d10-e016ffcfb2a6" />
+<img width="274" height="238" alt="image" src="https://github.com/user-attachments/assets/e8210b40-1b2f-4df5-a76f-ef9edb9911fc" />
+<img width="596" height="560" alt="image" src="https://github.com/user-attachments/assets/9791d2dd-3c87-4df5-ae1f-407131433879" />
+<img width="282" height="248" alt="image" src="https://github.com/user-attachments/assets/a4d27c37-ab71-4b89-9da8-a0f7f9891ccc" />
+
+
 
 > 💡 **配置檢查清單**：開始寫程式前，請對照下表逐一勾選，養成「先驗證硬體、再寫邏輯」的工程習慣。
 > - [ ] 8 顆 LED 都有各自的電阻
@@ -229,7 +235,7 @@ void loop() {
 // ============================================
 
 int pinLeft = 2;
-int pinRight = 3;
+int pinRight = 4;
 
 void setup() {
   pinMode(pinLeft, OUTPUT);
@@ -239,11 +245,11 @@ void setup() {
 void loop() {
   digitalWrite(pinLeft, HIGH);   // 左側通道開啟
   digitalWrite(pinRight, LOW);
-  delay(600);
+  delay(1000);
 
   digitalWrite(pinLeft, LOW);
   digitalWrite(pinRight, HIGH);  // 右側通道開啟
-  delay(600);
+  delay(1000);
 }
 ```
 
@@ -254,9 +260,9 @@ void loop() {
 // 靈感來源：真實十字路口紅綠燈的運作邏輯
 // ============================================
 
-int pinRed = 4;
+int pinRed = 3;
 int pinYellow = 5;
-int pinGreen = 6;
+int pinGreen = 7;
 
 void setup() {
   pinMode(pinRed, OUTPUT);
@@ -287,7 +293,7 @@ void loop() {
 // ============================================
 
 int pinLeft = 2;
-int pinRight = 3;
+int pinRight = 4;
 int stepTime = 300;   // 統一控制節奏快慢的變數
 
 void setup() {
@@ -320,9 +326,9 @@ void loop() {
 // 序列：紅 → 黃 → 綠 → 紅 → 紅（重複末位代表密碼的一部分）
 // ============================================
 
-int pinRed = 4;
+int pinRed = 3;
 int pinYellow = 5;
-int pinGreen = 6;
+int pinGreen = 7;
 
 void lightPin(int pin) {
   digitalWrite(pin, HIGH);
@@ -355,9 +361,9 @@ void loop() {
 // 範例 3-2：把密碼序列存成陣列，修改密碼只需改一行資料
 // ============================================
 
-int pinRed = 4;
+int pinRed = 3;
 int pinYellow = 5;
-int pinGreen = 6;
+int pinGreen = 7;
 
 // 用陣列儲存這次要播放的密碼序列（腳位順序）
 int sequence[] = {pinRed, pinYellow, pinGreen, pinRed, pinRed};
@@ -391,9 +397,9 @@ void loop() {
 // 範例 3-3：機關會交替出兩種不同的密碼題目，增加遊戲變化性
 // ============================================
 
-int pinRed = 4;
+int pinRed = 3;
 int pinYellow = 5;
-int pinGreen = 6;
+int pinGreen = 7;
 
 int sequenceA[] = {pinRed, pinGreen, pinYellow};
 int sequenceB[] = {pinGreen, pinGreen, pinRed, pinYellow};
