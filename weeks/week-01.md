@@ -146,6 +146,9 @@ void loop() {
 | LED 7 | Pin 8 | 任意色 |
 | LED 8 | Pin 9 | 任意色 |
 
+<img width="655" height="642" alt="image" src="https://github.com/user-attachments/assets/72ffc608-3e57-4636-998a-bd2598b1dd59" />
+<img width="635" height="632" alt="image" src="https://github.com/user-attachments/assets/c6243c94-595f-42c5-9065-cf7e9d6b3f70" />
+
 > 💡 **配置檢查清單**：開始寫程式前，請對照下表逐一勾選，養成「先驗證硬體、再寫邏輯」的工程習慣。
 > - [ ] 8 顆 LED 都有各自的電阻
 > - [ ] 8 顆 LED 的負極都接到同一條負極軌
