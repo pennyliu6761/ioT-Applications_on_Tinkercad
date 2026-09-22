@@ -568,11 +568,11 @@ void loop() {
 
 void setup() {
   Serial.begin(9600);   // 開啟序列埠通訊，設定傳輸速率為 9600
-  Serial.println("密室系統啟動！");
+  Serial.println("Preparing to Start System");
 }
 
 void loop() {
-  Serial.println("系統運作中...");
+  Serial.println("System Running...");
   delay(1000);
 }
 ```
@@ -593,7 +593,7 @@ void setup() {
 
 void loop() {
   for (int countdown = 10; countdown >= 1; countdown--) {
-    Serial.print("倒數：");
+    Serial.print("Counting Down：");
     Serial.println(countdown);
 
     digitalWrite(pinLed, HIGH);
@@ -602,7 +602,7 @@ void loop() {
     delay(500);
   }
 
-  Serial.println("時間到！大門開啟！");
+  Serial.println("Time's Up! Gate Open!");
   delay(3000);   // 開門後暫停 3 秒，之後重新開始下一輪倒數
 }
 ```
@@ -623,7 +623,7 @@ void setup() {
 
 void loop() {
   for (int countdown = 10; countdown >= 1; countdown--) {
-    Serial.print("倒數：");
+    Serial.print("Counting Down：");
     Serial.println(countdown);
 
     // 用 map() 把倒數秒數轉換成閃爍間隔：秒數越小，間隔越短（閃越快）
@@ -635,7 +635,7 @@ void loop() {
     delay(blinkDelay);
   }
 
-  Serial.println("時間到！大門開啟！");
+  Serial.println("Time's Up! Gate Open!");
   delay(3000);
 }
 ```
