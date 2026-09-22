@@ -593,7 +593,7 @@ void setup() {
 
 void loop() {
   for (int countdown = 10; countdown >= 1; countdown--) {
-    Serial.print("Counting Down：");
+    Serial.print("Counting Down:");
     Serial.println(countdown);
 
     digitalWrite(pinLed, HIGH);
@@ -623,7 +623,7 @@ void setup() {
 
 void loop() {
   for (int countdown = 10; countdown >= 1; countdown--) {
-    Serial.print("Counting Down：");
+    Serial.print("Counting Down:");
     Serial.println(countdown);
 
     // 用 map() 把倒數秒數轉換成閃爍間隔：秒數越小，間隔越短（閃越快）
