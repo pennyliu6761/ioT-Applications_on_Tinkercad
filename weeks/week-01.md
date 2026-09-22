@@ -673,14 +673,14 @@ void lightPin(int pin, int duration) {
 }
 
 void playCodeSequence() {
-  Serial.println(">>> 階段一：播放密碼序列 <<<");
+  Serial.println(">>> Stage 1: Playing Code Sequence <<<");
   for (int i = 0; i < codeLength; i++) {
     lightPin(codeSequence[i], 400);
   }
 }
 
 void scanSweep() {
-  Serial.println(">>> 階段二：光跡掃描巡邏 <<<");
+  Serial.println(">>> Stage 2: Light Trail Patrol <<<");
   for (int i = 0; i < numLeds; i++) {
     digitalWrite(ledPins[i], HIGH);
     delay(60);
@@ -694,7 +694,7 @@ void scanSweep() {
 }
 
 void countdownOpen() {
-  Serial.println(">>> 階段三：倒數開門 <<<");
+  Serial.println(">>> Gate Countdown <<<");
   for (int countdown = 5; countdown >= 1; countdown--) {
     Serial.println(countdown);
     for (int i = 0; i < numLeds; i++) {
@@ -706,7 +706,7 @@ void countdownOpen() {
     }
     delay(300);
   }
-  Serial.println("*** 大門開啟！恭喜通過第一道機關！ ***");
+  Serial.println("Gate Unlocked! Congrats on Passing Stage 1!");
 }
 
 // --- 主程式 ---
