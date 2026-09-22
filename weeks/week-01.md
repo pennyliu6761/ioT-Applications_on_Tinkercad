@@ -72,9 +72,8 @@
 在動手寫程式前，先花 3 分鐘做個小體檢，確認你對上週的電路觀念還記得清楚。**這不是新教材，是體檢**，如果你都能秒答，代表可以放心往下走。
 
 <img width="1449" height="650" alt="image" src="https://github.com/user-attachments/assets/736fc4d0-8fa0-4f97-8b2c-7f5a70179a09" />
-```cpp
-// C++ code
 
+```cpp
 void setup() {
   Serial.begin(9600);
   pinMode(13, OUTPUT); // 假設控制 13 號腳位的 LED
@@ -97,6 +96,7 @@ void loop() {
   }
 } 
 ```
+
 
 **體檢題 1**：三顆 LED 串聯，如果拔掉其中一顆，其他兩顆會怎樣？
 > 答案：全部熄滅。因為串聯電路只有一條路徑，斷了就沒有電流通過。
