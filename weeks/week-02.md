@@ -122,6 +122,8 @@
 - **按下時**：電流改走「5V → 按鈕 → Pin」，Pin 讀到接近 5V（HIGH）。
 - 如果沒有這顆下拉電阻，按鈕放開時 Pin 會處於「懸浮」狀態，讀值可能忽高忽低、毫無規律，這在工程上稱為「浮動輸入（Floating Input）」，是新手最常忽略卻影響很大的細節。
 
+<img width="656" height="322" alt="image" src="https://github.com/user-attachments/assets/05305383-df78-4049-9a26-2e6299dd2d36" />
+
 ### 腳位對照表（本週共用）
 | 元件 | 腳位 |
 |---|---|
