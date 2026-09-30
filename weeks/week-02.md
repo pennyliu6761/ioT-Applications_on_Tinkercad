@@ -911,83 +911,250 @@ void loop() {
 
 ### 🏆 BOSS 關：三隊搶答計分台
 
-**機關故事**：整合本週所有技巧，打造密室最終謎題公布區的完整三隊搶答系統——先搶先贏、鎖定其他隊伍、裁判可重置、並且累計每一隊的總得分。
+**機關故事**：探險隊來到了密室的最後一道防線——「先知審判殿堂」。中央的主控台由兩具遠古機械守衛（Alpha 號、Beta 號）嚴格看守。
+唯有在先知祭壇發出起跑光芒的瞬間，以超越機械守衛的神速拍下搶答裝置，並由一旁的審判長確認正解，才能一步步累計能量結晶。
+這是智力與反應的終極對抗：你必須親自上陣，同時迎戰兩具具備隨機反應速度的機械守衛！
+
+🎯 系統功能規格要求
+1. 隨機出題機制（Anti-Cheat）：
+- 裁判按下 Pin 6 (Reset/Start) 後，系統不能立即出題，必須隨機等待 1.5 到 3.5 秒。
+- 等待結束後點亮 Pin 7 (出題信號燈)，同時開始計時（以毫秒 `millis()` 為準）。
+2. 三方爭霸互鎖（Mutual Exclusion Lockout）：
+- 玩家：透過滑鼠點擊 Pin 2。
+- 守衛 Alpha：由程式隨機賦予 350 ～ 650 ms 的反應時間。
+- 守衛 Beta：由程式隨機賦予 450 ～ 800 ms 的反應時間。
+- 先到先得：三者中只要有一方率先觸發，立刻點亮該方對應的代表燈（Pin 8、9 或 10），同時熄滅 Pin 7 出題燈，並鎖定系統，其他兩方的輸入直接失效。
+3. 審判長計分板（Scoreboard）：
+- 搶答鎖定後，按下 Pin 5 (Correct) 判定答對：該隊得分 +1，並在序列埠印出目前三隊的總比分。
+- 若答錯或欲作廢，直接按 Pin 6 重新開題，不計分。
+4. 輸出相容性規範：
+- Tinkercad 的 Serial Monitor 不支援中文字元，所有序列埠訊息必須使用簡短英文字母、數字與符號（如 `[GO!]` 、 `[WIN]` 、 `SCORE: Player:1 Alpha:0 Beta:0` ），禁止出現亂碼。
+
+📋 驗收評分標準（Checklist）
+- [ ] 硬體接線無短路：4 顆 LED 均有串聯 220Ω 限流電阻，3 顆按鈕皆有 10kΩ 下拉電阻。
+- [ ] 防作弊驗證：在 Pin 7 綠燈未亮之前，狂點玩家按鈕（Pin 2）不能偷跑搶先獲勝。
+- [ ] 互鎖驗證：任一方獲勝燈點亮後，後續按鈕動作均被鎖死，直到裁判判定。
+- [ ] 計分功能驗證：Pin 5 加分功能正常，序列埠印出的比分累加無誤且無中文亂碼。
+- [ ] 流暢重置：按 Pin 6 能正確清除本題所有燈號，並重新啟動隨機出題倒數。
 
 ```cpp
-// ============================================
-// BOSS 關：三隊搶答計分台 - 整合本週所有技巧
-// 功能：搶答鎖定 → 裁判判定得分 → 裁判重置 → 累計比分
-// ============================================
+// ==============================================================
+// 專題解答：BOSS 關 — 密室三方爭霸搶答計分台 (人機混合版)
+// 硬體配置：
+//   LED  : Pin 7 (GO 出題燈), Pin 8 (玩家), Pin 9 (Alpha), Pin 10 (Beta)
+//   按鈕 : Pin 2 (玩家搶答), Pin 5 (裁判加分), Pin 6 (發題/重置)
+// ==============================================================
 
-int buttonPins[] = {2, 3, 4};    // 紅、黃、綠三隊搶答鈕
-int ledPins[] = {8, 9, 10};      // 紅、黃、綠三隊指示燈
-int pinJudgeCorrect = 5;         // 裁判判定「答對」按鈕
-int pinJudgeReset = 6;           // 裁判重置按鈕
+// --- 腳位常數定義 ---
+const int pinLedGo     = 7;   // 出題信號燈（綠/白）
+const int pinLedPlayer = 8;   // 玩家獲勝燈（藍）
+const int pinLedAlpha  = 9;   // 機械守衛 Alpha 燈（黃）
+const int pinLedBeta   = 10;  // 機械守衛 Beta 燈（紅）
 
-int numTeams = 3;
-int winner = -1;                 // -1 代表尚未有隊伍搶到
-int scores[] = {0, 0, 0};        // 三隊各自的累計得分
+const int pinBtnPlayer = 2;   // 玩家搶答按鈕
+const int pinBtnJudge  = 5;   // 裁判判定答對加分鈕 (Correct)
+const int pinBtnReset  = 6;   // 裁判出題 / 重置鈕 (Reset)
 
-int lastJudgeCorrectState = LOW;
-int lastJudgeResetState = LOW;
+// --- 記分板變數 ---
+int scorePlayer = 0;
+int scoreAlpha  = 0;
+int scoreBeta   = 0;
+
+// --- 搶答結果 ---
+// -1: 無人搶到, 0: 玩家, 1: 守衛 Alpha, 2: 守衛 Beta
+int winner = -1;
+
+// --- 系統狀態機 (State Machine) ---
+// 0: 空閒待機 (等待按 Pin 6 發題)
+// 1: 隨機倒數準備期 (信號燈未亮，此時按下 Pin 2 視為偷跑犯規)
+// 2: 搶答競速爭奪期 (Pin 7 亮起，三方競爭搶答權)
+// 3: 搶答鎖定結算期 (已決出勝者，等待裁判判定加分或重置)
+int gameState = 0;
+
+// --- 時間管理變數 (millis 計時) ---
+unsigned long goTime          = 0;  // Pin 7 亮起的起始時間 (ms)
+unsigned long targetWaitTime  = 0;  // 出題倒數結束的目標時間戳記
+unsigned long alphaDelay      = 0;  // 守衛 Alpha 本題反應時間
+unsigned long betaDelay       = 0;  // 守衛 Beta 本題反應時間
+
+// --- 按鍵邊緣偵測 (避免持續按住造成連點) ---
+int lastJudgeState = LOW;
+int lastResetState = LOW;
+
+// --- 函式宣告 ---
+void lockWinner(int teamIndex, unsigned long reactionTime);
+void printScoreboard();
 
 void setup() {
-  for (int i = 0; i < numTeams; i++) {
-    pinMode(buttonPins[i], INPUT);
-    pinMode(ledPins[i], OUTPUT);
-  }
-  pinMode(pinJudgeCorrect, INPUT);
-  pinMode(pinJudgeReset, INPUT);
+  // 設定 LED 輸出
+  pinMode(pinLedGo, OUTPUT);
+  pinMode(pinLedPlayer, OUTPUT);
+  pinMode(pinLedAlpha, OUTPUT);
+  pinMode(pinLedBeta, OUTPUT);
+
+  // 設定按鈕輸入 (硬體接 10k 下拉電阻)
+  pinMode(pinBtnPlayer, INPUT);
+  pinMode(pinBtnJudge, INPUT);
+  pinMode(pinBtnReset, INPUT);
+
+  // 初始化序列埠
   Serial.begin(9600);
-  Serial.println("=== 搶答系統啟動！比分歸零 ===");
+  Serial.println("==================================");
+  Serial.println("=== TRIPLE THREAT BUZZER READY ===");
+  Serial.println("==================================");
+  Serial.println("Controls:");
+  Serial.println("- Pin 6: Start New Question / Reset");
+  Serial.println("- Pin 2: Player Buzz-in");
+  Serial.println("- Pin 5: Judge Score (+1 Point)");
+  Serial.println("----------------------------------");
+  Serial.println("Press Pin 6 to start Round 1.");
 }
 
 void loop() {
-  // --- 搶答判定：只有尚未有人搶到時才受理新的搶答 ---
-  if (winner == -1) {
-    for (int i = 0; i < numTeams; i++) {
-      if (digitalRead(buttonPins[i]) == HIGH) {
-        winner = i;
-        Serial.print("隊伍 ");
-        Serial.print(i);
-        Serial.println(" 搶到作答權！");
-        break;   // 找到第一個搶到的隊伍後，立刻跳出迴圈，不再檢查後面的按鈕
-      }
-    }
-  }
+  // 讀取裁判按鍵當前電位
+  int curJudgeState = digitalRead(pinBtnJudge);
+  int curResetState = digitalRead(pinBtnReset);
 
-  // --- 更新搶答指示燈 ---
-  for (int i = 0; i < numTeams; i++) {
-    digitalWrite(ledPins[i], (i == winner) ? HIGH : LOW);
-  }
+  // ============================================================
+  // 1. 裁判操作：按下 Pin 6 (開題 或 作廢重新出題)
+  // ============================================================
+  if (curResetState == HIGH && lastResetState == LOW) {
+    delay(50); // 防彈跳延遲
 
-  // --- 裁判判定答對，該隊加分並重置搶答狀態 ---
-  int judgeCorrectState = digitalRead(pinJudgeCorrect);
-  if (judgeCorrectState == HIGH && lastJudgeCorrectState == LOW) {
-    delay(50);   // 防彈跳
-    if (winner != -1) {
-      scores[winner] = scores[winner] + 1;
-      Serial.print("隊伍 ");
-      Serial.print(winner);
-      Serial.print(" 答對！目前比分 → 紅:");
-      Serial.print(scores[0]);
-      Serial.print(" 黃:");
-      Serial.print(scores[1]);
-      Serial.print(" 綠:");
-      Serial.println(scores[2]);
-      winner = -1;   // 該題結束，重置搶答狀態，準備下一題
-    }
-  }
-  lastJudgeCorrectState = judgeCorrectState;
-
-  // --- 裁判重置（不加分，單純該題作廢重來） ---
-  int judgeResetState = digitalRead(pinJudgeReset);
-  if (judgeResetState == HIGH && lastJudgeResetState == LOW) {
-    delay(50);
+    // 熄滅所有 LED，重置贏家
+    digitalWrite(pinLedGo, LOW);
+    digitalWrite(pinLedPlayer, LOW);
+    digitalWrite(pinLedAlpha, LOW);
+    digitalWrite(pinLedBeta, LOW);
     winner = -1;
-    Serial.println("裁判重置，本題重新搶答");
+
+    // 設定隨機倒數 1.5 ~ 3.5 秒 (1500 ~ 3500 ms)
+    targetWaitTime = millis() + random(1500, 3500);
+    gameState = 1; // 進入準備倒數期
+
+    Serial.println("\n[ROUND START] Preparing... Watch Pin 7!");
   }
-  lastJudgeResetState = judgeResetState;
+
+  // ============================================================
+  // 2. 準備倒數期：檢驗偷跑，時間到則亮燈起跑
+  // ============================================================
+  if (gameState == 1) {
+    // 偷跑檢驗：燈未亮就偷按 Pin 2
+    if (digitalRead(pinBtnPlayer) == HIGH) {
+      Serial.println("[FOUL] Player pressed too early! False start.");
+      // 亮起兩具機器人燈以示警告，作廢本輪
+      digitalWrite(pinLedAlpha, HIGH);
+      digitalWrite(pinLedBeta, HIGH);
+      gameState = 3; // 直接鎖死，強迫裁判按 Pin 6 重開
+    }
+    // 倒數結束：出題起跑
+    else if (millis() >= targetWaitTime) {
+      digitalWrite(pinLedGo, HIGH); // 亮出題信號燈
+      goTime = millis();            // 記錄起跑時間
+
+      // 產生兩名機械守衛的隨機反應時間
+      alphaDelay = random(350, 650); // 守衛 Alpha: 350 ~ 650ms
+      betaDelay  = random(450, 800); // 守衛 Beta : 450 ~ 800ms
+
+      gameState = 2; // 開放三方競速
+      Serial.println(">> GO! BUZZ IN NOW! <<");
+    }
+  }
+
+  // ============================================================
+  // 3. 搶答競速期：先按先贏互鎖
+  // ============================================================
+  if (gameState == 2 && winner == -1) {
+    unsigned long elapsed = millis() - goTime;
+
+    // 判斷 1：玩家是否率先按下 Pin 2
+    if (digitalRead(pinBtnPlayer) == HIGH) {
+      lockWinner(0, elapsed);
+    }
+    // 判斷 2：守衛 Alpha 是否先到達時間
+    else if (elapsed >= alphaDelay && alphaDelay <= betaDelay) {
+      lockWinner(1, alphaDelay);
+    }
+    // 判斷 3：守衛 Beta 是否先到達時間
+    else if (elapsed >= betaDelay) {
+      lockWinner(2, betaDelay);
+    }
+  }
+
+  // ============================================================
+  // 4. 裁判操作：按下 Pin 5 (判定答對加分)
+  // ============================================================
+  if (curJudgeState == HIGH && lastJudgeState == LOW) {
+    delay(50); // 防彈跳延遲
+
+    // 只有在有人搶到（階段 3）且非違規情況下加分
+    if (gameState == 3 && winner != -1) {
+      if (winner == 0) {
+        scorePlayer++;
+        Serial.println("[JUDGE] Player CORRECT! (+1 Point)");
+      } else if (winner == 1) {
+        scoreAlpha++;
+        Serial.println("[JUDGE] Alpha CORRECT! (+1 Point)");
+      } else if (winner == 2) {
+        scoreBeta++;
+        Serial.println("[JUDGE] Beta CORRECT! (+1 Point)");
+      }
+
+      printScoreboard();
+
+      // 本題結束，熄滅所有燈號，回歸待機狀態
+      digitalWrite(pinLedPlayer, LOW);
+      digitalWrite(pinLedAlpha, LOW);
+      digitalWrite(pinLedBeta, LOW);
+      winner = -1;
+      gameState = 0;
+      Serial.println("Press Pin 6 for next question.");
+    }
+  }
+
+  // 更新前次按鍵狀態
+  lastJudgeState = curJudgeState;
+  lastResetState = curResetState;
+}
+
+// --------------------------------------------------------------
+// 搶答獲勝鎖定處理常式
+// --------------------------------------------------------------
+void lockWinner(int teamIndex, unsigned long reactionTime) {
+  winner = teamIndex;
+  gameState = 3;                 // 進入鎖定階段
+  digitalWrite(pinLedGo, LOW);   // 熄滅起跑燈
+
+  // 僅點亮勝者對應的指示燈
+  digitalWrite(pinLedPlayer, (teamIndex == 0) ? HIGH : LOW);
+  digitalWrite(pinLedAlpha,  (teamIndex == 1) ? HIGH : LOW);
+  digitalWrite(pinLedBeta,   (teamIndex == 2) ? HIGH : LOW);
+
+  // 輸出搶答結果與反應時間
+  Serial.print("[LOCKOUT] Winner: ");
+  if (teamIndex == 0)      Serial.print("PLAYER (Pin 8)");
+  else if (teamIndex == 1) Serial.print("BOT Alpha (Pin 9)");
+  else if (teamIndex == 2) Serial.print("BOT Beta (Pin 10)");
+
+  Serial.print(" | Time: ");
+  Serial.print(reactionTime);
+  Serial.println(" ms");
+  Serial.println("Waiting for Judge: Pin 5 (Correct) / Pin 6 (Reset)");
+}
+
+// --------------------------------------------------------------
+// 印出記分板常式
+// --------------------------------------------------------------
+void printScoreboard() {
+  Serial.println("----------------------------------");
+  Serial.println("           CURRENT SCORE          ");
+  Serial.print("  PLAYER: ");
+  Serial.print(scorePlayer);
+  Serial.print("  |  ALPHA: ");
+  Serial.print(scoreAlpha);
+  Serial.print("  |  BETA: ");
+  Serial.println(scoreBeta);
+  Serial.println("----------------------------------");
 }
 ```
 **教學重點**：這段程式碼綜合運用了：陣列管理多隊資料、`break` 提前跳出迴圈、防彈跳、狀態鎖定、多組計分變數。這正是這學期第一個具備「完整商業邏輯」的專案——如果拿去真實的班級搶答比賽使用，幾乎可以直接上場。
