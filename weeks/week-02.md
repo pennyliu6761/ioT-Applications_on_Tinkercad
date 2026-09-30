@@ -952,8 +952,8 @@ const int pinLedAlpha  = 9;   // 機械守衛 Alpha 燈（黃）
 const int pinLedBeta   = 10;  // 機械守衛 Beta 燈（紅）
 
 const int pinBtnPlayer = 2;   // 玩家搶答按鈕
-const int pinBtnJudge  = 5;   // 裁判判定答對加分鈕 (Correct)
-const int pinBtnReset  = 6;   // 裁判出題 / 重置鈕 (Reset)
+const int pinBtnJudge  = 3;   // 裁判判定答對加分鈕 (Correct)
+const int pinBtnReset  = 4;   // 裁判出題 / 重置鈕 (Reset)
 
 // --- 記分板變數 ---
 int scorePlayer = 0;
@@ -1003,11 +1003,11 @@ void setup() {
   Serial.println("=== TRIPLE THREAT BUZZER READY ===");
   Serial.println("==================================");
   Serial.println("Controls:");
-  Serial.println("- Pin 6: Start New Question / Reset");
+  Serial.println("- Pin 4: Start New Question / Reset");
   Serial.println("- Pin 2: Player Buzz-in");
-  Serial.println("- Pin 5: Judge Score (+1 Point)");
+  Serial.println("- Pin 3: Judge Score (+1 Point)");
   Serial.println("----------------------------------");
-  Serial.println("Press Pin 6 to start Round 1.");
+  Serial.println("Press Pin 4 to start Round 1.");
 }
 
 void loop() {
@@ -1082,7 +1082,7 @@ void loop() {
   }
 
   // ============================================================
-  // 4. 裁判操作：按下 Pin 5 (判定答對加分)
+  // 4. 裁判操作：按下 Pin 3 (判定答對加分)
   // ============================================================
   if (curJudgeState == HIGH && lastJudgeState == LOW) {
     delay(50); // 防彈跳延遲
@@ -1108,7 +1108,7 @@ void loop() {
       digitalWrite(pinLedBeta, LOW);
       winner = -1;
       gameState = 0;
-      Serial.println("Press Pin 6 for next question.");
+      Serial.println("Press Pin 4 for next question.");
     }
   }
 
@@ -1139,7 +1139,7 @@ void lockWinner(int teamIndex, unsigned long reactionTime) {
   Serial.print(" | Time: ");
   Serial.print(reactionTime);
   Serial.println(" ms");
-  Serial.println("Waiting for Judge: Pin 5 (Correct) / Pin 6 (Reset)");
+  Serial.println("Waiting for Judge: Pin 3 (Correct) / Pin 4 (Reset)");
 }
 
 // --------------------------------------------------------------
