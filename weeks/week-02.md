@@ -613,128 +613,296 @@ void loop() {
 
 ### 關卡 5：搶答對決 — 狀態鎖定與計分
 
-**機關故事**：密室的最終謎題公布區，需要一個經典的「搶答器」——誰先按下按鈕，誰的燈就亮起，並且鎖定其他人的按鈕，直到裁判重置。
+**機關故事**：由 Arduino 當出題官，隨機等待 2～5 秒後「亮黃燈起跑」。如果提前按按鈕算「偷跑犯規（紅燈）」，燈亮後按按鈕算「成功搶答（綠燈）」。
 
-#### 範例 5-1：基礎搶答邏輯（雙人版）
+#### 範例 5-1：單人反應極限測試（出題倒數與防偷跑）
 ```cpp
 // ============================================
-// 範例 5-1：雙人搶答 - 先按先贏，並鎖定另一方
+// 範例 5-1：單人極限反應測驗機
+// 學習重點：狀態機架構 (State Machine)、時間比對 millis()、防偷跑與超時判定
 // ============================================
 
-int pinButtonA = 2;
-int pinButtonB = 3;
-int pinLedA = 8;
-int pinLedB = 9;
+// --- 腳位定義 ---
+int pinReadyLed = 10;   // 黃色 LED：準備信號燈（倒數中）
+int pinGoLed = 8;       // 綠色 LED：起跑搶答燈 / 搶答成功指示
+int pinFaultLed = 9;    // 紅色 LED：犯規指示燈（偷跑或超時未按）
 
-int winner = 0;   // 0 = 尚未有人搶到, 1 = A, 2 = B
+int pinButton = 2;      // 玩家搶答按鈕（接 10k 下拉電阻）
+int pinStart = 4;       // 裁判/測試開始按鈕（接 10k 下拉電阻）
+
+// --- 狀態變數 ---
+// state 代表系統目前的運作階段：
+// 0: 空閒待機 (Idle) - 等待使用者按下 Start 鍵開局
+// 1: 倒數等待 (Waiting) - 黃燈亮起，隨機等待中，不可按按鈕（防偷跑檢驗）
+// 2: 搶答階段 (Active) - 綠燈亮起，必須在 1 秒內按下搶答鈕
+// 3: 結算鎖定 (Locked) - 結算勝負後鎖住，直到按下 Start 重新開局
+int state = 0;
+
+// --- 時間管理變數 ---
+unsigned long goTime = 0;             // 記錄「綠燈亮起」瞬間的時間戳記 (毫秒)
+unsigned long targetWaitTime = 0;     // 隨機倒數的預定結束時間 (毫秒)
+const unsigned long timeLimit = 1000; // 允許的最大反應時間：1000 毫秒 (1 秒)
 
 void setup() {
-  pinMode(pinButtonA, INPUT);
-  pinMode(pinButtonB, INPUT);
-  pinMode(pinLedA, OUTPUT);
-  pinMode(pinLedB, OUTPUT);
+  // 設定 LED 輸出腳位
+  pinMode(pinReadyLed, OUTPUT);
+  pinMode(pinGoLed, OUTPUT);
+  pinMode(pinFaultLed, OUTPUT);
+
+  // 設定按鈕輸入腳位
+  pinMode(pinButton, INPUT);
+  pinMode(pinStart, INPUT);
+
+  // 初始化序列埠傳輸
   Serial.begin(9600);
+  Serial.println("=== REACTION TEST ===");
+  Serial.println("Press START to play.");
 }
 
 void loop() {
-  // 只有在「尚未有人搶到」時，才允許判定新的贏家
-  if (winner == 0) {
-    if (digitalRead(pinButtonA) == HIGH) {
-      winner = 1;
-      Serial.println("A 搶到了！");
-    } else if (digitalRead(pinButtonB) == HIGH) {
-      winner = 2;
-      Serial.println("B 搶到了！");
+  // ====================================================
+  // 階段 0：等待使用者按下 Start 開始按鈕
+  // ====================================================
+  if (state == 0 && digitalRead(pinStart) == HIGH) {
+    // 點亮黃燈，熄滅其他指示燈
+    digitalWrite(pinReadyLed, HIGH);
+    digitalWrite(pinGoLed, LOW);
+    digitalWrite(pinFaultLed, LOW);
+    
+    // 計算倒數目標時間：當前時間 + 隨機 2000~4000 毫秒 (2~4秒)
+    targetWaitTime = millis() + random(2000, 4000);
+    state = 1; // 切換至「倒數等待」狀態
+    
+    Serial.println("[READY] Wait for GREEN...");
+    delay(200); // 簡單延遲 200ms 做按鈕防彈跳 (Debounce)
+  }
+
+  // ====================================================
+  // 階段 1：倒數等待期（檢驗是否偷跑）
+  // ====================================================
+  if (state == 1) {
+    // 狀況 A：綠燈還沒亮，玩家就按了按鈕（判定為偷跑）
+    if (digitalRead(pinButton) == HIGH) {
+      digitalWrite(pinReadyLed, LOW);
+      digitalWrite(pinFaultLed, HIGH); // 亮紅燈警示
+      Serial.println("[FOUL] Too early! Red light.");
+      state = 3; // 直接跳入鎖定狀態，本輪結束
+    } 
+    // 狀況 B：倒數時間到，正式開放搶答
+    else if (millis() >= targetWaitTime) {
+      digitalWrite(pinReadyLed, LOW);
+      digitalWrite(pinGoLed, HIGH); // 綠燈亮起，提示按鈕！
+      goTime = millis();            // 記下綠燈亮起的起跑時間
+      Serial.println(">> GO! PRESS NOW! <<");
+      state = 2; // 切換至「搶答階段」
     }
   }
 
-  digitalWrite(pinLedA, winner == 1 ? HIGH : LOW);
-  digitalWrite(pinLedB, winner == 2 ? HIGH : LOW);
-}
-```
-**觀察任務**：這段程式碼「沒有」重置機制，一旦有人搶到，之後不管怎麼按都不會改變結果。這是刻意留下的設計缺陷，我們會在 BOSS 關補上重置按鈕。
-
-#### 範例 5-2：加上裁判重置鈕
-```cpp
-// ============================================
-// 範例 5-2：加入第三顆按鈕作為裁判重置鍵
-// ============================================
-
-int pinButtonA = 2;
-int pinButtonB = 3;
-int pinReset = 4;
-int pinLedA = 8;
-int pinLedB = 9;
-
-int winner = 0;
-
-void setup() {
-  pinMode(pinButtonA, INPUT);
-  pinMode(pinButtonB, INPUT);
-  pinMode(pinReset, INPUT);
-  pinMode(pinLedA, OUTPUT);
-  pinMode(pinLedB, OUTPUT);
-}
-
-void loop() {
-  if (digitalRead(pinReset) == HIGH) {
-    winner = 0;   // 裁判按下重置鈕，清空贏家紀錄
-  }
-
-  if (winner == 0) {
-    if (digitalRead(pinButtonA) == HIGH) {
-      winner = 1;
-    } else if (digitalRead(pinButtonB) == HIGH) {
-      winner = 2;
+  // ====================================================
+  // 階段 2：合法搶答期（限時 1 秒內搶答判定）
+  // ====================================================
+  if (state == 2) {
+    // 狀況 A：玩家在 1 秒內按下搶答鈕（成功）
+    if (digitalRead(pinButton) == HIGH) {
+      unsigned long reactionTime = millis() - goTime; // 計算反應耗時
+      Serial.print("[SUCCESS] Time: ");
+      Serial.print(reactionTime);
+      Serial.println(" ms");
+      state = 3; // 搶答成功，進入鎖定
+    } 
+    // 狀況 B：當前時間已超過 1 秒限額，玩家仍未按下（超時失敗）
+    else if (millis() - goTime > timeLimit) {
+      digitalWrite(pinGoLed, LOW);     // 熄滅綠燈
+      digitalWrite(pinFaultLed, HIGH); // 亮紅燈表示超時失敗
+      Serial.println("[TIMEOUT] Too slow (>1000ms)!");
+      state = 3; // 判定失敗，進入鎖定
     }
   }
 
-  digitalWrite(pinLedA, winner == 1 ? HIGH : LOW);
-  digitalWrite(pinLedB, winner == 2 ? HIGH : LOW);
+  // ====================================================
+  // 階段 3：鎖定狀態（等待按下 Start 重置回到階段 0）
+  // ====================================================
+  if (state == 3 && digitalRead(pinStart) == HIGH) {
+    state = 0; // 重設為待機狀態
+    // 熄滅所有燈號
+    digitalWrite(pinReadyLed, LOW);
+    digitalWrite(pinGoLed, LOW);
+    digitalWrite(pinFaultLed, LOW);
+    Serial.println("--- RESET: Ready for next round ---");
+    delay(200); // 防彈跳延遲
+  }
 }
 ```
 
-#### 範例 5-3：搶答計時器（記錄從開始到搶到的反應時間概念）
+**機關故事**：Tinkercad 沒辦法兩個人同時點，那就讓 Arduino 當 2 號對手（NPC）。信號燈亮起後，NPC 會在隨機 300～600 毫秒後「按下搶答鈕」。玩家必須在 NPC 之前點擊滑鼠！
+
+#### 範例 5-2：人機對決（玩家 vs 電腦 NPC）
 ```cpp
 // ============================================
-// 範例 5-3：用簡易計數器模擬「反應時間排名」概念
-// 說明：這裡先用「累加迴圈次數」土法煉鋼模擬時間流逝，
-//       第 14 週學到 millis() 之後，會有更精準的做法
+// 範例 5-2：人機搶答對抗賽（玩家 vs 電腦 NPC）
+// 學習重點：硬體與軟體互鎖機制 (Hardware/Software Interlock)、虛擬對手隨機行為
 // ============================================
 
-int pinButtonA = 2;
-int pinButtonB = 3;
-int pinReset = 4;
+// --- 腳位定義 ---
+int pinGoLed = 7;        // 綠色 LED：開始搶答指示燈
+int pinLedPlayer = 8;    // 藍/綠 LED：玩家獲勝燈
+int pinLedNPC = 9;       // 紅色 LED：電腦獲勝燈
 
-int winner = 0;
-int elapsedTicks = 0;   // 累計「已經過了幾輪迴圈」，粗略代表反應時間快慢
+int pinButtonPlayer = 2; // 玩家搶答按鈕
+int pinReset = 4;        // 重置/裁判開始按鈕
+
+// --- 比賽狀態控制變數 ---
+int winner = 0;              // 0: 無勝者, 1: 玩家贏, 2: 電腦贏
+bool isRoundActive = false;  // 當前是否處於可搶答的比賽中
+unsigned long goTime = 0;    // 綠燈亮起的基準時間
+unsigned long npcReactionTime = 0; // 電腦 (NPC) 本輪預設的反應時間
 
 void setup() {
-  pinMode(pinButtonA, INPUT);
-  pinMode(pinButtonB, INPUT);
+  pinMode(pinGoLed, OUTPUT);
+  pinMode(pinLedPlayer, OUTPUT);
+  pinMode(pinLedNPC, OUTPUT);
+  pinMode(pinButtonPlayer, INPUT);
   pinMode(pinReset, INPUT);
+
   Serial.begin(9600);
+  Serial.println("=== PVP: PLAYER VS NPC ===");
+  Serial.println("Press RESET/START button to begin.");
 }
 
 void loop() {
-  if (digitalRead(pinReset) == HIGH) {
+  // ----------------------------------------------------
+  // 按下 Reset 按鈕：開局新回合
+  // ----------------------------------------------------
+  if (digitalRead(pinReset) == HIGH && !isRoundActive) {
+    // 1. 清除勝者狀態與燈號
     winner = 0;
-    elapsedTicks = 0;
-    Serial.println("--- 重置，準備下一輪 ---");
+    digitalWrite(pinLedPlayer, LOW);
+    digitalWrite(pinLedNPC, LOW);
+    digitalWrite(pinGoLed, LOW);
+    
+    Serial.println("[WAIT] Preparing signal...");
+    
+    // 2. 隨機等待 1.5 ~ 3 秒後亮燈發號
+    delay(random(1500, 3000));
+    
+    // 3. 綠燈亮起，正式開放搶答
+    digitalWrite(pinGoLed, HIGH);
+    goTime = millis();
+    
+    // 4. 電腦隨機設定反應耗時（300 ~ 600 毫秒之間）
+    // 玩家必須在電腦的時限內點擊按鈕才能獲勝！
+    npcReactionTime = random(300, 600);
+    isRoundActive = true; // 啟動比賽活躍標記
+    Serial.println(">> GO! BEAT THE NPC! <<");
   }
 
-  if (winner == 0) {
-    elapsedTicks++;   // 每跑一輪 loop() 就累加，模擬時間流逝
-
-    if (digitalRead(pinButtonA) == HIGH) {
-      winner = 1;
-      Serial.print("A 搶到！用時刻度：");
-      Serial.println(elapsedTicks);
-    } else if (digitalRead(pinButtonB) == HIGH) {
-      winner = 2;
-      Serial.print("B 搶到！用時刻度：");
-      Serial.println(elapsedTicks);
+  // ----------------------------------------------------
+  // 先到先得互鎖判定（Winner Lock）
+  // ----------------------------------------------------
+  if (isRoundActive && winner == 0) {
+    // 條件一：玩家搶先按下按鈕
+    if (digitalRead(pinButtonPlayer) == HIGH) {
+      winner = 1;               // 鎖定勝者為玩家（防止電腦後續觸發）
+      isRoundActive = false;    // 關閉本輪比賽
+      digitalWrite(pinLedPlayer, HIGH); // 點亮玩家獲勝燈
+      digitalWrite(pinGoLed, LOW);      // 熄滅搶答提示燈
+      
+      Serial.print("[WIN] Player wins! Time: ");
+      Serial.print(millis() - goTime);
+      Serial.println(" ms");
     }
+    // 條件二：電腦時間到（玩家反應太慢）
+    else if (millis() - goTime >= npcReactionTime) {
+      winner = 2;               // 鎖定勝者為電腦（防止玩家再按有效）
+      isRoundActive = false;    // 關閉本輪比賽
+      digitalWrite(pinLedNPC, HIGH);    // 點亮電腦獲勝燈
+      digitalWrite(pinGoLed, LOW);      // 熄滅搶答提示燈
+      
+      Serial.print("[LOSE] NPC wins! Time: ");
+      Serial.print(npcReactionTime);
+      Serial.println(" ms");
+    }
+  }
+}
+```
+
+**機關故事**：修正原本使用 ticks 粗略累加的問題，改用標準的 millis() 時間差計算。測試玩家的點擊速度並依反應時間給予評級，符合單人挑戰的成就感。
+
+#### 範例 5-3：精確反應時間儀（毫秒測速與評級）
+```cpp
+// ============================================
+// 範例 5-3：反應時間測速儀（毫秒測速與等級評定）
+// 學習重點：高精度計時 (millis)、時間區間條件分級 (Branching Grading)
+// ============================================
+
+// --- 腳位定義 ---
+int pinReadyLed = 7;    // 黃色 LED：準備指示燈
+int pinGoLed = 8;       // 綠色 LED：反應目標燈
+int pinButton = 2;      // 玩家測速按鈕
+
+// --- 計時與狀態控制 ---
+unsigned long startTime = 0;   // 綠燈亮起的起始時間
+bool waitingForPress = false;  // 是否正在等待玩家點擊
+
+void setup() {
+  pinMode(pinReadyLed, OUTPUT);
+  pinMode(pinGoLed, OUTPUT);
+  pinMode(pinButton, INPUT);
+  
+  Serial.begin(9600);
+  Serial.println("=== SPEED TEST ===");
+}
+
+void loop() {
+  // ----------------------------------------------------
+  // 自動發號流程：若不在等待按鍵中，則進入發號倒數
+  // ----------------------------------------------------
+  if (!waitingForPress) {
+    // 1. 亮起黃燈，提醒玩家集中注意力
+    digitalWrite(pinReadyLed, HIGH);
+    digitalWrite(pinGoLed, LOW);
+    Serial.println("[WAIT] Get ready...");
+    
+    // 2. 隨機等待 2 ~ 4.5 秒，避免玩家靠節奏規律預判
+    delay(random(2000, 4500));
+
+    // 3. 換亮綠燈，啟動計時
+    digitalWrite(pinReadyLed, LOW);
+    digitalWrite(pinGoLed, HIGH);
+    startTime = millis();     // 捕捉當前毫秒數
+    waitingForPress = true;   // 標記「正在等待按下」
+    Serial.println(">> NOW! PRESS! <<");
+  }
+
+  // ----------------------------------------------------
+  // 偵測玩家按下按鈕並結算成績
+  // ----------------------------------------------------
+  if (waitingForPress && digitalRead(pinButton) == HIGH) {
+    // 4. 計算從亮燈到按下的時間差 (毫秒)
+    unsigned long reactionTime = millis() - startTime;
+    digitalWrite(pinGoLed, LOW); // 熄滅綠燈
+    
+    // 5. 輸出反應時間與評級
+    Serial.print("[RESULT] ");
+    Serial.print(reactionTime);
+    Serial.print(" ms | Rank: ");
+
+    // 評級標準：
+    // < 200 ms: S 級（極限神速反應）
+    // 200 ~ 350 ms: A 級（標準優秀反應）
+    // > 350 ms: B 級（尚有進步空間）
+    if (reactionTime < 200) {
+      Serial.println("Rank S (Super fast!)");
+    } else if (reactionTime < 350) {
+      Serial.println("Rank A (Good!)");
+    } else {
+      Serial.println("Rank B (Keep practicing!)");
+    }
+
+    // 6. 結束本輪測試，重置旗標，並停頓 3 秒後自動進入下一輪
+    waitingForPress = false;
+    Serial.println("--- Next round in 3s ---");
+    delay(3000);
   }
 }
 ```
