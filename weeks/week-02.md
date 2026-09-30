@@ -169,6 +169,8 @@ void loop() {
 ```
 **操作提醒**：開啟 Serial Monitor，用滑鼠點擊按鈕不放，觀察數值從 0 變成 1；放開後應立刻變回 0。
 
+<img width="794" height="749" alt="image" src="https://github.com/user-attachments/assets/f6cfe902-69b8-43b4-a671-3abcaa9dd8c7" />
+
 #### 範例 1-2：三顆按鈕同時監控
 ```cpp
 // ============================================
@@ -199,6 +201,8 @@ void loop() {
 ```
 **教學重點**：`Serial.print()`（不換行）和 `Serial.println()`（會換行）的差異——這裡故意混用，讓三顆按鈕的資料可以印在同一行方便比對。
 
+<img width="771" height="765" alt="image" src="https://github.com/user-attachments/assets/be41075c-4834-4b96-84eb-acd5d52ffbec" />
+
 #### 範例 1-3：按下時對應 LED 立刻反應
 ```cpp
 // ============================================
@@ -224,6 +228,8 @@ void loop() {
 }
 ```
 **教學重點**：這裡示範了一個小技巧——`digitalWrite()` 的第二個參數其實可以直接放 `digitalRead()` 讀到的數值（因為 HIGH 就是 1、LOW 就是 0），不一定要透過 `if-else` 轉換，程式碼可以更精簡。
+
+<img width="788" height="781" alt="image" src="https://github.com/user-attachments/assets/92bb34a8-c3f5-4d16-b54e-91051bb1da15" />
 
 ---
 
