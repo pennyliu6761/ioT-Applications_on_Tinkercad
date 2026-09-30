@@ -475,17 +475,23 @@ void loop() {
 
 ### 關卡 4：多鈕協同 — AND / OR 邏輯運算
 
-**機關故事**：密室有一個「雙人合作機關」，需要兩位玩家同時各按住一顆按鈕，機關才會啟動，模擬需要團隊合作才能解開的謎題（工業上這正是沖床等危險設備的「雙手啟動裝置」安全設計理念）。
+**機關故事**：密室有一個「雙人合作機關」，需要兩位玩家各按住一顆按鈕，機關才會啟動，模擬需要團隊合作才能解開的謎題（工業上這正是沖床等危險設備的「雙手啟動裝置」安全設計理念）。
 
 #### 範例 4-1：AND 邏輯 — 兩顆都要按才啟動
 ```cpp
 // ============================================
-// 範例 4-1：雙人合作機關 - 必須同時按住兩顆按鈕
+// 範例 4-1：雙人合作機關 - 兩顆按鈕都按下才開啟 (Tinkercad 沒辦法同時案兩個按鈕，改情境!!!!)
 // ============================================
 
 int pinButtonA = 2;
 int pinButtonB = 3;
 int pinLed = 8;
+
+bool stateA = false;
+bool stateB = false;
+
+bool lastButtonA = LOW;
+bool lastButtonB = LOW;
 
 void setup() {
   pinMode(pinButtonA, INPUT);
@@ -494,11 +500,25 @@ void setup() {
 }
 
 void loop() {
-  bool playerA = digitalRead(pinButtonA) == HIGH;
-  bool playerB = digitalRead(pinButtonB) == HIGH;
+  bool currentA = digitalRead(pinButtonA);
+  bool currentB = digitalRead(pinButtonB);
 
-  // && 代表「兩者都必須成立」
-  if (playerA && playerB) {
+  // 偵測 Button A 按下瞬間（由 LOW 變 HIGH）
+  if (currentA == HIGH && lastButtonA == LOW) {
+    stateA = !stateA; // 切換開關狀態
+    delay(50);        // 簡易防彈跳
+  }
+  lastButtonA = currentA;
+
+  // 偵測 Button B 按下瞬間（由 LOW 變 HIGH）
+  if (currentB == HIGH && lastButtonB == LOW) {
+    stateB = !stateB; // 切換開關狀態
+    delay(50);        // 簡易防彈跳
+  }
+  lastButtonB = currentB;
+
+  // 兩者皆為開啟狀態時亮燈
+  if (stateA && stateB) {
     digitalWrite(pinLed, HIGH);
   } else {
     digitalWrite(pinLed, LOW);
