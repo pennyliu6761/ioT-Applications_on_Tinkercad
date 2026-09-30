@@ -561,14 +561,23 @@ void loop() {
 #### 範例 4-3：三人團隊機關（至少 2 人同意才啟動）
 ```cpp
 // ============================================
-// 範例 4-3：進階邏輯 - 三人中至少兩人同時按住才啟動
-// 情境：模擬「多數決」機制
+// 範例 4-3 修訂版：投票模式（點擊投票/反悔）
 // ============================================
 
 int pinButtonA = 2;
 int pinButtonB = 3;
 int pinButtonC = 4;
 int pinLed = 8;
+
+// 記錄每位玩家當前的投票狀態 (true = 贊成, false = 反對/未投)
+bool voteA = false;
+bool voteB = false;
+bool voteC = false;
+
+// 記錄前一次讀取值以做按鈕邊緣偵測（Edge Detection）
+bool lastA = LOW;
+bool lastB = LOW;
+bool lastC = LOW;
 
 void setup() {
   pinMode(pinButtonA, INPUT);
@@ -578,14 +587,24 @@ void setup() {
 }
 
 void loop() {
-  bool a = digitalRead(pinButtonA) == HIGH;
-  bool b = digitalRead(pinButtonB) == HIGH;
-  bool c = digitalRead(pinButtonC) == HIGH;
+  bool curA = digitalRead(pinButtonA);
+  bool curB = digitalRead(pinButtonB);
+  bool curC = digitalRead(pinButtonC);
 
-  // 至少兩人同意 = (A且B) 或 (B且C) 或 (A且C)
-  bool atLeastTwo = (a && b) || (b && c) || (a && c);
+  // 偵測按下瞬間切換狀態 (0 -> 1)
+  if (curA == HIGH && lastA == LOW) { voteA = !voteA; delay(50); }
+  if (curB == HIGH && lastB == LOW) { voteB = !voteB; delay(50); }
+  if (curC == HIGH && lastC == LOW) { voteC = !voteC; delay(50); }
 
-  digitalWrite(pinLed, atLeastTwo ? HIGH : LOW);
+  lastA = curA;
+  lastB = curB;
+  lastC = curC;
+
+  // 計算贊成票數 (利用布林轉整數特性: true 為 1，false 為 0)
+  int votes = voteA + voteB + voteC;
+
+  // 至少兩人 (>= 2) 即通過
+  digitalWrite(pinLed, votes >= 2 ? HIGH : LOW);
 }
 ```
 **教學重點**：這裡示範了如何把多個 `&&` 和 `||` 組合起來，構成更複雜的邏輯判斷。這種「多數決」邏輯其實也是真實工業安全系統常見的設計，例如核電廠的多重感測器表決機制。
