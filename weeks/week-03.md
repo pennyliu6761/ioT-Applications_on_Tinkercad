@@ -112,8 +112,10 @@
 
 > 💡 **配置檢查清單**
 > - [ ] RGB LED 的三個顏色腳都各自接了電阻，且接在 `~9`、`~10`、`~11` 這三個支援 PWM 的腳位
-> - [ ] RGB LED 最長腳（共同負極）接到 GND
+> - [ ] RGB LED 共同負極接到 GND
 > - [ ] 按鈕已接妥下拉電阻與訊號線
+
+<img width="953" height="413" alt="image" src="https://github.com/user-attachments/assets/0d8a6d58-4e17-4447-8947-a11ff3dbffb3" />
 
 ---
 
