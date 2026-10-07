@@ -1046,6 +1046,8 @@ int laneStep = 0;
   delay(200);
 ```
 
+<img width="984" height="490" alt="image" src="https://github.com/user-attachments/assets/c751e158-d000-45db-99c4-0b1ead832de4" />
+
 **擴充討論**：主管想再加開「碼頭 C」，也要一顆 RGB 狀態燈。`~` 腳已經用完了，你有什麼替代方案？請提出至少一種，並說明會犧牲什麼功能。（提示：只用「全亮／全滅」組合 R、G、B，還能做出哪些顏色？）
 
 ---
