@@ -1,30 +1,45 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 9 週](./week-09.md) | [下一週：第 11 週 — 產線戰情看板 ➡](./week-11.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 9 週](week-09.md) | [下一週：第 11 週 — 產線戰情看板 ➡](week-11.md)
 
 ---
 
-# 第 10 週：智慧輸送帶
-## 主題專案：從「定點角度」到「持續轉動」的動力世界
+# 第 10 週：會持續運轉的智慧場域
 
-> 🎯 **本週定位**：第 7 週學的伺服馬達只能轉到「指定角度」就停住（0°~180°），這一週你要學習完全不同性質的動力元件——**直流馬達（DC Motor）**，它會「持續轉動」，可以正轉、反轉、變速，就像真正的傳送帶滾輪或車輪。密室老闆想打造一間「智慧輸送帶物流房」主題房，玩家要操控輸送帶運送機關道具。**這是整個 Arduino 單元最後一次接觸新的動力元件**，你會學到「以小訊號控制大功率裝置」的核心原理，這個概念在第 14 週學習繼電器時會再次出現，並且是真實工廠中無人搬運車（AGV）、自動輸送系統驅動輪子的基礎技術。
+## 主題專案：讓系統「一直轉」，而且能控制快慢與方向
+
+> 🎯 **本週定位**：第 7 週的伺服馬達只能「轉到某個角度停住」。真實世界裡更多設備需要**一直轉**：風扇、輸送帶、捲門、洗衣機、搬運車輪子。這一週加入 **直流馬達（DC Motor）** 和它的「司機」——**馬達驅動晶片 L293D**。
+>
+> 本週是全學期**接線最複雜的一週**，正好符合我們的重點：
+>
+> 1. 讀懂情境需求，判斷馬達要不要**調速**、要不要**反轉**
+> 2. 依需求選擇 L293D 的**接法**——需求越簡單，佔用的 Arduino 腳位越少
+> 3. 規劃腳位，在 Tinkercad 把電路一步步接起來
+>
+> 控制馬達的程式都已經準備好，你只需要填腳位、調整參數、把功能開關從 `false` 改成 `true`。
+>
+> 🏁 **本週成果**：完成 **4 個獨立專案**，每個專案存成一個獨立的 Tinkercad 檔案繳交。
 
 ---
 
 ## 📋 目錄
+
 - [學習地圖](#學習地圖)
 - [開場任務簡報](#開場任務簡報)
-- [電路體檢站（3 分鐘快速複習）](#電路體檢站3-分鐘快速複習)
-- [模擬設計專案配置](#模擬設計專案配置)
-- [後端程式設計：五道機關關卡](#後端程式設計五道機關關卡)
-  - [關卡 1：馬達驅動基礎 — 認識 L293D 與 H 橋](#關卡-1馬達驅動基礎--認識-l293d-與-h-橋)
-  - [關卡 2：正反轉控制 — 雙輸入腳位邏輯](#關卡-2正反轉控制--雙輸入腳位邏輯)
-  - [關卡 3：無段變速 — PWM 控制轉速](#關卡-3無段變速--pwm-控制轉速)
-  - [關卡 4：緩啟動與緩停止](#關卡-4緩啟動與緩停止)
-  - [關卡 5：感測連動 — 超音波避障與馬達整合](#關卡-5感測連動--超音波避障與馬達整合)
-  - [🏆 BOSS 關：智慧輸送帶主控系統](#-boss-關智慧輸送帶主控系統)
-- [常見錯誤除錯站](#常見錯誤除錯站)
-- [練習題大補帖](#練習題大補帖)
-- [🎨 額外主題卡（給想多做的人）](#-額外主題卡給想多做的人)
-- [📖 延伸連結：這週學到的東西如何應用在真實自動化場域](#-延伸連結這週學到的東西如何應用在真實自動化場域)
+- [認識新元件：直流馬達與 L293D](#認識新元件直流馬達與-l293d)
+- [配線口訣卡](#配線口訣卡)
+- [共用工具](#共用工具)
+- [專案一：廁所自動抽風扇](#專案一廁所自動抽風扇)
+- [專案二：電動鐵捲門](#專案二電動鐵捲門)
+- [專案三：智慧輸送帶](#專案三智慧輸送帶)
+- [專案四：倉庫無人搬運車（AGV）](#專案四倉庫無人搬運車agv)
+- [練習題大補帖：情境配置挑戰](#練習題大補帖情境配置挑戰)
+  - [Lv.1 果汁機三段速](#-lv1-果汁機三段速)
+  - [Lv.2 伺服器散熱風扇](#-lv2-伺服器散熱風扇)
+  - [Lv.3 洗衣機正反轉洗程](#-lv3-洗衣機正反轉洗程)
+  - [Lv.4 三層樓貨梯](#-lv4-三層樓貨梯)
+  - [Lv.5 雙輸送帶包裹分流站](#-lv5-雙輸送帶包裹分流站)
+  - [🏆 Lv.6 BOSS 關：物聯網顧問提案](#-lv6-boss-關物聯網顧問提案)
+- [配線除錯站](#配線除錯站)
+- [成果繳交與評分](#成果繳交與評分)
 - [📖 本週詞彙表](#-本週詞彙表)
 - [反思與延伸討論](#反思與延伸討論)
 - [本週檢核清單](#本週檢核清單)
@@ -34,769 +49,1357 @@
 ## 學習地圖
 
 ### 你已經會的（第 1～9 週）
-- ✅ 數位/類比輸出入、`map()`、`constrain()`、`float` 運算
-- ✅ 陣列、迴圈、自訂函式、狀態轉變偵測
-- ✅ 蜂鳴器、光敏電阻、TMP36、伺服馬達
-- ✅ 超音波測距（`pulseIn()`、`delayMicroseconds()`）
+
+- ✅ LED、RGB、蜂鳴器、伺服四種輸出元件
+- ✅ 按鈕、旋鈕、光敏電阻、TMP36、HC-SR04 五種輸入元件
+- ✅ 「~ 腳可用表」：伺服借走 9、10；蜂鳴器借走 3、11
+- ✅ 狀態改變偵測、鎖定與復歸、安全連鎖、安裝位置換算
 
 ### 這週要新學的
-| 觀念 | 說明 | 為什麼工業上重要 |
-|---|---|---|
-| 直流馬達（DC Motor） | 通電後會持續轉動的馬達，轉速與方向可控制 | 輸送帶、車輪、風扇等一切需要「持續轉動」的機構 |
-| L293D 馬達驅動晶片 | 俗稱「H 橋」，讓小電流的 Arduino 能控制大電流的馬達 | Arduino 無法直接驅動馬達，這是業界標準解法之一 |
-| Enable 腳位 | 控制馬達是否啟用，並可用 PWM 控制轉速 | 馬達調速的關鵛腳位 |
-| Input 腳位（IN1、IN2） | 決定馬達電流方向，進而決定正轉或反轉 | H 橋電路的核心控制邏輯 |
-| 緩啟動 / 緩停止 | 逐漸增加或減少 PWM 值，而非瞬間全速 | 減少機械衝擊、延長設備壽命的工業標準做法 |
 
-### 使用平台
-本週繼續使用 [Tinkercad Circuits](https://www.tinkercad.com/)，程式編輯視窗維持「文字模式（Text）」。
+| 新東西 | 白話說明 | 在職場上像什麼 |
+| --- | --- | --- |
+| 直流馬達（DC Motor） | 通電就一直轉，電給得多轉得快，電反過來就反轉 | 風扇、輸送帶、捲門、車輪 |
+| 馬達驅動晶片 L293D | Arduino 力氣太小推不動馬達，L293D 是「司機」，聽 Arduino 指揮、負責出力 | 用遙控器指揮冷氣：遙控器出指令，冷氣自己出力 |
+| 油門腳 EN | 控制轉多快（接 `~` 腳可調速） | 油門踏板 |
+| 方向腳 IN1、IN2 | 控制往哪轉 | 排檔（D 檔／R 檔） |
+| 緩啟動 | 慢慢加速，不要一下衝到全速 | 電梯起步、輸送帶啟動 |
+
+### 本週可用元件（只限這些）
+
+| 元件 | 第幾週學的 |
+| --- | --- |
+| 單色 LED、RGB LED、220Ω | 第 1、3 週 |
+| 按鈕、10kΩ | 第 2 週 |
+| 旋鈕 | 第 4 週 |
+| 蜂鳴器、光敏電阻 | 第 5 週 |
+| TMP36 | 第 6 週 |
+| 伺服馬達 | 第 7 週 |
+| 超音波 HC-SR04 | 第 9 週 |
+| 直流馬達、L293D | **本週新增** |
 
 ---
 
 ## 開場任務簡報
 
-> 📖 **情境**：密室老闆的物流體驗館開幕在即——玩家要操控一條「智慧輸送帶」，把機關道具正確送到指定位置才能過關。你被指派設計整套馬達控制系統，這是這學期第一次真正操控「持續轉動」的動力元件。
+> 📖 **情境**：顧問公司這週接到四個需要「持續運轉」設備的委託案。客戶的需求各不相同：有的只要開關、有的要調速、有的要正反轉、有的要同時控制兩顆馬達。
 >
-> 這週結束時，你會做出：
-> 1. 一個能讓馬達單向轉動與停止的基礎測試機關（暖身）
-> 2. 一套正反轉切換的控制邏輯
-> 3. 一套無段調速的輸送帶系統
-> 4. 一套緩啟動緩停止的平順動力控制
-> 5. 一套結合第 9 週超音波感測器的自動避障邏輯
-> 6. 一個整合以上所有技巧的「智慧輸送帶主控系統」
+> | 客戶 | 委託內容 | 馬達需求 | 難度 |
+> | --- | --- | --- | --- |
+> | 連鎖餐廳 | 廁所自動抽風扇 | 單向、開關→可調速 | ⭐ |
+> | 五金行 | 電動鐵捲門 | 正反轉 | ⭐⭐ |
+> | 食品工廠 | 智慧輸送帶 | 單向、調速、緩啟動 | ⭐⭐⭐ |
+> | 物流倉庫 | 無人搬運車（AGV） | 兩顆馬達、調速 | ⭐⭐⭐⭐ |
+>
+> 每個專案都分成 3 個步驟，從最簡單的版本開始，每一步多接幾個元件、多一項功能。
 
 ---
 
-## 電路體檢站（3 分鐘快速複習）
+## 認識新元件：直流馬達與 L293D
 
-**體檢題 1**：為什麼 Arduino 不能直接接馬達，而需要透過 L293D 這顆晶片？
-> 答案：Arduino 的腳位只能輸出極小的電流（通常不到 40 毫安），而馬達運轉需要遠大於這個數值的電流才能提供足夠的扭力。直接把馬達接在 Arduino 腳位上，輕則馬達轉不動，重則燒毀 Arduino。L293D 的作用是「用小電流的控制訊號，去驅動大電流的馬達迴路」，這種「以小控大」的概念，其實跟第 7 週學過的伺服馬達內部原理有異曲同工之妙——都是用一個小訊號去控制實際的動力輸出，只是伺服馬達的驅動電路已經內建好了，而直流馬達需要我們自己外接 L293D。
+### 為什麼不能把馬達直接接到 Arduino？
 
-**體檢題 2**：回想第 3 週學過的 PWM 概念——這週要用 PWM 控制的不是 LED 亮度，而是馬達轉速，兩者的原理完全相同：「快速開關的時間比例」，只是這次控制的是機械動力輸出而非光的強弱。
+Arduino 的腳位力氣很小（像人的手指），馬達需要很大的力氣（像要推一台車）。直接接上去，輕則推不動，重則把 Arduino 燒壞。所以要請一位「司機」——**L293D**：
 
-**體檢題 3**：L293D 需要外接電阻保護嗎？
-> 答案：不需要外接限流電阻（L293D 內部已有相應的驅動電路設計），但需要正確依照晶片腳位圖接上電源與訊號線，接線複雜度會比之前的元件都要高一些，請務必仔細對照本週的接線指引。
+```
+Arduino（老闆）──下指令──► L293D（司機）──出力──► 馬達（車）
+   小訊號                    聽指令、供大電流            轉動
+```
+
+### 直流馬達
+
+- **2 隻腳**，接到 L293D 的輸出腳。
+- 兩隻腳**接反只會轉向相反**，不會壞——發現方向不對，把兩條線對調就好。
+- 在 Tinkercad 模擬時，馬達上會顯示轉速（RPM）。
+
+### L293D：一顆晶片可以帶兩顆馬達
+
+L293D 是一顆 16 隻腳的晶片，**一邊（左半）管馬達 A，另一邊（右半）管馬達 B**。
+
+**擺放方式**：晶片要**跨在麵包板中間的凹槽上**，有半圓缺口的一端朝上。腳位編號從缺口左邊開始，左排由上往下 1～8，右排由下往上 9～16。
+
+```
+          ┌───∪───┐
+  EN1  1 ─┤       ├─ 16  VCC1（晶片電源 5V）
+  IN1  2 ─┤       ├─ 15  IN4
+ OUT1  3 ─┤       ├─ 14  OUT4
+  GND  4 ─┤ L293D ├─ 13  GND
+  GND  5 ─┤       ├─ 12  GND
+ OUT2  6 ─┤       ├─ 11  OUT3
+  IN2  7 ─┤       ├─ 10  IN3
+ VCC2  8 ─┤       ├─  9  EN2
+          └───────┘
+  ← 馬達 A 這一側     馬達 B 這一側 →
+```
+
+> 💡 在 Tinkercad 把滑鼠移到晶片的腳上，會顯示該腳名稱。**每接一條線前都先確認一次**。
+
+### L293D 接線地圖（白話版）
+
+| 晶片腳 | 名稱 | 白話說明 | 接到哪裡 |
+| --- | --- | --- | --- |
+| 16 | VCC1 | 晶片自己的電源 | 5V（**一定要接**） |
+| 8 | VCC2 | 給馬達用的電源 | 5V（**一定要接**） |
+| 4、5、12、13 | GND | 接地 | GND（**四隻都要接**） |
+| 1 | EN1 | 馬達 A 的**油門** | `~` 腳（要調速）或 5V（全速） |
+| 2、7 | IN1、IN2 | 馬達 A 的**方向** | 數位腳，或固定接 5V／GND |
+| 3、6 | OUT1、OUT2 | 馬達 A 的兩隻腳 | 馬達 A |
+| 9 | EN2 | 馬達 B 的油門 | 同 EN1 |
+| 10、15 | IN3、IN4 | 馬達 B 的方向 | 同 IN1、IN2 |
+| 11、14 | OUT3、OUT4 | 馬達 B 的兩隻腳 | 馬達 B |
+
+> ⚠️ 真實硬體上，馬達電源（Pin 8）通常會接**獨立電源**（例如電池盒），避免馬達啟動時拖垮 Arduino。Tinkercad 模擬可以直接接 Arduino 的 5V。
+
+### 方向怎麼控制？
+
+| IN1 | IN2 | 馬達 |
+| --- | --- | --- |
+| HIGH | LOW | 正轉 |
+| LOW | HIGH | 反轉 |
+| LOW | LOW | 停止 |
+
+### ⭐ 本週最重要的觀念：依需求選接法，省腳位
+
+不是每個情境都需要「調速＋正反轉」。**需求越簡單，L293D 可以把越多腳固定接到 5V 或 GND，Arduino 就省越多腳**：
+
+| 接法 | 情境需求 | EN（油門） | IN1 | IN2 | 佔 Arduino 幾隻腳 |
+| --- | --- | --- | --- | --- | --- |
+| **A** | 只要開／關，固定全速、單一方向 | 5V | 數位腳 | GND | **1 隻**（一般腳） |
+| **B** | 單一方向，但要調速 | `~` 腳 | 5V | GND | **1 隻**（`~` 腳） |
+| **C** | 要正反轉，固定全速 | 5V | 數位腳 | 數位腳 | **2 隻**（一般腳） |
+| **D** | 要正反轉，也要調速 | `~` 腳 | 數位腳 | 數位腳 | **3 隻**（含 1 隻 `~` 腳） |
+
+> 🤔 **每個專案的 Step 0，第一件事就是決定用哪一種接法。**
+
+### ~ 腳可用表（更新版）
+
+直流馬達要調速時，油門腳 EN 必須接 `~` 腳。它和 RGB、調光燈一起搶下面這些 `~` 腳：
+
+| 系統裡有…… | 還能調光、調速的 `~` 腳 |
+| --- | --- |
+| 都沒有 | 3、5、6、9、10、11 |
+| 只有蜂鳴器 | 5、6、9、10 |
+| 只有伺服 | 3、5、6、11 |
+| 伺服＋蜂鳴器 | 只剩 5、6 |
 
 ---
 
-## 模擬設計專案配置
+## 配線口訣卡
 
-### 元件清單
-| 元件 | 數量 | 說明 |
-|---|---|---|
-| Arduino Uno R3 | 1 | 主控板 |
-| Breadboard | 1 | 電路佈局 |
-| L293D | 1 | 馬達驅動晶片（16-pin DIP 封裝） |
-| DC Motor | 1 | 直流馬達（輸送帶動力來源） |
-| Ultrasonic Distance Sensor（HC-SR04） | 1 | 沿用第 9 週，做避障連動示範 |
-
-### 接線步驟
-
-**Part A：L293D 晶片接線**
-L293D 是 16 隻腳的晶片，關鍵接法如下（Tinkercad 元件上有腳位編號標示，建議搭配元件說明面板逐一核對）：
-1. **Pin 1（Enable 1）**：接 Arduino PWM 腳位 **~5**（控制轉速）
-2. **Pin 2（Input 1）**：接 Arduino **Pin 3**（控制轉向 A）
-3. **Pin 7（Input 2）**：接 Arduino **Pin 4**（控制轉向 B）
-4. **Pin 3（Output 1）／Pin 6（Output 2）**：接馬達的兩隻接腳
-5. **Pin 8（VCC2, 馬達電源）**：接 **5V**（Tinkercad 模擬環境可直接使用 Arduino 5V，真實硬體通常會使用獨立電源，避免馬達啟動時的電流突波干擾 Arduino 運作）
-6. **Pin 16（VCC1, 邏輯電源）**：接 **5V**
-7. **Pin 4, 5, 12, 13（GND）**：全部接 **GND**
-
-**Part B：超音波感測器（沿用第 9 週）**
-1. Trig 接 **Pin 9**，Echo 接 **Pin 10**。
-
-> ⚠️ **教學提醒**：L293D 接線是本課程目前為止最複雜的一次，建議花額外時間用簡化圖解說明「H 橋」的基本概念——兩個輸入腳位（IN1、IN2）決定電流流動方向，進而決定馬達正轉或反轉：
-> - IN1 = HIGH, IN2 = LOW → 正轉
-> - IN1 = LOW, IN2 = HIGH → 反轉
-> - IN1 = LOW, IN2 = LOW（或兩者相同）→ 停止
-
-### 腳位對照表（本週共用）
-| 元件 | 腳位 |
-|---|---|
-| L293D Enable（轉速控制） | ~5 |
-| L293D Input 1（轉向控制 A） | Pin 3 |
-| L293D Input 2（轉向控制 B） | Pin 4 |
-| 超音波 Trig | Pin 9 |
-| 超音波 Echo | Pin 10 |
-
-> 💡 **配置檢查清單**
-> - [ ] L293D 的 Enable、Input1、Input2 分別正確接到 ~5、Pin 3、Pin 4
-> - [ ] L293D 的兩組電源腳（Pin 8、Pin 16）都接 5V，四個接地腳都接 GND
-> - [ ] 馬達的兩隻接腳正確接到 L293D 的 Output 1 與 Output 2
-> - [ ] 超音波感測器沿用第 9 週接法
+| 口訣 | 說明 |
+| --- | --- |
+| ① **L293D 跨凹槽、缺口朝上；16 和 8 接 5V，4、5、12、13 接 GND** | 電源腳漏接是最常見錯誤 |
+| ② **先決定接法 A／B／C／D，再規劃腳位** | 不需要的功能就固定接 5V 或 GND |
+| ③ 要調速 → EN 接 `~` 腳；不調速 → EN 接 5V | |
+| ④ 方向不對 → 對調馬達兩條線 | 不用改程式 |
+| ⑤ 有伺服，9、10 不能調速；有蜂鳴器，3、11 不能調速 | 兩者都有時只剩 5、6 |
+| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | L293D、馬達、HC-SR04、伺服、蜂鳴器、旋鈕、TMP36 不用 |
+| ⑦ Pin 0、1 先不要用；腳位不夠時借 A 腳 | A 腳也能接 IN 腳、Trig、Echo、燈、按鈕 |
 
 ---
 
-## 後端程式設計：五道機關關卡
+## 共用工具
 
-### 關卡 1：馬達驅動基礎 — 認識 L293D 與 H 橋
+### 🔧 工具 1：馬達測試器（接法 D）
 
-**機關故事**：在設計任何複雜的輸送帶邏輯前，你得先確認馬達真的能被驅動轉動。
+接好 L293D 和馬達後先跑這支：正轉 2 秒 → 停 1 秒 → 反轉 2 秒 → 停 1 秒 → 半速正轉 2 秒。觀察 Tinkercad 馬達上的轉速顯示。
 
-#### 範例 1-1：控制馬達單向旋轉與停止
 ```cpp
-// ============================================
-// 範例 1-1：馬達基礎控制 - 單向轉動與停止
-// ============================================
+int pinEN  = 5;   // ← 油門腳（~ 腳）
+int pinIN1 = 7;   // ← 方向腳 1
+int pinIN2 = 8;   // ← 方向腳 2
 
-int pinIn1 = 3;    // 對應 L293D Input 1
-int pinIn2 = 4;    // 對應 L293D Input 2
-int pinEnable = 5; // 對應 L293D Enable（控制轉速，此階段先固定全速）
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-}
-
-void loop() {
-  // 正轉：Input1 = HIGH, Input2 = LOW
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  analogWrite(pinEnable, 255);   // 全速
-
+void run(int in1, int in2, int speed, String label) {
+  Serial.println(label);
+  digitalWrite(pinIN1, in1);
+  digitalWrite(pinIN2, in2);
+  analogWrite(pinEN, speed);
   delay(2000);
-
-  // 停止：Enable 設為 0
-  analogWrite(pinEnable, 0);
-  delay(2000);
-}
-```
-
-#### 範例 1-2：觀察 Enable 為 0 時的行為
-```cpp
-// ============================================
-// 範例 1-2：驗證 Enable 對馬達的控制作用
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-
-  // Input 方向固定設定好，只透過 Enable 決定馬達是否真正轉動
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  analogWrite(pinEnable, 255);
-  delay(1000);
-  analogWrite(pinEnable, 0);
-  delay(1000);
-}
-```
-**教學重點**：這裡示範了一個重要觀念——即使 Input1/Input2 已經設定好轉動方向，只要 Enable 是 0，馬達依然不會轉動。這跟第 3 週學過的 PWM 概念相通：Enable 腳位就是負責控制「這個方向的電流，要用多大的比例通過」。
-
----
-
-### 關卡 2：正反轉控制 — 雙輸入腳位邏輯
-
-**機關故事**：輸送帶需要能夠正轉（往前送貨）跟反轉（退回重新整理），這一關我們實作完整的雙向控制。
-
-#### 範例 2-1：正反轉切換
-```cpp
-// ============================================
-// 範例 2-1：前進 2 秒、後退 2 秒
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-}
-
-void loop() {
-  // 正轉（前進）
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  analogWrite(pinEnable, 255);
-  delay(2000);
-
-  // 反轉（後退）：交換 Input1、Input2 的高低電位
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, HIGH);
-  analogWrite(pinEnable, 255);
-  delay(2000);
-}
-```
-
-#### 範例 2-2：把方向控制封裝成函式
-```cpp
-// ============================================
-// 範例 2-2：把常用的方向控制封裝成好用的函式
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-
-void motorForward(int speed) {
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  analogWrite(pinEnable, speed);
-}
-
-void motorBackward(int speed) {
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, HIGH);
-  analogWrite(pinEnable, speed);
-}
-
-void motorStop() {
-  analogWrite(pinEnable, 0);
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-}
-
-void loop() {
-  motorForward(255);
-  delay(2000);
-  motorStop();
-  delay(500);
-  motorBackward(255);
-  delay(2000);
-  motorStop();
-  delay(500);
-}
-```
-**教學重點**：這是這學期第一次把「馬達控制」完整封裝成三個語意清楚的函式（`motorForward`、`motorBackward`、`motorStop`），之後的所有關卡都會直接呼叫這三個函式，不再需要記得 IN1/IN2 該設什麼值，這正是模組化設計「降低使用複雜度」的核心價值。
-
-#### 範例 2-3：按鈕控制正轉、反轉與急煞
-```cpp
-// ============================================
-// 範例 2-3：三顆按鈕分別控制馬達正轉、反轉、急煞
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinBtnForward = 7;
-int pinBtnBackward = 6;
-int pinBtnStop = 2;
-
-void motorForward(int speed) {
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  analogWrite(pinEnable, speed);
-}
-
-void motorBackward(int speed) {
-  digitalWrite(pinIn1, LOW);
-  digitalWrite(pinIn2, HIGH);
-  analogWrite(pinEnable, speed);
-}
-
-void motorStop() {
-  analogWrite(pinEnable, 0);
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinBtnForward, INPUT);
-  pinMode(pinBtnBackward, INPUT);
-  pinMode(pinBtnStop, INPUT);
-}
-
-void loop() {
-  if (digitalRead(pinBtnForward) == HIGH) {
-    motorForward(255);
-  } else if (digitalRead(pinBtnBackward) == HIGH) {
-    motorBackward(255);
-  } else if (digitalRead(pinBtnStop) == HIGH) {
-    motorStop();
-  }
-}
-```
-
----
-
-### 關卡 3：無段變速 — PWM 控制轉速
-
-**機關故事**：不同的道具重量需要不同的輸送帶速度，太快容易讓道具掉落，太慢則影響遊戲節奏。
-
-#### 範例 3-1：測試不同轉速
-```cpp
-// ============================================
-// 範例 3-1：透過 Enable 腳位的 PWM 值控制轉速快慢
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  analogWrite(pinEnable, 100);   // 慢速
-  delay(2000);
-  analogWrite(pinEnable, 255);   // 快速
-  delay(2000);
-}
-```
-
-#### 範例 3-2：旋鈕調速輸送帶
-```cpp
-// ============================================
-// 範例 3-2：可變電阻即時控制輸送帶速度（需自行擴充接一顆旋鈕到 A0）
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinPot = A0;
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  int rawValue = analogRead(pinPot);
-  int speed = map(rawValue, 0, 1023, 0, 255);
-  analogWrite(pinEnable, speed);
-}
-```
-
----
-
-### 關卡 4：緩啟動與緩停止
-
-**機關故事**：輸送帶瞬間全速啟動，會讓道具因慣性飛出去，密室老闆要求動力輸出要「柔順」，這正是工業上非常重要的緩啟動概念。
-
-#### 範例 4-1：緩啟動與緩停止
-```cpp
-// ============================================
-// 範例 4-1：逐漸加速、逐漸減速，減少機械衝擊
-// 工業意義：馬達瞬間全速啟動會產生機械應力，緩啟動能延長設備壽命
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  // 緩啟動：PWM 值由 0 逐漸增加到 255
-  for (int speed = 0; speed <= 255; speed++) {
-    analogWrite(pinEnable, speed);
-    delay(10);
-  }
-
-  delay(1000);   // 全速運轉維持 1 秒
-
-  // 緩停止：PWM 值由 255 逐漸減少到 0
-  for (int speed = 255; speed >= 0; speed--) {
-    analogWrite(pinEnable, speed);
-    delay(10);
-  }
-
-  delay(1000);   // 停止狀態維持 1 秒
-}
-```
-
-#### 範例 4-2：把緩啟動封裝成帶參數函式
-```cpp
-// ============================================
-// 範例 4-2：封裝成可指定目標速度與變化快慢的函式
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int currentSpeed = 0;   // 記錄目前實際速度，供緩啟停邏輯參考
-
-void rampTo(int targetSpeed, int stepDelay) {
-  if (currentSpeed < targetSpeed) {
-    for (int s = currentSpeed; s <= targetSpeed; s++) {
-      analogWrite(pinEnable, s);
-      delay(stepDelay);
-    }
-  } else {
-    for (int s = currentSpeed; s >= targetSpeed; s--) {
-      analogWrite(pinEnable, s);
-      delay(stepDelay);
-    }
-  }
-  currentSpeed = targetSpeed;   // 更新目前速度記錄
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  rampTo(255, 8);   // 緩慢加速到全速
-  delay(1000);
-  rampTo(100, 5);   // 減速到中速（比全速更快地降速，速度變化間隔較短）
-  delay(1000);
-  rampTo(0, 10);    // 緩慢停止
+  analogWrite(pinEN, 0);
+  digitalWrite(pinIN1, LOW);
+  digitalWrite(pinIN2, LOW);
+  Serial.println("Stop");
   delay(1000);
 }
-```
-**教學重點**：`rampTo()` 這個函式跟第 7 週學過的 `sweepTo()`（伺服馬達平滑掃描）在設計思路上完全一致——都是「用一個變數記住目前狀態，判斷該遞增還是遞減，逐步逼近目標值」。這種可以在不同元件（伺服馬達角度、馬達轉速）之間套用的通用思考模式，正是這學期不斷強調的核心程式設計素養。
-
----
-
-### 關卡 5：感測連動 — 超音波避障與馬達整合
-
-**機關故事**：智慧輸送帶需要具備感知能力——前方有障礙物（例如道具卡住）時，要自動停止或減速，這是這學期整合難度最高的一關，也是真實無人搬運車（AGV）避障邏輯的核心縮影。
-
-#### 範例 5-1：整合超音波與馬達（平時全速前進）
-```cpp
-// ============================================
-// 範例 5-1：輸送帶平時全速運轉
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinTrig = 9;
-int pinEcho = 10;
 
 void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-  analogWrite(pinEnable, 255);
-}
-
-void loop() {
-  // 本階段先讓馬達持續全速運轉，下一步驟才加入避障邏輯
-}
-```
-
-#### 範例 5-2：遇障礙物自動減速、極近距離緊急停止
-```cpp
-// ============================================
-// 範例 5-2：輸送帶避障邏輯 - 依距離分三段反應
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinTrig = 9;
-int pinEcho = 10;
-
-float readDistance() {
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  long duration = pulseIn(pinEcho, HIGH);
-  return duration / 58.0;
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  float distance = readDistance();
-
-  if (distance < 5) {
-    analogWrite(pinEnable, 0);     // 極近：緊急停止
-  } else if (distance < 20) {
-    analogWrite(pinEnable, 100);   // 接近：減速
-  } else {
-    analogWrite(pinEnable, 255);   // 安全：全速
-  }
-}
-```
-
-#### 範例 5-3：結合蜂鳴器發出工程車警示音
-```cpp
-// ============================================
-// 範例 5-3：完整避障系統 - 加上聲音警示
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinTrig = 9;
-int pinEcho = 10;
-int pinBuzzer = 8;
-
-float readDistance() {
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  long duration = pulseIn(pinEcho, HIGH);
-  return duration / 58.0;
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
-}
-
-void loop() {
-  float distance = readDistance();
-
-  if (distance < 5) {
-    analogWrite(pinEnable, 0);
-    tone(pinBuzzer, 1500);
-  } else if (distance < 20) {
-    analogWrite(pinEnable, 100);
-    tone(pinBuzzer, 800);
-    delay(100);
-    noTone(pinBuzzer);
-    delay(200);
-  } else {
-    analogWrite(pinEnable, 255);
-    noTone(pinBuzzer);
-  }
-}
-```
-
----
-
-### 🏆 BOSS 關：智慧輸送帶主控系統
-
-**機關故事**：整合本週所有技巧，打造完整的智慧輸送帶——具備緩啟動、避障減速、聲音警示，模擬真實物流輸送系統的運作邏輯。
-
-```cpp
-// ============================================
-// BOSS 關：智慧輸送帶主控系統 - 整合本週所有技巧
-// 功能：緩啟動 + 距離感應變速 + 聲音警示
-// ============================================
-
-int pinIn1 = 3;
-int pinIn2 = 4;
-int pinEnable = 5;
-int pinTrig = 9;
-int pinEcho = 10;
-int pinBuzzer = 8;
-
-int currentSpeed = 0;
-
-float readDistance() {
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  long duration = pulseIn(pinEcho, HIGH);
-  return duration / 58.0;
-}
-
-void rampTo(int targetSpeed, int stepDelay) {
-  if (currentSpeed < targetSpeed) {
-    for (int s = currentSpeed; s <= targetSpeed; s++) {
-      analogWrite(pinEnable, s);
-      delay(stepDelay);
-    }
-  } else if (currentSpeed > targetSpeed) {
-    for (int s = currentSpeed; s >= targetSpeed; s--) {
-      analogWrite(pinEnable, s);
-      delay(stepDelay);
-    }
-  }
-  currentSpeed = targetSpeed;
-}
-
-void setup() {
-  pinMode(pinIn1, OUTPUT);
-  pinMode(pinIn2, OUTPUT);
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  digitalWrite(pinIn1, HIGH);
-  digitalWrite(pinIn2, LOW);
+  pinMode(pinEN, OUTPUT);
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
   Serial.begin(9600);
-  Serial.println("=== 智慧輸送帶系統啟動，緩啟動中 ===");
-  rampTo(255, 10);   // 開機時緩慢加速到全速
 }
 
 void loop() {
-  float distance = readDistance();
+  run(HIGH, LOW, 255, "Forward, full speed");
+  run(LOW, HIGH, 255, "Reverse, full speed");
+  run(HIGH, LOW, 128, "Forward, half speed");
+}
+```
 
-  if (distance < 5) {
-    rampTo(0, 3);      // 緊急停止（用較快的遞減速率模擬急停）
-    tone(pinBuzzer, 1800);
-    delay(100);
-    noTone(pinBuzzer);
-    delay(100);
-  } else if (distance < 20) {
-    rampTo(100, 3);    // 平順減速，而非瞬間跳到慢速
-    tone(pinBuzzer, 800);
-    delay(150);
-    noTone(pinBuzzer);
-    delay(250);
+> 若你用的是接法 A、B、C，部分腳位固定接 5V 或 GND，測試器裡對應的行沒有作用是正常的——只要確認「該轉的時候會轉」即可。
+
+### 🔧 其他工具（沿用前幾週）
+
+| 工具 | 用途 | 出處 |
+| --- | --- | --- |
+| 接線驗證器 | 檢查燈的腳位 | 第 3 週起 |
+| 類比讀值檢查器 | 檢查旋鈕、光敏電阻 | 第 5 週 |
+| 溫度讀值檢查器 | 檢查 TMP36 | 第 6 週 |
+| 伺服測試器 | 找伺服角度 | 第 7 週 |
+| 超音波測距檢查器 | 檢查 HC-SR04 | 第 9 週 |
+
+> 📌 **每個專案的固定流程**
+> 1. **Step 0**：讀完情境，決定 L293D 接法（A／B／C／D），再填腳位規劃表
+> 2. 先只接 L293D＋馬達，用馬達測試器確認會轉
+> 3. 照 Step 1 → 2 → 3 逐步接線，每完成一步就把對應的功能開關改成 `true`
+
+---
+
+## 專案一：廁所自動抽風扇
+
+⭐ **難度**：L293D 最省腳的接法，再逐步升級
+
+**客戶需求**：連鎖餐廳的廁所抽風扇。第一版只要一顆開關：按一下開、再按一下關。第二版店長希望能**調整風量**（冬天開小一點）。第三版要**自動化**：廁所燈一亮（有人使用）風扇就轉，燈關掉後**再多轉 5 秒**把異味抽乾淨才停。
+
+### Step 0：決定接法與腳位規劃
+
+| 步驟 | 需求 | 你選哪種接法？ | 為什麼？ |
+| --- | --- | --- | --- |
+| Step 1 | 開／關、全速 | | |
+| Step 2 | 加上調速 | | |
+
+| 元件 | 腳位 | 是不是 `~` 腳？ |
+| --- | --- | --- |
+| L293D IN1（Step 1 用） | | |
+| L293D EN1（Step 2 用） | | |
+| 風扇開關按鈕 | | |
+| 風量旋鈕 | A0 | — |
+| 光敏電阻（偵測廁所燈） | A1 | — |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | L293D（**接法 A**：EN1→5V、IN1→Arduino、IN2→GND）＋馬達＋按鈕 | 按一下風扇轉，再按一下停 | （不用改） |
+| Step 2 | **改接成接法 B**：EN1 從 5V 改接 `~` 腳、IN1 從 Arduino 改接 5V；＋旋鈕 | 旋鈕調整風量 | `useSpeed = true` |
+| Step 3 | ＋光敏電阻（含 10kΩ） | 燈亮自動轉，燈滅後再轉 5 秒 | `useAuto = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinIN1  = ?;        // 接法 A 用：L293D IN1
+int pinEN   = ?;        // 接法 B 用：L293D EN1（~ 腳）
+int btnFan  = ?;        // 風扇開關按鈕
+int pinKnob = A0;       // 風量旋鈕
+int pinLDR  = A1;       // 光敏電阻（偵測廁所燈）
+int lightLine = 500;    // 光線高於這個數字算「燈亮著」
+int afterRun  = 5000;   // 燈滅後多轉幾毫秒
+bool useSpeed = false;  // Step 2 改接成接法 B 後改成 true
+bool useAuto  = false;  // Step 3 接好後改成 true
+// ============================
+
+bool manualOn = false;
+int lastButton = LOW;
+bool everLit = false;
+unsigned long lastLit = 0;
+
+void setup() {
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinEN, OUTPUT);
+  pinMode(btnFan, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // ---- 手動開關 ----
+  int now = digitalRead(btnFan);
+  if (now == HIGH && lastButton == LOW) {
+    delay(50);
+    manualOn = !manualOn;
+    Serial.println(manualOn ? "Fan ON (manual)" : "Fan OFF (manual)");
+  }
+  lastButton = now;
+
+  // ---- 自動：燈亮就轉，燈滅後多轉一段時間 ----
+  bool autoOn = false;
+  if (useAuto) {
+    if (analogRead(pinLDR) > lightLine) {
+      everLit = true;
+      lastLit = millis();
+    }
+    autoOn = everLit && (millis() - lastLit < afterRun);
+  }
+
+  bool running = manualOn || autoOn;
+
+  if (useSpeed) {                                     // 接法 B：用油門控制
+    int speed = map(analogRead(pinKnob), 0, 1023, 80, 255);
+    analogWrite(pinEN, running ? speed : 0);
+  } else {                                            // 接法 A：用方向腳開關
+    digitalWrite(pinIN1, running ? HIGH : LOW);
+  }
+  delay(50);
+}
+```
+
+### 情境思考
+
+1. 接法 A 和接法 B 都只佔 1 隻 Arduino 腳，差別在哪裡？為什麼接法 B 一定要用 `~` 腳？
+2. Step 2 的旋鈕範圍是 80～255，而不是 0～255。為什麼最小值不設成 0？（提示：觀察馬達在很低的油門時有沒有在轉）
+3. 💼 「燈滅後多轉 5 秒」在電費和顧客體驗之間是怎麼取捨的？如果你是店長，你會設幾秒？
+
+### ✅ 專案一驗收
+
+- [ ] Step 1 按鈕能切換風扇開關，且 Arduino 只用了 1 隻腳控制馬達
+- [ ] Step 2 改接成接法 B 後，旋鈕能調整風量
+- [ ] Step 3 燈亮自動轉、燈滅後約 5 秒才停
+- [ ] L293D 的 VCC1、VCC2、四隻 GND 都有接
+
+---
+
+## 專案二：電動鐵捲門
+
+⭐⭐ **難度**：正反轉（接法 C）＋ 停止鈕 ＋ 下降防壓
+
+**客戶需求**：五金行的電動鐵捲門。按「上升鈕」捲門往上捲、按「下降鈕」往下放，約 4 秒到底自動停。門在動的時候，門口的燈號顯示上升中／下降中，蜂鳴器間歇提醒路人注意。**下降時門下方若偵測到東西（30 cm 內），立刻改為上升 1 秒**，避免壓到人或車。
+
+### Step 0：決定接法與腳位規劃
+
+| 問題 | 你的答案 |
+| --- | --- |
+| 鐵捲門需要調速嗎？需要反轉嗎？ | |
+| 所以選哪一種接法？佔幾隻腳？ | |
+
+| 元件 | 腳位 | 是不是 `~` 腳？ |
+| --- | --- | --- |
+| L293D IN1／IN2 | | |
+| 上升鈕、下降鈕、停止鈕 | | |
+| 上升中燈、下降中燈 | | |
+| 蜂鳴器 | | |
+| HC-SR04 Trig／Echo（門下方） | | |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | L293D（接法 C）＋馬達＋上升鈕＋下降鈕 | 按上升正轉、按下降反轉，4 秒自動停 | （不用改） |
+| Step 2 | ＋停止鈕＋2 顆燈 | 隨時可按停止；燈號顯示上升中／下降中 | `useStop = true` |
+| Step 3 | ＋HC-SR04＋蜂鳴器 | 移動中間歇嗶聲；下降時偵測到障礙物立刻改上升 1 秒 | `useSafety = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinIN1 = ?, pinIN2 = ?;          // L293D 方向腳（接法 C，EN1 接 5V）
+int btnUp = ?, btnDown = ?;          // 上升鈕、下降鈕
+int btnStop = ?;                     // 停止鈕
+int ledUp = ?, ledDown = ?;          // 上升中燈、下降中燈
+int pinBuzzer = ?;                   // 蜂鳴器
+int pinTrig = ?, pinEcho = ?;        // HC-SR04（門下方）
+int travelTime = 4000;               // 捲到底需要幾毫秒
+float safeCM = 30;                   // 下降時小於這個距離就停
+bool useStop   = false;              // Step 2 接好後改成 true
+bool useSafety = false;              // Step 3 接好後改成 true
+// ============================
+
+int state = 0;                       // 0=停止, 1=上升, 2=下降
+unsigned long startT = 0;
+unsigned long runLimit = 0;
+int lastUp = LOW, lastDown = LOW, lastStop = LOW;
+int tick = 0;
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+bool pressed(int pin, int &last) {
+  int now = digitalRead(pin);
+  bool edge = (now == HIGH && last == LOW);
+  last = now;
+  if (edge) delay(50);
+  return edge;
+}
+
+void go(int s, unsigned long limit) {
+  state = s;
+  startT = millis();
+  runLimit = limit;
+}
+
+void setup() {
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  pinMode(btnUp, INPUT);
+  pinMode(btnDown, INPUT);
+  pinMode(btnStop, INPUT);
+  pinMode(ledUp, OUTPUT);
+  pinMode(ledDown, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  tick++;
+  if (pressed(btnUp, lastUp))     { go(1, travelTime); Serial.println("Door UP"); }
+  if (pressed(btnDown, lastDown)) { go(2, travelTime); Serial.println("Door DOWN"); }
+  if (useStop && pressed(btnStop, lastStop)) { state = 0; Serial.println("STOP"); }
+
+  // 到底自動停
+  if (state != 0 && millis() - startT > runLimit) {
+    Serial.println(state == 1 ? "Reached TOP" : "Reached BOTTOM");
+    state = 0;
+  }
+
+  // 下降防壓：偵測到障礙物，改上升 1 秒
+  if (useSafety && state == 2 && readCM(pinTrig, pinEcho) < safeCM) {
+    Serial.println("OBSTACLE! Reversing up");
+    tone(pinBuzzer, 2000, 500);
+    go(1, 1000);
+  }
+
+  // 馬達方向
+  digitalWrite(pinIN1, state == 1 ? HIGH : LOW);
+  digitalWrite(pinIN2, state == 2 ? HIGH : LOW);
+
+  // 燈號與提醒聲
+  if (useStop) {
+    digitalWrite(ledUp,   state == 1 ? HIGH : LOW);
+    digitalWrite(ledDown, state == 2 ? HIGH : LOW);
+  }
+  if (useSafety && state != 0 && tick % 10 == 0) tone(pinBuzzer, 1000, 80);
+
+  delay(50);
+}
+```
+
+### 情境思考
+
+1. 用馬達測試器確認後，按「上升」馬達卻是往下的方向。**不改程式**要怎麼修？
+2. 為什麼「防壓」只在**下降**時檢查，上升時不用？
+3. 💼 鐵捲門壓傷人的事故時有所聞。除了防壓感測器，五金行老闆在管理上還可以做什麼？（提示：操作權限、定期檢查、張貼警示）
+
+### ✅ 專案二驗收
+
+- [ ] 按上升正轉、按下降反轉，約 4 秒自動停
+- [ ] 停止鈕隨時有效，燈號正確顯示移動方向
+- [ ] 移動中間歇嗶聲
+- [ ] 下降時把 HC-SR04 小圓點拉近 30 cm 內，門立刻改為上升
+- [ ] 腳位規劃表說明為什麼選接法 C，EN1 接 5V
+
+---
+
+## 專案三：智慧輸送帶
+
+⭐⭐⭐ **難度**：調速（接法 B）＋ 緩啟動 ＋ 超音波 ＋ RGB ＋ 蜂鳴器 → **`~` 腳剛好用完**
+
+**客戶需求**：食品工廠的包裝輸送帶，只往一個方向跑。
+
+- 旋鈕調整速度；啟動和減速都要**慢慢變化**，避免產品倒下
+- 輸送帶末端裝超音波：產品接近末端（30 cm 內）自動**減速**；到達末端（10 cm 內）**停止並鎖住**，等作業員把產品拿走、按「繼續鈕」才再啟動
+- RGB 顯示狀態：運轉綠、減速黃、停止紅；停止時蜂鳴器提醒
+
+### Step 0：決定接法與腳位規劃
+
+| 問題 | 你的答案 |
+| --- | --- |
+| 輸送帶需要調速嗎？需要反轉嗎？選哪種接法？ | |
+| 這個系統有蜂鳴器，`~` 腳剩哪幾隻？ | |
+| EN 要 1 隻 `~` 腳、RGB（黃色需要調光）要 3 隻 `~` 腳，夠嗎？ | |
+
+| 元件 | 腳位 | 是不是 `~` 腳？ |
+| --- | --- | --- |
+| L293D EN1 | | |
+| 速度旋鈕 | A0 | — |
+| HC-SR04 Trig／Echo（末端） | | |
+| 繼續鈕 | | |
+| 狀態 RGB（R / G / B） | | |
+| 蜂鳴器 | | |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | L293D（接法 B）＋馬達＋旋鈕 | 旋鈕調速，速度變化是慢慢加減的 | （不用改） |
+| Step 2 | ＋HC-SR04＋繼續鈕 | 產品接近末端減速、到末端停止，按繼續鈕才再走 | `useSensor = true` |
+| Step 3 | ＋RGB＋蜂鳴器 | 綠／黃／紅狀態燈，停止時提醒 | `useStatus = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinEN = ?;                       // L293D EN1（~ 腳；接法 B：IN1 接 5V、IN2 接 GND）
+int pinKnob = A0;                    // 速度旋鈕
+int pinTrig = ?, pinEcho = ?;        // HC-SR04（末端）
+int btnResume = ?;                   // 繼續鈕
+int pinR = ?, pinG = ?, pinB = ?;    // 狀態 RGB（避開 3、11）
+int pinBuzzer = ?;                   // 蜂鳴器
+float slowCM = 30;                   // 減速距離
+float stopCM = 10;                   // 停止距離
+int rampStep = 5;                    // 每次加減速的幅度（越小越平順）
+bool useSensor = false;              // Step 2 接好後改成 true
+bool useStatus = false;              // Step 3 接好後改成 true
+// ============================
+
+int current = 0;                     // 目前油門
+bool halted = false;
+int lastResume = LOW;
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+void setColor(int r, int g, int b) {
+  analogWrite(pinR, r);
+  analogWrite(pinG, g);
+  analogWrite(pinB, b);
+}
+
+void setup() {
+  pinMode(pinEN, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  pinMode(btnResume, INPUT);
+  pinMode(pinR, OUTPUT);
+  pinMode(pinG, OUTPUT);
+  pinMode(pinB, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int base = map(analogRead(pinKnob), 0, 1023, 80, 255);
+  int target = base;
+  bool slowing = false;
+
+  if (useSensor) {
+    float d = readCM(pinTrig, pinEcho);
+    if (d < stopCM && !halted) {
+      halted = true;
+      Serial.println("Product at END - conveyor STOPPED");
+      if (useStatus) tone(pinBuzzer, 800, 400);
+    } else if (d < slowCM) {
+      target = base / 3;                         // 接近末端：降到三分之一
+      slowing = true;
+    }
+
+    int now = digitalRead(btnResume);
+    if (now == HIGH && lastResume == LOW) {
+      delay(50);
+      if (halted && d >= stopCM) {
+        halted = false;
+        Serial.println("Resumed");
+      } else if (halted) {
+        Serial.println("Remove the product first");
+      }
+    }
+    lastResume = now;
+    if (halted) target = 0;
+  }
+
+  // ---- 緩啟動／緩停止：每次只往目標靠近一點 ----
+  if (current < target) current = min(current + rampStep, target);
+  if (current > target) current = max(current - rampStep, target);
+  analogWrite(pinEN, current);
+
+  if (useStatus) {
+    if (halted)       setColor(255, 0, 0);       // 停止：紅
+    else if (slowing) setColor(255, 180, 0);     // 減速：黃
+    else              setColor(0, 255, 0);       // 運轉：綠
+  }
+  delay(40);
+}
+```
+
+### 情境思考
+
+1. 把 `rampStep` 改成 255（等於沒有緩啟動），觀察馬達轉速變化。對輸送帶上的玻璃瓶裝產品會有什麼影響？
+2. 你的 EN 和 RGB 共用了哪 4 隻 `~` 腳？如果客戶要再加一顆「調光照明燈」，還放得下嗎？
+3. 💼 「到末端就停、要人按繼續」會不會讓產線變慢？從產能和安全的角度，討論這個設計值不值得。
+
+### ✅ 專案三驗收
+
+- [ ] 旋鈕調速時，速度是慢慢變化而不是瞬間跳
+- [ ] 產品接近末端減速、到末端停止，產品沒拿走前按繼續無效
+- [ ] RGB 顯示綠／黃／紅，停止時蜂鳴器提醒
+- [ ] EN 與 RGB 都避開 3、11，腳位規劃表說明 `~` 腳分配
+
+---
+
+## 專案四：倉庫無人搬運車（AGV）
+
+⭐⭐⭐⭐ **難度**：**一顆 L293D 帶兩顆馬達** ＋ 循線 ＋ 避障 ＋ 伺服貨叉 → **伺服＋蜂鳴器，`~` 腳只剩 5、6**
+
+**客戶需求**：物流倉庫的地上貼了一條黑色引導線，無人搬運車（AGV）要沿著線走：
+
+- 車底左右各一顆光敏電阻看地面：**左邊看到黑線 → 往左修正；右邊看到黑線 → 往右修正**；都沒看到 → 直走
+- 兩邊**同時**看到黑線（站點的橫線）→ 停下來，貨叉（伺服）升起、放下完成裝卸，再繼續走
+- 前方有超音波：20 cm 內有人或障礙物就停車並鳴叫，障礙消失後繼續
+- 一顆啟動／停止鈕
+
+> 🚗 **轉彎原理**：AGV 沒有方向盤，靠「左右輪速度不同」轉彎——要往左轉，就讓左輪慢、右輪快。
+
+### Step 0：決定接法與腳位規劃（本專案的重頭戲）
+
+| 問題 | 你的答案 |
+| --- | --- |
+| 兩顆輪子要調速嗎？要倒退嗎？選哪種接法？ | 本專案只前進、要調速 → 接法 B（每顆馬達 1 隻 `~` 腳） |
+| 系統有伺服＋蜂鳴器，`~` 腳只剩哪兩隻？ | |
+| 兩顆馬達的 EN 各接哪一隻？ | |
+
+| 元件 | 需要幾隻腳 | 腳位 | 是不是 `~` 腳？ |
+| --- | --- | --- | --- |
+| 左輪 L293D EN1 | 1 | | |
+| 右輪 L293D EN2 | 1 | | |
+| 左、右循線光敏電阻 | 2（A 腳） | A0、A1 | — |
+| HC-SR04 Trig／Echo | 2 | | |
+| 蜂鳴器 | 1 | | |
+| 啟動／停止鈕 | 1 | | |
+| 貨叉伺服 | 1 | | |
+
+> ⚠️ **陷阱**：如果 Step 1 時把 EN 接在 9 或 10，到了 Step 3 加上伺服，輪子就不能調速了，必須全部重新接線。**Step 0 就要把最後的元件考慮進去。**
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | L293D（兩側都用接法 B）＋2 顆馬達＋2 顆光敏電阻＋按鈕 | 按啟動後循線前進；調整光線滑桿模擬偏左偏右，兩輪轉速改變 | （不用改） |
+| Step 2 | ＋HC-SR04＋蜂鳴器 | 前方有障礙停車鳴叫，障礙消失繼續 | `useObstacle = true` |
+| Step 3 | ＋伺服（貨叉） | 兩邊都看到黑線時停車、貨叉升降、再出發 | `useFork = true` |
+
+### 程式（只改設定區）
+
+```cpp
+#include <Servo.h>
+
+// ===== 設定區：只改這裡 =====
+int enLeft  = ?;                     // 左輪 L293D EN1（~ 腳）
+int enRight = ?;                     // 右輪 L293D EN2（~ 腳）
+int ldrLeft = A0, ldrRight = A1;     // 左、右循線光敏電阻
+int pinTrig = ?, pinEcho = ?;        // 前方 HC-SR04
+int pinBuzzer = ?;                   // 蜂鳴器
+int btnStart  = ?;                   // 啟動／停止鈕
+int pinFork   = ?;                   // 貨叉伺服
+int lineDark = 300;                  // 光線低於這個數字算「看到黑線」
+int cruise   = 180;                  // 直走速度
+int slowSide = 60;                   // 修正方向時，內側輪的速度
+float stopCM = 20;                   // 前方障礙停車距離
+int forkDown = 0, forkUp = 70;       // 貨叉角度
+bool useObstacle = false;            // Step 2 接好後改成 true
+bool useFork     = false;            // Step 3 接好後改成 true
+// ============================
+
+Servo fork;
+bool running = false;
+int lastStart = LOW;
+int tick = 0;
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+void drive(int left, int right) {
+  analogWrite(enLeft, left);
+  analogWrite(enRight, right);
+}
+
+void setup() {
+  fork.attach(pinFork);
+  fork.write(forkDown);
+  pinMode(enLeft, OUTPUT);
+  pinMode(enRight, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  pinMode(btnStart, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  tick++;
+  int now = digitalRead(btnStart);
+  if (now == HIGH && lastStart == LOW) {
+    delay(50);
+    running = !running;
+    Serial.println(running ? "AGV START" : "AGV STOP");
+  }
+  lastStart = now;
+
+  if (!running) { drive(0, 0); delay(50); return; }
+
+  // ---- 避障：最優先 ----
+  if (useObstacle && readCM(pinTrig, pinEcho) < stopCM) {
+    drive(0, 0);
+    if (tick % 10 == 0) {
+      tone(pinBuzzer, 1500, 150);
+      Serial.println("OBSTACLE - waiting");
+    }
+    delay(50);
+    return;
+  }
+
+  bool L = analogRead(ldrLeft)  < lineDark;
+  bool R = analogRead(ldrRight) < lineDark;
+
+  if (L && R) {                                  // 站點橫線
+    drive(0, 0);
+    Serial.println("STATION reached");
+    if (useFork) {
+      tone(pinBuzzer, 1000, 100);
+      fork.write(forkUp);   delay(1500);         // 貨叉升起
+      fork.write(forkDown); delay(1000);         // 貨叉放下
+      Serial.println("Load transfer done");
+    }
+    drive(cruise, cruise);                       // 往前開，離開橫線
+    delay(800);
+  } else if (L) {
+    drive(slowSide, cruise);                     // 往左修正
+  } else if (R) {
+    drive(cruise, slowSide);                     // 往右修正
   } else {
-    rampTo(255, 3);    // 平順恢復全速
-    noTone(pinBuzzer);
+    drive(cruise, cruise);                       // 直走
+  }
+  delay(30);
+}
+```
+
+### 情境思考
+
+1. 用你的腳位規劃表說明：兩顆馬達的 EN 為什麼只能接 5 和 6？如果客戶要求 AGV 能**倒車**，需要再多幾隻腳？還放得下嗎？
+2. 在 Tinkercad 裡把**左邊**光敏電阻調暗，AGV 應該往左修正。如果你看到的是右輪變慢，問題在哪？**不改程式**要怎麼修？
+3. 💼 AGV 遇到障礙物會停下來等。如果有員工把貨物堆在走道上，AGV 會一直卡著。管理上應該怎麼處理？AGV 系統還需要什麼功能？（提示：等太久要通報誰？）
+
+### ✅ 專案四驗收
+
+- [ ] 按啟動後兩輪轉動；左側看到黑線時左輪變慢、右側看到時右輪變慢
+- [ ] 前方 20 cm 內有障礙物時停車鳴叫，障礙消失後繼續
+- [ ] 兩側同時看到黑線時停車、貨叉升降後繼續前進
+- [ ] 一顆 L293D 同時帶兩顆馬達，兩組 EN 接在 5、6
+- [ ] 腳位規劃表說明「Step 0 就要考慮伺服」的理由
+
+---
+
+## 練習題大補帖：情境配置挑戰
+
+> 🎯 **本區定位**：四個範例專案是「跟著做」，這一區換你「自己規劃」。每一關先回答「**要調速嗎？要反轉嗎？**」，選好 L293D 接法，再規劃腳位、動手接線。
+>
+> 📈 **難度安排**：
+>
+> | 關卡 | 馬達 | L293D 接法 | 其他元件 | 配線重點 |
+> | --- | --- | --- | --- | --- |
+> | Lv.1 | 1 | B | 按鈕＋3 LED | 單向調速只佔 1 隻 `~` 腳 |
+> | Lv.2 | 1 | B | TMP36＋LED | 溫度決定轉速 |
+> | Lv.3 | 1 | C | 按鈕＋旋鈕＋LED＋蜂鳴器 | 正反轉、不調速 |
+> | Lv.4 | 1 | D | 3 按鈕＋3 LED＋蜂鳴器 | 正反轉又調速，佔 3 隻腳 |
+> | Lv.5 | 2 | D＋B | 伺服＋超音波＋旋鈕＋RGB＋蜂鳴器＋2 按鈕 | `~` 腳只剩 5、6，一般腳不夠 |
+> | Lv.6 | 自訂 | 自訂 | 自訂 | 顧問提案 |
+>
+> 📌 **作答規則**：每一關先寫出「選哪種接法、為什麼」，再填腳位規劃表；接好後先用馬達測試器確認會轉，最後才上傳程式。程式只需要改「設定區」。
+
+---
+
+### 🟢 Lv.1 果汁機三段速
+
+**情境**：手搖飲店的果汁機有一顆按鈕，每按一次切換：**停止 → 低速 → 中速 → 高速 → 停止**。三顆燈顯示目前段數。
+
+**元件**：L293D＋直流馬達＋1 顆按鈕＋3 顆單色 LED
+
+**你要想的問題**：
+
+- 果汁機不需要反轉，要調速。選哪種接法？IN1、IN2 各接到哪裡？
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinEN   = ?;                 // L293D EN1（~ 腳）
+int btnMode = ?;                 // 段數按鈕
+int led[3]  = { ?, ?, ? };       // 低、中、高速燈
+int speeds[4] = { 0, 100, 170, 255 };   // 停止、低、中、高
+// ============================
+
+int level = 0;
+int lastButton = LOW;
+
+void setup() {
+  pinMode(pinEN, OUTPUT);
+  pinMode(btnMode, INPUT);
+  for (int i = 0; i < 3; i++) pinMode(led[i], OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int now = digitalRead(btnMode);
+  if (now == HIGH && lastButton == LOW) {
+    delay(50);
+    level = (level + 1) % 4;
+    Serial.print("Speed level: ");
+    Serial.println(level);
+  }
+  lastButton = now;
+
+  analogWrite(pinEN, speeds[level]);
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(led[i], (i < level) ? HIGH : LOW);
   }
 }
 ```
-**教學重點**：注意這裡即使是「避障減速」，仍然透過 `rampTo()` 讓速度變化保持平順，而非直接用 `analogWrite()` 瞬間跳到目標速度——這正是工業設備設計中「即使是緊急反應，也要盡量避免對機構造成瞬間衝擊」的細膩考量，是這學期至今對「動力控制品質」要求最高的一次示範。
+
+**情境思考**：
+
+1. 三顆燈可以接在 `~` 腳嗎？需要嗎？
+2. 💼 果汁機為什麼通常設計「段數」而不是「無段旋鈕」？從店員操作與產品一致性來想。
 
 ---
 
-## 常見錯誤除錯站
+### 🟢 Lv.2 伺服器散熱風扇
 
-| 現象 | 可能原因 | 解決方式 |
-|---|---|---|
-| 馬達完全不轉 | Enable 忘記設定，或 Input1/Input2 都設成相同電位 | 檢查 Enable 是否有給非零的 PWM 值，Input1/Input2 是否一高一低 |
-| 馬達只能轉一個方向，切換方向沒反應 | Input1、Input2 沒有正確交換高低電位 | 檢查正反轉切換的程式碼是否確實交換了兩個腳位的邏輯值 |
-| 馬達轉速無法用旋鈕/PWM 調整，只有全速或停止兩種狀態 | Enable 腳位接錯，接到非 PWM 腳位 | 確認 Enable 接在支援 `~` 標示的 PWM 腳位 |
-| 緩啟動效果看起來還是很突然 | `rampTo()` 的 `stepDelay` 設太短，或起始與目標速度差距判斷有誤 | 適度增加 `stepDelay`，並確認 `currentSpeed` 有正確被更新追蹤 |
-| 避障邏輯中馬達速度忽快忽慢跳動 | 超音波讀值本身雜訊造成的正常現象 | 可考慮加入平滑化處理（複習第 9 週練習題），降低雜訊影響 |
-| L293D 接線後完全沒反應，懷疑晶片故障 | 兩組電源腳（Pin 8、16）或接地腳沒有全部接妥 | 逐一核對 L293D 十六隻腳位接線，這是最容易漏接的元件之一 |
+**情境**：小型機房的散熱風扇依溫度自動調整：**25°C 以下停止**，25～40°C 之間溫度越高轉越快，40°C 以上全速並亮警示燈。
+
+**元件**：L293D＋直流馬達＋TMP36＋1 顆單色 LED
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinEN   = ?;          // L293D EN1（~ 腳）
+int pinTemp = A0;         // TMP36
+int ledHot  = ?;          // 過熱警示燈
+int startTemp = 25;       // 開始轉的溫度
+int fullTemp  = 40;       // 全速的溫度
+int minSpeed  = 80;       // 剛開始轉的最低油門
+// ============================
+
+float readC(int pin) {
+  float voltage = analogRead(pin) * 5.0 / 1023.0;
+  return (voltage - 0.5) * 100.0;
+}
+
+void setup() {
+  pinMode(pinEN, OUTPUT);
+  pinMode(ledHot, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  float t = readC(pinTemp);
+  int speed = 0;
+  if (t >= startTemp) {
+    speed = map((int)t, startTemp, fullTemp, minSpeed, 255);
+    speed = constrain(speed, minSpeed, 255);
+  }
+  analogWrite(pinEN, speed);
+  digitalWrite(ledHot, t >= fullTemp ? HIGH : LOW);
+
+  Serial.print("Temp: ");
+  Serial.print(t);
+  Serial.print(" C   Fan: ");
+  Serial.println(speed);
+  delay(300);
+}
+```
+
+**情境思考**：
+
+1. 第 6 週專案二用「LED 亮度」代表風扇轉速，這週換成真的馬達。電路上改了什麼？程式上改了什麼？
+2. 💼 風扇「越熱轉越快」比「永遠全速」省電，但機房主管擔心風扇轉太慢會來不及散熱。你會怎麼說服他？需要什麼數據？
 
 ---
 
-## 練習題大補帖
+### 🟡 Lv.3 洗衣機正反轉洗程
 
-### 🟢 基礎題
-1. 修改範例 1-1，把全速運轉時間從 2 秒改成 3 秒。
-2. 修改範例 3-1，新增一個「中速」（PWM 值 180）的測試階段。
-3. 修改範例 4-1 的緩啟動速度，把 `delay(10)` 改成 `delay(5)`，感受加速更快的效果。
-4. 修改範例 5-2 的三段距離門檻，自行設計一組你認為合理的數值。
-5. 在範例 2-2 的基礎上，新增一個 `motorForward()` 呼叫，測試不同速度值（如 150）的實際效果。
+**情境**：自助洗衣店的洗衣機，按「開始鈕」後執行洗程：**正轉 3 秒 → 停 1 秒 → 反轉 3 秒 → 停 1 秒**，算一輪。旋鈕設定要洗幾輪（1～5 輪）。洗衣中燈亮，洗完播放提示旋律。
 
-### 🟡 中等題
-6. 設計一個「定時輸送帶」：馬達運轉 5 秒後自動停止 2 秒，如此反覆循環，並在 Serial Monitor 印出目前是「運轉中」還是「暫停中」。
-7. 結合第 2 週所學的按鈕 Toggle 邏輯，設計一個「按一下啟動緩啟動、再按一下觸發緩停止」的控制系統。
-8. 修改範例 4-2 的 `rampTo()` 函式，新增功能：如果 `currentSpeed` 已經等於 `targetSpeed`，直接跳過迴圈不執行任何動作（提升程式效率）。
-9. 設計一個「三段速選擇器」：用旋鈕分成三個區間，分別對應慢速、中速、快速三種固定轉速（而非無段連續調速）。
-10. 修改 BOSS 關程式碼，新增功能：緊急停止觸發時，額外統計「今天總共緊急停止了幾次」並印出。
+**元件**：L293D＋直流馬達＋1 顆按鈕＋1 顆旋鈕＋1 顆 LED＋1 顆蜂鳴器
 
-### 🔴 挑戰題
-11. **雙馬達差速驅動挑戰**：想像現在有兩顆直流馬達（模擬機器人或自走車的左右輪，需自行擴充第二組 L293D 接線），設計一個「左右輪轉速不同，讓輸送帶模型產生轉向效果」的邏輯（提示：這正是真實無人搬運車、掃地機器人轉向的核心原理，可以先在這裡預先體驗）。
-12. **感測器雜訊防呆**：修改 BOSS 關程式碼，避障判斷改成「連續 3 次都偵測到近距離，才真正觸發減速」，避免單次雜訊誤判造成不必要的速度波動。
-13. **馬達運轉時間統計**：設計一個系統，累計記錄馬達「今天總共運轉了多少秒」，並能區分全速運轉與減速運轉的時間比例。
-14. **雙向輸送帶交替**：設計一個系統，輸送帶正轉 5 秒後，自動反轉 5 秒，如此交替運行，並在每次換向前先執行緩停止再緩啟動，確保動作平順。
-15. **完全自訂動力系統**：不參考任何範例，設計一個「你認為最實用的馬達控制應用」，至少要用到：`rampTo()` 或類似的平順控制函式、至少一種感測連動邏輯、聲音或燈光反饋。
+**你要想的問題**：
+
+- 洗衣機要反轉，但不需要調速。選哪種接法？EN 接哪裡？
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinIN1 = ?, pinIN2 = ?;      // L293D 方向腳（接法 C，EN1 接 5V）
+int btnStart  = ?;               // 開始鈕
+int pinKnob   = A0;              // 輪數旋鈕
+int ledWash   = ?;               // 洗衣中燈
+int pinBuzzer = ?;               // 蜂鳴器
+int spinTime  = 3000;            // 每次轉幾毫秒
+int pauseTime = 1000;            // 每次停幾毫秒
+// ============================
+
+int lastButton = LOW;
+
+void motor(int in1, int in2, int ms) {
+  digitalWrite(pinIN1, in1);
+  digitalWrite(pinIN2, in2);
+  delay(ms);
+}
+
+void setup() {
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  pinMode(btnStart, INPUT);
+  pinMode(ledWash, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int rounds = map(analogRead(pinKnob), 0, 1024, 1, 6);   // 1~5 輪
+
+  int now = digitalRead(btnStart);
+  if (now == HIGH && lastButton == LOW) {
+    delay(50);
+    Serial.print("Wash start: ");
+    Serial.print(rounds);
+    Serial.println(" rounds");
+    digitalWrite(ledWash, HIGH);
+
+    for (int r = 1; r <= rounds; r++) {
+      Serial.print("Round ");
+      Serial.println(r);
+      motor(HIGH, LOW, spinTime);    // 正轉
+      motor(LOW, LOW, pauseTime);    // 停
+      motor(LOW, HIGH, spinTime);    // 反轉
+      motor(LOW, LOW, pauseTime);    // 停
+    }
+
+    digitalWrite(ledWash, LOW);
+    Serial.println("Wash DONE");
+    int notes[] = { 523, 659, 784, 1047 };
+    for (int i = 0; i < 4; i++) {
+      tone(pinBuzzer, notes[i], 200);
+      delay(250);
+    }
+  }
+  lastButton = now;
+}
+```
+
+**情境思考**：
+
+1. 為什麼正轉和反轉之間要「停 1 秒」，而不是直接切換？（提示：想想急速倒車對車子的傷害）
+2. 💼 洗衣店老闆想推出「快洗」方案。在不改接線的情況下，你會調整哪些數字？快洗要收比較便宜還是比較貴？
 
 ---
 
-## 🎨 額外主題卡（給想多做的人）
+### 🟡 Lv.4 三層樓貨梯
 
-> **主題卡 A：電動窗簾模擬**
-> 用馬達模擬電動窗簾的開合（可以想像馬達轉動帶動窗簾軌道），設計「開啟」、「關閉」、「停止」三種按鈕控制，並加上緩啟動緩停止讓動作更平順。
+**情境**：小型倉庫的三層樓貨梯。每層一顆呼叫鈕、一顆樓層燈。貨梯每上（下）一層需要 2 秒；為了讓貨物不會晃倒，**每次出發都要緩啟動、抵達前要緩停止**。抵達時蜂鳴器「叮」一聲。
 
-> **主題卡 B：抽獎轉盤機**
-> 用馬達模擬抽獎轉盤，按下按鈕後轉盤全速轉動，經過一段隨機時間（用 `random()` 決定）後緩慢停止，模擬真實抽獎機的運作邏輯。
+**元件**：L293D＋直流馬達＋3 顆按鈕＋3 顆 LED＋1 顆蜂鳴器
 
-> **主題卡 C：智慧風扇控制器**
-> 用旋鈕控制馬達模擬風扇轉速，並結合第 6 週的 TMP36，設計「溫度越高，風扇轉速自動越快」的智慧散熱系統。
+**Step 0：決定接法與腳位規劃**
 
-> **主題卡 D：物流分揀線模擬**
-> 結合第 9 週的超音波感測器，設計一個「偵測到物體通過就短暫加速，確保物體被推送到下一階段」的分揀輸送帶邏輯。
+| 問題 | 你的答案 |
+| --- | --- |
+| 貨梯要上下（反轉），也要緩啟動（調速）。選哪種接法？佔幾隻腳？ | |
+| 有蜂鳴器，EN 要避開哪兩隻腳？ | |
+| 全部加起來幾隻腳？12 隻夠嗎？ | |
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int pinEN  = ?;                      // L293D EN1（~ 腳，避開 3、11）
+int pinIN1 = ?, pinIN2 = ?;          // L293D 方向腳（接法 D）
+int btnFloor[3] = { ?, ?, ? };       // 1F、2F、3F 呼叫鈕
+int ledFloor[3] = { ?, ?, ? };       // 1F、2F、3F 樓層燈
+int pinBuzzer = ?;                   // 蜂鳴器
+int floorTime = 2000;                // 每層樓移動時間（毫秒）
+// ============================
+
+int floorNow = 0;                    // 0=1F, 1=2F, 2=3F
+int lastBtn[3] = { LOW, LOW, LOW };
+
+// 緩啟動 → 等速 → 緩停止，總共約 floorTime 毫秒
+void travel(bool up, int floors) {
+  digitalWrite(pinIN1, up ? HIGH : LOW);
+  digitalWrite(pinIN2, up ? LOW : HIGH);
+  int total = floorTime * floors;
+  for (int s = 0; s <= 255; s += 15) { analogWrite(pinEN, s); delay(20); }   // 緩啟動
+  delay(total - 700);
+  for (int s = 255; s >= 0; s -= 15) { analogWrite(pinEN, s); delay(20); }   // 緩停止
+  digitalWrite(pinIN1, LOW);
+  digitalWrite(pinIN2, LOW);
+}
+
+void setup() {
+  pinMode(pinEN, OUTPUT);
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  for (int f = 0; f < 3; f++) {
+    pinMode(btnFloor[f], INPUT);
+    pinMode(ledFloor[f], OUTPUT);
+  }
+  Serial.begin(9600);
+}
+
+void loop() {
+  for (int f = 0; f < 3; f++) {
+    digitalWrite(ledFloor[f], (f == floorNow) ? HIGH : LOW);
+  }
+
+  for (int f = 0; f < 3; f++) {
+    int now = digitalRead(btnFloor[f]);
+    if (now == HIGH && lastBtn[f] == LOW) {
+      delay(50);
+      if (f != floorNow) {
+        Serial.print("Going to ");
+        Serial.print(f + 1);
+        Serial.println("F");
+        digitalWrite(ledFloor[floorNow], LOW);
+        travel(f > floorNow, abs(f - floorNow));
+        floorNow = f;
+        tone(pinBuzzer, 1319, 300);
+        Serial.print("Arrived ");
+        Serial.print(floorNow + 1);
+        Serial.println("F");
+      }
+    }
+    lastBtn[f] = now;
+  }
+}
+```
+
+**情境思考**：
+
+1. 這部貨梯「靠時間」判斷到了哪一層，而不是真的量位置。這樣做有什麼風險？你學過的哪個感測器可以用來真正確認樓層？
+2. 貨梯移動中有人按了其他樓層的按鈕，會發生什麼事？真實電梯是怎麼處理的？
+3. 💼 貨梯的「緩啟動、緩停止」讓每趟多花一點時間。對倉庫來說，這個時間成本換到了什麼？
 
 ---
 
-## 📖 延伸連結：這週學到的東西如何應用在真實自動化場域
+### 🔴 Lv.5 雙輸送帶包裹分流站
 
-這週學到的技術，在真實工業與物流場域中有非常直接的對應應用：
+**情境**：物流中心有一條**主輸送帶**和一條**支線輸送帶**，接在同一顆 L293D 上。主輸送帶上的包裹經過分流點時（超音波偵測），主輸送帶暫停、讀取重量（旋鈕模擬磅秤）：
 
-| 這週學到的 | 真實世界的對應應用 |
-|---|---|
-| L293D 驅動一顆馬達 | 無人搬運車（AGV）、掃地機器人內建的雙馬達驅動電路，同時驅動左右兩顆輪子 |
-| Enable 腳位控制轉速 | 真實自走車透過類似的 PWM 概念控制輪速，決定移動快慢 |
-| Input1/Input2 決定正反轉 | 自走車透過設定左右輪「正轉/反轉」的組合，決定前進、後退、原地轉向 |
-| 超音波避障邏輯（關卡 5） | 掃地機器人、無人搬運車內建的超音波或紅外線感測模組，邏輯幾乎完全相同：偵測到障礙物就減速或轉向 |
-| 緩啟動 `rampTo()` | 真實自走車平滑加減速，避免移動時因慣性側翻或偏移，也是電動車、電梯常見的舒適度設計 |
+- **10 公斤以上**：分流擋板（伺服）轉向支線，支線輸送帶啟動 2 秒把包裹送走
+- **10 公斤以下**：擋板維持直行，主輸送帶繼續
 
-這正是這學期反覆強調的重點——**你在 Tinkercad 上學到的邏輯思維，換到任何實體硬體平台都完全通用**。第 14 週我們會學到繼電器，那是另一種「以小控大」的元件，跟這週的 L293D 概念一脈相承。
+另有兩顆按鈕：**急停鈕**（全部停止、RGB 紅燈、再按恢復）、**卡件回退鈕**（按住時主輸送帶反轉，把卡住的包裹退回來）。RGB 狀態：運轉綠、分流中黃、急停紅。
+
+| 元件 | 說明 |
+| --- | --- |
+| 主輸送帶馬達 | 要調速、要反轉（卡件回退）→ 接法 D |
+| 支線輸送帶馬達 | 單向、要調速 → 接法 B |
+| 分流擋板 | 伺服 |
+| 分流點偵測 | HC-SR04 |
+| 重量 | 旋鈕（A0） |
+| 狀態 | RGB＋蜂鳴器 |
+| 操作 | 急停鈕、卡件回退鈕 |
+
+**Step 0：腳位規劃（本關重點）**
+
+| 元件 | 需要幾隻腳 | 腳位 | 是不是 `~` 腳？ |
+| --- | --- | --- | --- |
+| 主輸送帶 EN1、IN1、IN2 | 3 | | |
+| 支線輸送帶 EN2 | 1 | | |
+| 分流伺服 | 1 | | |
+| HC-SR04 Trig／Echo | 2 | | |
+| 蜂鳴器 | 1 | | |
+| 狀態 RGB | 3 | | |
+| 急停鈕、回退鈕 | 2 | | |
+| **一般腳位合計** | | | |
+| **Pin 2～13 可用數量** | 12 | | |
+
+> 🤔 **規劃提示**：
+> - 伺服＋蜂鳴器 → `~` 腳只剩 5、6，剛好給兩顆馬達的 EN。那 RGB 的黃色怎麼辦？（提示：黃＝紅＋綠全亮）
+> - 一般腳不夠時，A1～A5 可以借來接什麼？
+
+**程式**：
+
+```cpp
+#include <Servo.h>
+
+// ===== 設定區：只改這裡 =====
+int enMain = ?, inMain1 = ?, inMain2 = ?;   // 主輸送帶（接法 D）
+int enBranch = ?;                           // 支線輸送帶 EN2（接法 B）
+int pinGate  = ?;                           // 分流伺服
+int pinTrig = ?, pinEcho = ?;               // 分流點 HC-SR04
+int pinKnob = A0;                           // 重量旋鈕
+int pinR = ?, pinG = ?, pinB = ?;           // 狀態 RGB（全亮全滅）
+int pinBuzzer = ?;                          // 蜂鳴器
+int btnEStop = ?, btnBack = ?;              // 急停鈕、卡件回退鈕
+int mainSpeed = 180, branchSpeed = 200;
+float parcelCM = 15;                        // 小於這個距離算「包裹到達分流點」
+int heavyKg = 10;
+int straightAngle = 0, divertAngle = 60;
+// ============================
+
+Servo gate;
+bool eStopped = false;
+bool wasParcel = false;
+int lastEStop = LOW;
+int counts[2] = { 0, 0 };                   // 主線、支線件數
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+void setColor(int r, int g, int b) {
+  digitalWrite(pinR, r);
+  digitalWrite(pinG, g);
+  digitalWrite(pinB, b);
+}
+
+void mainBelt(int speed) {                  // 正數前進、負數後退、0 停止
+  digitalWrite(inMain1, speed > 0 ? HIGH : LOW);
+  digitalWrite(inMain2, speed < 0 ? HIGH : LOW);
+  analogWrite(enMain, abs(speed));
+}
+
+void setup() {
+  gate.attach(pinGate);
+  gate.write(straightAngle);
+  pinMode(enMain, OUTPUT);
+  pinMode(inMain1, OUTPUT);
+  pinMode(inMain2, OUTPUT);
+  pinMode(enBranch, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  pinMode(pinR, OUTPUT);
+  pinMode(pinG, OUTPUT);
+  pinMode(pinB, OUTPUT);
+  pinMode(btnEStop, INPUT);
+  pinMode(btnBack, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // ---- 急停：最優先 ----
+  int now = digitalRead(btnEStop);
+  if (now == HIGH && lastEStop == LOW) {
+    delay(50);
+    eStopped = !eStopped;
+    Serial.println(eStopped ? "!!! E-STOP !!!" : "Resumed");
+    if (eStopped) tone(pinBuzzer, 400, 500);
+  }
+  lastEStop = now;
+
+  if (eStopped) {
+    mainBelt(0);
+    analogWrite(enBranch, 0);
+    setColor(HIGH, LOW, LOW);
+    delay(50);
+    return;
+  }
+
+  // ---- 卡件回退：按住時主輸送帶反轉 ----
+  if (digitalRead(btnBack) == HIGH) {
+    mainBelt(-120);
+    setColor(HIGH, HIGH, LOW);
+    delay(50);
+    return;
+  }
+
+  setColor(LOW, HIGH, LOW);
+  mainBelt(mainSpeed);
+
+  // ---- 分流：包裹剛到達分流點 ----
+  bool parcel = readCM(pinTrig, pinEcho) < parcelCM;
+  if (parcel && !wasParcel) {
+    mainBelt(0);
+    int kg = map(analogRead(pinKnob), 0, 1023, 0, 30);
+    Serial.print("Parcel ");
+    Serial.print(kg);
+    Serial.print(" kg -> ");
+    if (kg >= heavyKg) {
+      Serial.println("BRANCH");
+      setColor(HIGH, HIGH, LOW);
+      tone(pinBuzzer, 1200, 100);
+      gate.write(divertAngle);
+      delay(400);
+      analogWrite(enBranch, branchSpeed);
+      mainBelt(mainSpeed);                  // 主線把包裹推進支線
+      delay(2000);
+      analogWrite(enBranch, 0);
+      gate.write(straightAngle);
+      counts[1]++;
+    } else {
+      Serial.println("MAIN");
+      counts[0]++;
+    }
+    Serial.print("Totals  Main: ");
+    Serial.print(counts[0]);
+    Serial.print("  Branch: ");
+    Serial.println(counts[1]);
+  }
+  wasParcel = parcel;
+  delay(40);
+}
+```
+
+**情境思考**：
+
+1. 你的腳位規劃表用了幾隻一般腳？借了哪幾隻 A 腳、接了什麼？
+2. 「卡件回退」設計成**按住才動、放開就停**，而急停是**按一下就鎖住**。為什麼兩者的操作方式不同？
+3. 💼 分流站每天處理上萬件包裹。Serial Monitor 的件數統計，對物流中心主管有什麼用？還應該記錄什麼？
+
+---
+
+### 🏆 Lv.6 BOSS 關：物聯網顧問提案
+
+**情境**：你的顧問公司接到新客戶。從下面三個案例中**任選一個**，自己完成需求分析、元件選擇、腳位規劃與 Tinkercad 實作。
+
+> **案例 A：自動洗車機**
+> 車子開進洗車道（超音波偵測停妥）後，按開始鈕：刷子馬達正反轉刷洗、風乾馬達依序運轉。過程中車子移動（距離改變）立刻全部停止並鳴叫。
+>
+> **案例 B：迴轉壽司輸送台**
+> 輸送台馬達用旋鈕調速，尖峰時段轉快、離峰轉慢。輸送台旁的光敏電阻偵測盤子被拿走，計算每小時取盤數。廚師按按鈕可暫停輸送台補盤，暫停時 RGB 亮黃。
+>
+> **案例 C：自訂情境**
+> 自己找一個生活或職場情境（例如：自動旋轉門、跑步機、電動窗簾、機場行李轉盤、捲線機）。
+
+**最低規格**：
+
+- 至少 1 顆直流馬達（經 L293D 控制）、1 種感測器、1 顆按鈕
+- 總共使用 10 隻以上腳位
+- 至少包含一個「安全停止」機制
+- 程式可以從專案一～四或 Lv.1～Lv.5 改寫，說明你是從哪裡改來的、改了哪些設定
+
+**繳交內容**：
+
+1. **需求分析**：這個系統解決什麼問題？誰會操作？誰會被馬達動作影響？（3～5 句）
+2. **馬達需求表**：每顆馬達要不要調速、要不要反轉？選擇哪一種 L293D 接法？省了幾隻腳？
+3. **腳位規劃表**：標註每隻腳接什麼、是否為 `~` 腳，並說明如何處理伺服、蜂鳴器借走 `~` 腳的限制
+4. **Tinkercad 實作**：電路截圖＋馬達測試器的檢查截圖
+5. **安全設計說明**：什麼情況下馬達必須停止？如何恢復？
+
+**驗收標準**：
+
+- [ ] L293D 電源腳（16、8）、四隻 GND 全部接妥
+- [ ] 接法選擇合理：不需要的功能固定接 5V 或 GND，沒有浪費腳位
+- [ ] 需要調速的 EN 接在可用的 `~` 腳
+- [ ] 安全停止機制確實有效
+- [ ] 麵包板依功能分區，L293D 跨在凹槽上
+
+---
+
+## 配線除錯站
+
+| 現象 | 先檢查這裡 | 修正方式 |
+| --- | --- | --- |
+| 馬達完全不轉 | L293D 的 16、8 是否接 5V；4、5、12、13 是否都接 GND | 逐腳核對「接線地圖」 |
+| 馬達完全不轉（電源都接了） | EN 是否接到 5V 或 `~` 腳；晶片是否跨在凹槽上 | 接法 A、C 的 EN 要接 5V |
+| 馬達方向相反 | 馬達兩條線的接法 | 對調馬達兩條線 |
+| 只能轉一個方向 | IN2 是否接到 Arduino（接法 C、D） | 接法 A、B 本來就只能單向 |
+| 調速沒效果，只有全速或停止 | EN 是否接在 `~` 腳；是否被伺服（9、10）或蜂鳴器（3、11）借走 | 查「~ 腳可用表」改接 |
+| 低油門時馬達不轉 | 正常現象：油門太小推不動 | 設定最低速度（例如 80） |
+| 兩顆馬達，動 A 卻是 B 在轉 | 左右兩側腳位是否接反 | 對照晶片圖：左半管 A、右半管 B |
+| 晶片腳位對不上 | 缺口方向是否朝上 | 缺口朝上，左上角是 Pin 1 |
+| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+
+---
+
+## 成果繳交與評分
+
+### 範例專案繳交
+
+每個專案各自建立一個 Tinkercad 檔案，命名格式：`W10-專案編號-學號`（例如 `W10-P3-B12345678`）。
+
+| 繳交項目 | 專案一 | 專案二 | 專案三 | 專案四 |
+| --- | --- | --- | --- | --- |
+| Tinkercad 分享連結 | ✅ | ✅ | ✅ | ✅ |
+| L293D 接法選擇與理由 | ✅ | ✅ | ✅ | ✅ |
+| 腳位規劃表 | ✅ | ✅ | ✅ | ✅ |
+| 完成 Step 3 的電路截圖 | ✅ | ✅ | ✅ | ✅ |
+| 情境思考題作答 | ✅ | ✅ | ✅ | ✅ |
+
+> 🎯 **最低完成標準**：專案一、二完成 Step 3，專案三、四至少完成 Step 2。
+
+### 練習題繳交
+
+| 關卡 | 繳交內容 | 建議定位 |
+| --- | --- | --- |
+| Lv.1～Lv.2 | Tinkercad 連結＋接法選擇＋情境思考題 | 課堂暖身，全班必做 |
+| Lv.3～Lv.4 | ＋腳位規劃表 | 課後作業，必做 |
+| Lv.5 | ＋腳位規劃表＋麵包板擺放截圖 | 選做加分 |
+| Lv.6 BOSS | 完整顧問提案（需求分析、馬達需求表、腳位規劃、實作、安全設計） | 可分組 |
+
+### 評分比重建議
+
+| 項目 | 比重 | 說明 |
+| --- | --- | --- |
+| 電路正確性 | 30% | L293D 接線正確，每個 Step 功能正常 |
+| 接法選擇與腳位規劃 | 30% | 依需求選擇合理接法，`~` 腳分配正確 |
+| 情境思考題 | 25% | 尤其是安全設計與 💼 管理面向論述 |
+| 麵包板擺放 | 15% | L293D 位置正確、電源線整齊、分區清楚 |
+
+### 課堂時間建議（3 節課）
+
+| 時段 | 內容 |
+| --- | --- |
+| 第 1 節前 40 分鐘 | 認識 L293D、接線地圖、四種接法、馬達測試器示範（全班一起接一次） |
+| 第 1 節後段 | 專案一（Step 1 → Step 2 的「改接法」是重點） |
+| 第 2 節 | 專案二、專案三（分組進行） |
+| 第 3 節前段 | 專案四 |
+| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，Lv.3 之後帶回家 |
+
+> 💡 **教學建議**：L293D 是全學期最容易接錯的元件。建議第 1 節讓全班先一起接一次「接法 D＋馬達測試器」，確認每個人的馬達都會正轉、反轉、半速，再開始專案。
 
 ---
 
 ## 📖 本週詞彙表
 
-| 英文 / 語法 | 中文對照 | 白話解釋 |
-|---|---|---|
-| 直流馬達（DC Motor） | 直流馬達 | 通電後持續轉動的馬達，可控制轉速與方向 |
-| L293D | L293D | 一款常見的馬達驅動晶片，俗稱「H 橋」 |
-| H 橋（H-Bridge） | H 橋 | 一種能控制電流方向、進而控制馬達正反轉的電路架構 |
-| Enable 腳位 | 致能腳位 | 決定馬達是否啟用，並可搭配 PWM 控制轉速 |
-| Input 腳位（IN1/IN2） | 輸入腳位 | 決定 H 橋內部電流方向，進而決定馬達轉動方向 |
-| 緩啟動（Soft Start） | 緩啟動 | 逐漸提升動力輸出，而非瞬間全速啟動 |
-| 緩停止（Soft Stop） | 緩停止 | 逐漸降低動力輸出至停止，而非瞬間急停 |
+| 名稱 | 白話解釋 |
+| --- | --- |
+| 直流馬達（DC Motor） | 通電就持續轉動的馬達，兩條線接反就反轉 |
+| L293D 馬達驅動晶片 | Arduino 的「司機」，聽指令並提供馬達需要的大電流；一顆可帶兩顆馬達 |
+| H 橋（H-Bridge） | L293D 內部讓電流可以正反向流動的電路，是馬達能反轉的原因 |
+| 油門腳 EN（Enable） | 決定馬達轉多快；接 `~` 腳可調速，接 5V 固定全速 |
+| 方向腳 IN1／IN2 | 決定馬達往哪轉 |
+| 接法 A／B／C／D | 依「要不要調速、要不要反轉」選擇的四種接線方式 |
+| 緩啟動／緩停止 | 速度慢慢加減，保護設備與貨物 |
+| 差速轉向 | 左右輪速度不同來轉彎，AGV、掃地機器人都是這樣 |
 
 ---
 
 ## 反思與延伸討論
 
-1. Arduino 無法直接驅動馬達，需要透過 L293D 這種「驅動晶片」放大控制能力。請討論：這種「用小訊號控制大功率裝置」的概念，在日常生活的哪些電器產品中也能找到類似的設計（提示：想想家裡的冷氣、電風扇遙控器）？
-2. 這週的 `rampTo()` 函式跟第 7 週的 `sweepTo()` 函式，雖然控制的元件完全不同（馬達轉速 vs. 伺服馬達角度），但程式邏輯結構幾乎一模一樣。請討論：這種「不同硬體、相同程式邏輯」的現象，對於你們未來學習新的感測器或致動器，會帶來什麼樣的學習效率優勢？
-3. 這是整個 Arduino 單元最後一次接觸新的動力元件，接下來兩週會學習顯示器與鍵盤輸入。請討論：回顧這十週學過的所有輸出裝置（LED、RGB LED、蜂鳴器、伺服馬達、直流馬達），你覺得哪一種元件的學習曲線最陡峭？為什麼？
-4. 練習題 11 提到雙馬達差速驅動是機器人轉向的核心原理。請討論：如果左輪轉速比右輪快，機器人會往哪個方向轉？這跟划船時「一邊划得比較用力，船會往另一邊轉」的生活經驗是否類似？
-
-> 💬 補充：以上四題建議在小組內輪流分享觀點，再統整出一份共同結論，這也是為未來期末專題分組合作預先累積的討論默契。
+1. 本週的「接法 A／B／C／D」告訴我們：**需求越清楚，資源用得越省**。在管理工作中，你能想到哪些「先釐清需求，才不會浪費資源」的例子？
+2. 專案四的 AGV 只要 Step 1 把 EN 接在 9 或 10，到 Step 3 就得全部重接。這和專案管理中「前期規劃不足，後期變更成本很高」的道理有什麼關係？
+3. 本週好幾個情境（鐵捲門、輸送帶、貨梯、洗衣機）都刻意讓馬達**慢慢啟動、慢慢停止**，或在換方向前**先停一下**。這些設計犧牲了一點速度，換到了什麼？在產線上，你會怎麼向主管說明這個取捨？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 理解直流馬達與伺服馬達的差異（持續轉動 vs. 定點角度）
-- [ ] 理解 L293D 驅動晶片與 H 橋的基本原理
-- [ ] 能正確控制馬達正轉、反轉、停止
-- [ ] 能用 PWM 實現無段變速控制
-- [ ] 能實作緩啟動與緩停止的平順動力控制
-- [ ] 能結合超音波感測器實作自動避障減速邏輯
-- [ ] 完成至少 8 題基礎/中等練習題
+- [ ] 能正確擺放 L293D（跨凹槽、缺口朝上），並接妥所有電源與接地腳
+- [ ] 能說明 EN、IN1、IN2 的功能，並用馬達測試器確認正轉、反轉、調速
+- [ ] 能依情境需求選擇接法 A／B／C／D，並說明省了幾隻腳
+- [ ] 能在有伺服、蜂鳴器的系統中，正確分配 EN 的 `~` 腳
+- [ ] 能用一顆 L293D 同時控制兩顆馬達
+- [ ] 能說明緩啟動、防壓、急停等安全設計的目的
+- [ ] 完成 4 個獨立專案，並各自繳交 Tinkercad 檔案
+- [ ] 完成練習題 Lv.1～Lv.4，挑戰 Lv.5 與 Lv.6
 
 ---
 
 ## 下週預告
 
-第 11 週我們要學習「產線資訊可視化」——LCD 16x2 顯示器。密室老闆想打造一間「產線戰情看板」主題房，你將學會如何在螢幕上顯示文字與數字資訊，把過去十週學過的各種感測器資料，整合到一塊真正的顯示螢幕上。
+第 11 週我們要學習「產線資訊可視化」——**LCD 16x2 顯示器**，打造「產線戰情看板」。到目前為止，我們都靠燈號和 Serial Monitor 看資訊；下週起，系統可以直接在螢幕上顯示文字和數字，把十週來學過的各種感測器資料，整合到一塊真正的看板上。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 9 週](./week-09.md) | [下一週：第 11 週 — 產線戰情看板 ➡](./week-11.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 9 週](week-09.md) | [下一週：第 11 週 — 產線戰情看板 ➡](week-11.md)

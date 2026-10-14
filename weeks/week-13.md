@@ -1,29 +1,50 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 12 週](./week-12.md) | [下一週：第 14 週 — 智慧感應與操作台 ➡](./week-14.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 12 週](week-12.md) | [下一週：第 14 週 — 智慧感應與操作台 ➡](week-14.md)
 
 ---
 
-# 第 13 週：產線數字看板升級站
-## 主題專案：用 3 隻腳位控制無限多個輸出
+# 第 13 週：用 3 隻腳點亮整面看板
 
-> 🎯 **本週定位**：第 1 週我們學過「用陣列 + 迴圈」控制多顆 LED，但無論怎麼優化程式碼，硬體上還是得「一顆燈一條線」，8 顆燈就要佔用 8 隻腳位。這一週你會學到工業控制中極為重要的技巧——**位移暫存器（Shift Register）**，只用 **3 隻腳位**就能控制 8 個、16 個、甚至上百個輸出，這正是真實 PLC（可程式化邏輯控制器）擴充輸出點位的核心概念。密室老闆想把逃脫房裡的簡易指示燈，升級成真正的「數字看板」——你會學會用位移暫存器驅動 **七段顯示器**，做出產線常見的數字計數看板。
+## 主題專案：位移暫存器與七段顯示器——省腳位的極致
+
+> 🎯 **本週定位**：第 12 週的金庫把 18 隻腳全部用滿了。如果客戶還要 8 顆工作站指示燈、兩位數的計數器怎麼辦？這一週加入兩個新元件：
+>
+> - **位移暫存器 74HC595**：只用 **3 隻 Arduino 腳**，就能控制 **8 個輸出**；把好幾顆串在一起，**還是只用 3 隻腳**，就能控制 16、24、32 個輸出
+> - **七段顯示器**：產線、電梯、計時器上最常見的數字顯示
+>
+> 和前幾週一樣，本週**重點不在寫程式**，而在於：
+>
+> 1. 讀懂情境需求，算出「需要幾個輸出」，決定要用幾顆 74HC595
+> 2. 把 74HC595 的 16 隻腳接對，並學會把多顆晶片**串接**
+> 3. 用「1 代表亮、0 代表滅」的方式，設計燈號圖案
+>
+> 送資料給 74HC595、顯示數字的程式都已經準備好，你只需要填腳位、修改設定、把功能開關從 `false` 改成 `true`。
+>
+> 🏁 **本週成果**：完成 **4 個獨立專案**，每個專案存成一個獨立的 Tinkercad 檔案繳交。
 
 ---
 
 ## 📋 目錄
+
 - [學習地圖](#學習地圖)
 - [開場任務簡報](#開場任務簡報)
-- [電路體檢站（3 分鐘快速複習）](#電路體檢站3-分鐘快速複習)
-- [模擬設計專案配置](#模擬設計專案配置)
-- [後端程式設計：五道機關關卡](#後端程式設計五道機關關卡)
-  - [關卡 1：認識位移暫存器 — shiftOut() 基礎](#關卡-1認識位移暫存器--shiftout-基礎)
-  - [關卡 2：用二進位思維控制多顆 LED](#關卡-2用二進位思維控制多顆-led)
-  - [關卡 3：七段顯示器基礎 — 認識段位與字型碼](#關卡-3七段顯示器基礎--認識段位與字型碼)
-  - [關卡 4：位移暫存器驅動七段顯示器](#關卡-4位移暫存器驅動七段顯示器)
-  - [關卡 5：計數看板應用 — 按鈕與感測連動](#關卡-5計數看板應用--按鈕與感測連動)
-  - [🏆 BOSS 關：產線數字看板主控系統](#-boss-關產線數字看板主控系統)
-- [常見錯誤除錯站](#常見錯誤除錯站)
-- [練習題大補帖](#練習題大補帖)
-- [🎨 額外主題卡（給想多做的人）](#-額外主題卡給想多做的人)
+- [認識新元件 ①：位移暫存器 74HC595](#認識新元件-位移暫存器-74hc595)
+- [認識新元件 ②：七段顯示器](#認識新元件-七段顯示器)
+- [燈號圖案：用 1 和 0 畫圖](#燈號圖案用-1-和-0-畫圖)
+- [配線口訣卡](#配線口訣卡)
+- [共用工具](#共用工具)
+- [專案一：商店招牌燈效](#專案一商店招牌燈效)
+- [專案二：行人號誌倒數器](#專案二行人號誌倒數器)
+- [專案三：兩位數產量計數器](#專案三兩位數產量計數器)
+- [專案四：產線安燈總看板](#專案四產線安燈總看板)
+- [練習題大補帖：情境配置挑戰](#練習題大補帖情境配置挑戰)
+  - [Lv.1 電梯樓層顯示](#-lv1-電梯樓層顯示)
+  - [Lv.2 音響音量燈條](#-lv2-音響音量燈條)
+  - [Lv.3 週年慶抽獎機](#-lv3-週年慶抽獎機)
+  - [Lv.4 機房兩位數溫度顯示](#-lv4-機房兩位數溫度顯示)
+  - [Lv.5 產線節拍時間看板](#-lv5-產線節拍時間看板)
+  - [🏆 Lv.6 BOSS 關：物聯網顧問提案](#-lv6-boss-關物聯網顧問提案)
+- [配線除錯站](#配線除錯站)
+- [成果繳交與評分](#成果繳交與評分)
 - [📖 本週詞彙表](#-本週詞彙表)
 - [反思與延伸討論](#反思與延伸討論)
 - [本週檢核清單](#本週檢核清單)
@@ -32,789 +53,1390 @@
 
 ## 學習地圖
 
-### 你已經會的（第 1～12 週，整個 Arduino 單元）
-- ✅ 數位/類比輸出入、`map()`、`constrain()`、`float` 運算
-- ✅ 陣列、迴圈、自訂函式、物件（Servo、LiquidCrystal、Keypad）
-- ✅ LED、RGB LED、按鈕、旋鈕、蜂鳴器、光敏電阻、TMP36
-- ✅ 伺服馬達、超音波、直流馬達、LCD、矩陣鍵盤
-- ✅ 模組化系統架構設計、優先權排序、字串處理
+### 你已經會的（第 1～12 週）
+
+- ✅ 13 種元件的接線（見第 12 週「全元件配線速查表」）
+- ✅ 省腳位技巧：借 A 腳、L293D 省腳接法、I2C 版 LCD、鍵盤只接 3 行
+- ✅ 狀態改變偵測、鎖定與復歸、安全連鎖、看板設計、操作流程設計
 
 ### 這週要新學的
-| 觀念 | 說明 | 為什麼工業上重要 |
-|---|---|---|
-| 位移暫存器（Shift Register） | 用少量腳位，透過「序列傳輸」控制大量輸出的晶片 | PLC 擴充輸出點位、LED 看板、跑馬燈招牌的標準做法 |
-| `shiftOut()` | Arduino 內建函式，把一個位元組（8 個 0/1）依序送出 | 序列通訊最基礎的手法之一 |
-| 二進位思維 | 用 8 個位元（bit）的組合代表 8 顆燈的開關狀態 | 這學期第一次正式接觸「用一個數字代表多個開關狀態」的思維 |
-| 七段顯示器（7-Segment Display） | 由 7 段 LED 組成，可顯示 0~9 數字的顯示元件 | 產線計數器、電子錶、計分板最常見的數字顯示方式 |
-| 字型碼（Segment Pattern） | 每個數字對應一組「該點亮哪幾段」的資料 | 資料驅動設計的再一次實踐——用查表取代大量 if-else |
 
-### 使用平台
-本週繼續使用 [Tinkercad Circuits](https://www.tinkercad.com/)，程式編輯視窗維持「文字模式（Text）」。
+| 新東西 | 白話說明 | 在職場上像什麼 |
+| --- | --- | --- |
+| 位移暫存器 74HC595 | 3 條線進、8 條線出的「擴充器」 | 延長線、網路分享器 |
+| 串接（Daisy Chain） | 把多顆 74HC595 頭尾相連，還是只用 3 隻腳 | 一條延長線再接一條 |
+| 七段顯示器 | 7 條小燈管拼出 0～9 | 電梯樓層、計時器、加油機 |
+| 燈號圖案（位元） | 用 8 個 0 或 1 表示 8 顆燈的亮滅 | 開關面板上的一排撥桿 |
+| `sendOut()`／`showNumber()` | 已寫好的函式，把圖案或數字送出去 | 按下「送出」鍵 |
+
+### 本週可用元件（只限這些）
+
+| 元件 | 第幾週學的 |
+| --- | --- |
+| 單色 LED、RGB LED、220Ω | 第 1、3 週 |
+| 按鈕、10kΩ | 第 2 週 |
+| 旋鈕 | 第 4 週 |
+| 蜂鳴器、光敏電阻 | 第 5 週 |
+| TMP36 | 第 6 週 |
+| 伺服馬達 | 第 7 週 |
+| 超音波 HC-SR04 | 第 9 週 |
+| 直流馬達、L293D | 第 10 週 |
+| LCD 16×2（平行版、I2C 版） | 第 11 週 |
+| 4×4 矩陣鍵盤 | 第 12 週 |
+| 位移暫存器 74HC595、七段顯示器（共陰極） | **本週新增** |
 
 ---
 
 ## 開場任務簡報
 
-> 📖 **情境**：密室老闆參觀完第 11 週的產線戰情看板後意猶未盡，這次要求打造一塊真正「像產線牆上會掛的」數字計數器——不是螢幕文字，而是那種紅色數字跳動的七段顯示器看板。你被指派負責這項升級任務，同時老闆特別強調：「不要浪費太多 Arduino 腳位，我還要留給其他機關用！」這正是這一週要解決的核心工程挑戰。
+> 📖 **情境**：顧問公司進入下半學期，客戶的需求越來越「大」：要很多燈、要數字看板，但 Arduino 的腳就那麼多。這週的四個委託案，都要用 74HC595 解決「腳位不夠」的問題。
 >
-> 這週結束時，你會做出：
-> 1. 一個能用 3 隻腳位控制 8 個輸出的基礎測試機關（暖身）
-> 2. 一套用二進位思維設計的跑馬燈效果（複習並升級第 1 週的跑馬燈）
-> 3. 一個能顯示單一數字的七段顯示器測試機關
-> 4. 一套用位移暫存器驅動七段顯示器的整合系統
-> 5. 一套結合按鈕與感測器的計數看板應用
-> 6. 一個整合以上所有技巧的「產線數字看板主控系統」
+> | 客戶 | 委託內容 | 需要的輸出 | 74HC595 數量 | 難度 |
+> | --- | --- | --- | --- | --- |
+> | 手搖飲店 | 招牌燈效 | 8 顆燈 | 1 | ⭐ |
+> | 市政府 | 行人號誌倒數器 | 1 位數字 | 1 | ⭐⭐ |
+> | 食品工廠 | 兩位數產量計數器 | 2 位數字 | 2（串接） | ⭐⭐⭐ |
+> | 電子工廠 | 產線安燈總看板 | 8 顆燈＋2 位數字 | 3（串接） | ⭐⭐⭐⭐ |
+>
+> 每個專案都分成 3 個步驟，從最簡單的版本開始，每一步多接幾個元件、多一項功能。
 
 ---
 
-## 電路體檢站（3 分鐘快速複習）
+## 認識新元件 ①：位移暫存器 74HC595
 
-**體檢題 1**：回想第 1 週的跑馬燈，8 顆 LED 需要 8 隻腳位（Pin 2~9）。這週的位移暫存器只用 3 隻腳位就能控制同樣的 8 顆燈，甚至更多。這跟第 12 週學過的矩陣鍵盤「用 8 隻腳位讀取 16 顆按鍵」的設計思維其實是同一個方向——**用巧妙的電路與程式邏輯，突破硬體腳位數量的限制**，只是這次是「輸出」而非「輸入」。
+### 它在做什麼？
 
-**體檢題 2**：回想第 3 週學過的「PWM 用時間比例模擬類比效果」——這週的位移暫存器同樣是靠「時間序列」的巧思運作：資料不是同時送出，而是「一個位元接著一個位元，依序傳送」，最後再一次性「鎖定」顯示出來。這種「序列傳輸、平行輸出」的概念，是許多現代通訊協定（如 SPI、I2C）的基礎原型。
+想像一台**電梯**：乘客（資料）一個一個走進去排好（位移），等 8 個人都進去了，**電梯門一打開**（鎖存），8 個人同時出現在樓層上（8 個輸出同時改變）。
 
-**體檢題 3**：位移暫存器與七段顯示器需要接電阻保護嗎？
-> 答案：七段顯示器內部本質上是多顆 LED，所以需要限流電阻（通常一組七段顯示器會搭配一顆共用電阻，或每段各自一顆，依電路設計而定）；位移暫存器晶片本身不需要限流電阻，但需要正確接妥電源與接地腳位。
+```
+Arduino                74HC595                     8 個輸出
+資料線 ─────────────► 一個一個排進去 ────┐
+時脈線 ─────────────► 「下一個！」        ├──► Q0 Q1 Q2 Q3 Q4 Q5 Q6 Q7
+鎖存線 ─────────────► 「開門！」全部出現 ─┘
+```
+
+所以只要 **3 條線**：
+
+| 名稱 | 白話 | 晶片腳 | 接 Arduino |
+| --- | --- | --- | --- |
+| 資料（DS） | 這一位是 1 還是 0 | Pin 14 | 任何數位腳 |
+| 時脈（SHCP） | 「收下這一位，換下一位」 | Pin 11 | 任何數位腳 |
+| 鎖存（STCP） | 「8 位都到齊了，一起顯示」 | Pin 12 | 任何數位腳 |
+
+### 74HC595 接線地圖
+
+晶片要**跨在麵包板中間的凹槽上**，有半圓缺口的一端朝上。左排由上往下 1～8，右排由下往上 9～16。
+
+```
+          ┌───∪───┐
+   Q1  1 ─┤       ├─ 16  VCC（5V）
+   Q2  2 ─┤       ├─ 15  Q0
+   Q3  3 ─┤       ├─ 14  DS 資料 ◄── Arduino
+   Q4  4 ─┤74HC595├─ 13  OE（接 GND）
+   Q5  5 ─┤       ├─ 12  STCP 鎖存 ◄── Arduino
+   Q6  6 ─┤       ├─ 11  SHCP 時脈 ◄── Arduino
+   Q7  7 ─┤       ├─ 10  MR（接 5V）
+  GND  8 ─┤       ├─  9  Q7' 串接輸出 ──► 下一顆的 DS
+          └───────┘
+```
+
+| 晶片腳 | 名稱 | 白話說明 | 接到哪裡 |
+| --- | --- | --- | --- |
+| 16 | VCC | 晶片電源 | 5V |
+| 8 | GND | 接地 | GND |
+| 10 | MR | 清除全部（不要清除） | **5V** |
+| 13 | OE | 輸出開關（一直開著） | **GND** |
+| 14 | DS | 資料 | Arduino 數位腳 |
+| 11 | SHCP | 時脈 | Arduino 數位腳 |
+| 12 | STCP | 鎖存 | Arduino 數位腳 |
+| 15、1～7 | Q0～Q7 | 8 個輸出 | 燈或七段顯示器（**每條串 220Ω**） |
+| 9 | Q7' | 串接輸出 | 下一顆 74HC595 的 DS（Pin 14） |
+
+> ⚠️ **最常見的錯誤**：Q0 在**右邊**的 Pin 15，不是左邊！Q1～Q7 才在左排的 Pin 1～7。
+
+### ⭐ 串接：再多燈也只要 3 隻腳
+
+把第 1 顆的 **Q7'（Pin 9）** 接到第 2 顆的 **DS（Pin 14）**，兩顆的**時脈**和**鎖存**接在一起，就變成 16 個輸出：
+
+```
+Arduino ──資料──► [第 1 顆] Q7' ──► [第 2 顆] Q7' ──► [第 3 顆]
+        ──時脈──► 三顆的 SHCP（Pin 11）全部接在一起
+        ──鎖存──► 三顆的 STCP（Pin 12）全部接在一起
+```
+
+| 74HC595 數量 | 輸出數量 | 佔 Arduino 幾隻腳 |
+| --- | --- | --- |
+| 1 顆 | 8 | 3 |
+| 2 顆串接 | 16 | **還是 3** |
+| 3 顆串接 | 24 | **還是 3** |
+
+> 💡 **第 1 顆**＝最靠近 Arduino 的那顆（資料線直接接進來的那顆）。
+
+### 74HC595 的限制
+
+| 可以 | 不行 |
+| --- | --- |
+| 控制 LED 亮／滅 | 調光（沒有 `~` 功能） |
+| 控制七段顯示器 | 讀取按鈕、感測器（它只能「輸出」） |
+| 控制 RGB 的全亮全滅顏色 | 直接推動馬達（要經過 L293D） |
 
 ---
 
-## 模擬設計專案配置
+## 認識新元件 ②：七段顯示器
 
-### 元件清單
-| 元件 | 數量 | 說明 |
-|---|---|---|
-| Arduino Uno R3 | 1 | 主控板 |
-| Breadboard | 1 | 電路佈局 |
-| 74HC595 位移暫存器 | 1 | 本週核心元件 |
-| LED | 8 | 測試用（關卡 1、2） |
-| 220Ω 電阻 | 8 | LED 限流電阻 |
-| 7-Segment Display（單顆，共陰極） | 1 | 數字顯示核心元件 |
-| 220Ω 電阻 | 1 | 七段顯示器限流電阻（本課程簡化為共用一顆） |
-| Pushbutton | 1 | 計數觸發鈕 |
-| 10kΩ 電阻 | 1 | 按鈕下拉電阻 |
+### 段位名稱
 
-### 接線步驟
+```
+     ─a─
+    │   │
+    f   b
+    │   │
+     ─g─
+    │   │
+    e   c
+    │   │
+     ─d─   ● dp（小數點）
+```
 
-**Part A：74HC595 位移暫存器（關卡 1、2 使用）**
-74HC595 是 16 隻腳的晶片，關鍵接法如下：
-1. **Pin 8（GND）**：接 GND
-2. **Pin 16（VCC）**：接 5V
-3. **Pin 10（MR，重置腳）**：接 5V（設為「不重置」的常態，保持晶片正常運作）
-4. **Pin 13（OE，輸出致能）**：接 GND（設為「持續輸出」的常態）
-5. **Pin 14（DS，資料輸入）**：接 Arduino **Pin 2**（本課程稱為 dataPin）
-6. **Pin 12（STCP，鎖存時脈）**：接 Arduino **Pin 3**（本課程稱為 latchPin）
-7. **Pin 11（SHCP，位移時脈）**：接 Arduino **Pin 4**（本課程稱為 clockPin）
-8. **Pin 15、Pin 1~7（Q0~Q7，輸出腳）**：依序接 8 顆 LED 的正極（各自經過 220Ω 電阻），負極共同接 GND
+- 7 條燈管（a～g）＋1 個小數點（dp），一共 8 個段位——**剛好對應 74HC595 的 8 個輸出**。
+- 本課程使用**共陰極**：共同腳接 GND，段位腳給「1」就亮。在 Tinkercad 點選七段顯示器，確認屬性是「Cathode」。
 
-**Part B：七段顯示器（關卡 3 以後使用，取代 Part A 的 8 顆 LED）**
-1. 七段顯示器共陰極的公共腳接 GND（透過共用限流電阻，或依 Tinkercad 元件設定調整）。
-2. 七段顯示器的 7 個段位腳（a~g），改接到 74HC595 的 Q0~Q6（原本接 LED 的位置）。
+### 接法（經過 74HC595）
 
-**Part C：計數按鈕**
-1. 沿用第 2 週接法：下拉電阻 + 訊號線接 **Pin 5**。
+| 七段顯示器腳 | 接到哪裡 |
+| --- | --- |
+| a | 74HC595 Q0（經 220Ω） |
+| b | Q1（經 220Ω） |
+| c | Q2（經 220Ω） |
+| d | Q3（經 220Ω） |
+| e | Q4（經 220Ω） |
+| f | Q5（經 220Ω） |
+| g | Q6（經 220Ω） |
+| dp | Q7（經 220Ω） |
+| 共同腳（COM） | GND |
 
-### 腳位對照表（本週共用）
-| 元件 | 腳位 |
-|---|---|
-| 74HC595 DS（資料） | Pin 2 |
-| 74HC595 STCP（鎖存） | Pin 3 |
-| 74HC595 SHCP（時脈） | Pin 4 |
-| 計數按鈕 | Pin 5 |
+> 💡 **為什麼每一段都要電阻？** 每一段都是一顆小 LED，口訣「每條燈線一顆 220Ω」照樣適用。（有些教材只在共同腳串一顆電阻，那樣顯示「1」和「8」的亮度會不一樣。）
 
-> ⚠️ **教學提醒**：位移暫存器是這學期腳位對應關係最抽象的一次——Arduino 的 3 隻腳位並不會「直接對應」到某一顆 LED，而是透過程式碼「送出的資料內容」決定哪些輸出腳位是高電位。這跟之前所有元件「一隻 Arduino 腳位對應一個功能」的邏輯完全不同，請務必花時間讓學生理解這個概念轉換。
+### 不用 74HC595 會怎樣？
 
-> 💡 **配置檢查清單**
-> - [ ] 74HC595 的 MR（Pin 10）接 5V，OE（Pin 13）接 GND
-> - [ ] DS、STCP、SHCP 三隻控制腳正確接到 Arduino Pin 2、3、4
-> - [ ] Q0~Q7 依序接到 8 顆 LED（或七段顯示器的對應段位）
+| 需求 | 直接接 Arduino | 用 74HC595 |
+| --- | --- | --- |
+| 1 位數字 | 8 隻腳 | 3 隻腳 |
+| 2 位數字 | 16 隻腳 | 3 隻腳（2 顆串接） |
+| 8 顆燈＋2 位數字 | 24 隻腳（**超過 18 隻，不可能**） | 3 隻腳（3 顆串接） |
 
 ---
 
-## 後端程式設計：五道機關關卡
+## 燈號圖案：用 1 和 0 畫圖
 
-### 關卡 1：認識位移暫存器 — shiftOut() 基礎
+本週程式用 `0b` 開頭的 8 位數字表示 8 顆燈：**1 代表亮、0 代表滅**，**最右邊是 Q0**。
 
-**機關故事**：在做出任何顯示效果前，你得先確認 3 隻腳位真的能控制 8 顆燈。
-
-#### 範例 1-1：全部點亮測試
-```cpp
-// ============================================
-// 範例 1-1：用 shiftOut() 一次點亮全部 8 顆燈
-// ============================================
-
-int dataPin = 2;    // DS
-int latchPin = 3;   // STCP
-int clockPin = 4;   // SHCP
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(latchPin, LOW);                          // 開始準備送資料，先把鎖存腳拉低
-  shiftOut(dataPin, clockPin, MSBFIRST, 255);            // 送出 8 個位元，255 代表全部都是 1（全亮）
-  digitalWrite(latchPin, HIGH);                          // 資料送完，拉高鎖存腳，正式顯示出來
-}
 ```
-**新語法提醒**：`shiftOut(資料腳, 時脈腳, 位元順序, 資料值)` 會把「資料值」轉換成 8 個位元（0 或 1），依序透過資料腳送出。`MSBFIRST` 代表「從最高位元開始送」（Most Significant Bit First），這是最常見的慣例設定。`latchPin` 則像是「確認鍵」——資料送完之前先保持 LOW，送完後才拉 HIGH，讓 8 個輸出腳「一次性」同步更新顯示，避免顯示過程中出現閃爍的中間狀態。
+0b 0 0 0 0 0 1 1 1
+   ↑             ↑
+   Q7            Q0
 
-#### 範例 1-2：全部熄滅
-```cpp
-// ============================================
-// 範例 1-2：0 代表全部熄滅
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, 0);   // 0 代表全部都是 0（全滅）
-  digitalWrite(latchPin, HIGH);
-}
+→ Q0、Q1、Q2 亮，其他滅
 ```
 
-#### 範例 1-3：交替閃爍全亮全滅
-```cpp
-// ============================================
-// 範例 1-3：全亮、全滅交替，驗證動態控制效果
-// ============================================
+| 圖案 | 意思 |
+| --- | --- |
+| `0b00000001` | 只有 Q0 亮 |
+| `0b10000000` | 只有 Q7 亮 |
+| `0b11111111` | 全亮 |
+| `0b10101010` | 隔一顆亮一顆 |
+| `0b00001111` | 右半邊亮 |
 
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-void updateShiftRegister(byte value) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, value);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  updateShiftRegister(255);
-  delay(500);
-  updateShiftRegister(0);
-  delay(500);
-}
-```
-**教學重點**：這裡把「送資料到位移暫存器」的三行程式碼（拉低鎖存、送出資料、拉高鎖存）封裝成 `updateShiftRegister()` 函式，往後只要呼叫這個函式並傳入想要的數值即可，這是這學期第 N 次應用「模組化封裝」的手法。
+> 🎨 你不需要會二進位換算，只要把它當成「一排 8 個開關」，想亮哪顆就在那個位置寫 1。
 
 ---
 
-### 關卡 2：用二進位思維控制多顆 LED
+## 配線口訣卡
 
-**機關故事**：全亮全滅太單調，你需要理解「數字如何對應到哪幾顆燈亮」，才能做出精細的圖案效果。
-
-#### 範例 2-1：認識二進位與燈的對應關係
-```cpp
-// ============================================
-// 範例 2-1：測試不同數值，觀察對應的燈光圖案
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-void updateShiftRegister(byte value) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, value);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  updateShiftRegister(1);    // 二進位 00000001 → 只有 Q0 亮
-  delay(1000);
-  updateShiftRegister(2);    // 二進位 00000010 → 只有 Q1 亮
-  delay(1000);
-  updateShiftRegister(4);    // 二進位 00000100 → 只有 Q2 亮
-  delay(1000);
-  updateShiftRegister(85);   // 二進位 01010101 → Q0,Q2,Q4,Q6 交錯亮起
-  delay(1000);
-}
-```
-**教學重點**：每個位元對應一顆燈，把數值換算成二進位（8 位元），從右邊數來第幾位是 1，對應的那顆燈就會亮。例如 `85` 的二進位是 `01010101`，代表 Q0、Q2、Q4、Q6 這幾顆燈（位元值為 1 的位置）會亮起，形成交錯的圖案。這是這學期第一次需要「用二進位思考」的地方，建議搭配計算機的「十進位轉二進位」功能讓學生實際驗證。
-
-#### 範例 2-2：升級版跑馬燈（複習第 1 週，但只用 3 隻腳位）
-```cpp
-// ============================================
-// 範例 2-2：用位移暫存器重新實作跑馬燈效果
-// 對照第 1 週：原本需要 8 隻腳位，現在只需要 3 隻！
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-void updateShiftRegister(byte value) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, value);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  for (int i = 0; i < 8; i++) {
-    byte pattern = 1 << i;   // 位元左移運算：讓 1 這個位元往左移動 i 格
-    updateShiftRegister(pattern);
-    delay(150);
-  }
-}
-```
-**新語法提醒**：`1 << i` 是「位元左移運算子」，代表把數字 `1`（二進位 `00000001`）往左移動 `i` 位。當 `i=0` 時結果是 `00000001`（也就是 1），`i=1` 時是 `00000010`（也就是 2），`i=2` 時是 `00000100`（也就是 4）……以此類推。這是控制單一位元移動位置最簡潔的寫法，遠比逐一列出 1, 2, 4, 8, 16, 32, 64, 128 更優雅。
-
-#### 範例 2-3：來回掃描（用位元運算重新實作）
-```cpp
-// ============================================
-// 範例 2-3：來回掃描效果，複習第 1 週的霹靂燈
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-void updateShiftRegister(byte value) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, value);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  for (int i = 0; i < 8; i++) {
-    updateShiftRegister(1 << i);
-    delay(100);
-  }
-  for (int i = 6; i >= 0; i--) {
-    updateShiftRegister(1 << i);
-    delay(100);
-  }
-}
-```
+| 口訣 | 說明 |
+| --- | --- |
+| ① **74HC595 跨凹槽、缺口朝上；16 接 5V、8 接 GND** | |
+| ② **MR（10）接 5V、OE（13）接 GND** | 這兩隻漏接，晶片不會動 |
+| ③ **DS（14）資料、SHCP（11）時脈、STCP（12）鎖存** 接 Arduino | 3 隻一般腳即可，不用 `~` |
+| ④ **Q0 在右邊 Pin 15**，Q1～Q7 在左邊 Pin 1～7 | |
+| ⑤ **串接：Q7'（9）→ 下一顆 DS（14）；時脈、鎖存全部並接** | 最靠近 Arduino 的是第 1 顆 |
+| ⑥ 七段顯示器：a～dp 依序接 Q0～Q7，每段一顆 220Ω，COM 接 GND | 屬性設成共陰極 |
+| ⑦ 74HC595 不能調光、不能讀輸入 | 需要調光、讀感測器的元件仍接 Arduino |
 
 ---
 
-### 關卡 3：七段顯示器基礎 — 認識段位與字型碼
+## 共用工具
 
-**機關故事**：在整合位移暫存器之前，你得先單獨理解七段顯示器本身怎麼顯示數字。
+### 🔧 工具 1：74HC595 測試器
 
-#### 範例 3-1：直接用 8 隻腳位點亮七段顯示器（暫不用位移暫存器）
+接好 74HC595 後先跑這支：依序只亮 Q0、Q1……Q7，Serial Monitor 同步顯示。串接多顆時，把 `chips` 改成顆數，會從第 1 顆的 Q0 一路測到最後一顆的 Q7。
+
 ```cpp
-// ============================================
-// 範例 3-1：暫時直接接線測試，理解每一段對應的腳位
-// 這裡假設段位 a~g 分別直接接在 Pin 2~8（僅供本範例理解原理使用）
-// ============================================
+// ===== 改成你的腳位 =====
+int dataPin  = 2;    // DS（Pin 14）
+int clockPin = 3;    // SHCP（Pin 11）
+int latchPin = 4;    // STCP（Pin 12）
+int chips    = 1;    // 串接了幾顆 74HC595
+// =======================
 
-int segA = 2, segB = 3, segC = 4, segD = 5, segE = 6, segF = 7, segG = 8;
-
-void setup() {
-  pinMode(segA, OUTPUT);
-  pinMode(segB, OUTPUT);
-  pinMode(segC, OUTPUT);
-  pinMode(segD, OUTPUT);
-  pinMode(segE, OUTPUT);
-  pinMode(segF, OUTPUT);
-  pinMode(segG, OUTPUT);
-}
-
-void loop() {
-  // 顯示數字 "0"：點亮 a, b, c, d, e, f（不點亮 g）
-  digitalWrite(segA, HIGH);
-  digitalWrite(segB, HIGH);
-  digitalWrite(segC, HIGH);
-  digitalWrite(segD, HIGH);
-  digitalWrite(segE, HIGH);
-  digitalWrite(segF, HIGH);
-  digitalWrite(segG, LOW);
-}
-```
-**教學重點**：七段顯示器由 a~g 七個獨立的 LED 段位組成（外加一個小數點 dp），排列成「日」字形，不同的段位組合就能拼出 0~9 的數字。這種「直接接線」的方式雖然直覺，但一顆顯示器就要佔用 7~8 隻腳位，這正是為什麼我們需要位移暫存器來節省腳位的原因。
-
-#### 範例 3-2：用陣列定義字型碼，一次可切換 0~9
-```cpp
-// ============================================
-// 範例 3-2：把 0~9 每個數字對應的段位組合，整理成陣列（字型碼表）
-// ============================================
-
-int segPins[] = {2, 3, 4, 5, 6, 7, 8};   // a, b, c, d, e, f, g
-
-// 每個數字對應一組 7 個 0/1，代表 a~g 是否要點亮
-int digitPatterns[10][7] = {
-  {1,1,1,1,1,1,0},   // 0
-  {0,1,1,0,0,0,0},   // 1
-  {1,1,0,1,1,0,1},   // 2
-  {1,1,1,1,0,0,1},   // 3
-  {0,1,1,0,0,1,1},   // 4
-  {1,0,1,1,0,1,1},   // 5
-  {1,0,1,1,1,1,1},   // 6
-  {1,1,1,0,0,0,0},   // 7
-  {1,1,1,1,1,1,1},   // 8
-  {1,1,1,1,0,1,1}    // 9
-};
-
-void showDigit(int digit) {
-  for (int i = 0; i < 7; i++) {
-    digitalWrite(segPins[i], digitPatterns[digit][i]);
-  }
-}
-
-void setup() {
-  for (int i = 0; i < 7; i++) {
-    pinMode(segPins[i], OUTPUT);
-  }
-}
-
-void loop() {
-  for (int d = 0; d <= 9; d++) {
-    showDigit(d);
-    delay(500);
-  }
-}
-```
-**教學重點**：這是這學期「用資料表取代大量 if-else」精神的又一次體現——與其寫 10 組 `if (digit == 0) {...} else if (digit == 1) {...}`，不如把所有數字的字型碼整理成一個二維陣列（複習自第 3 週的混色陣列、第 4 週的顏色資料表），用 `showDigit()` 函式統一查表顯示，程式碼精簡許多。
-
----
-
-### 關卡 4：位移暫存器驅動七段顯示器
-
-**機關故事**：把關卡 1~3 學過的兩個技術正式結合——用只需要 3 隻腳位的位移暫存器，控制七段顯示器顯示數字。
-
-#### 範例 4-1：用位移暫存器顯示單一數字
-```cpp
-// ============================================
-// 範例 4-1：結合位移暫存器與七段顯示器字型碼
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-// 把字型碼改成直接對應 byte 數值（每個 bit 代表一段，共 7 段 + 1 個不使用的小數點位）
-byte digitCodes[10] = {
-  B00111111,   // 0
-  B00000110,   // 1
-  B01011011,   // 2
-  B01001111,   // 3
-  B01100110,   // 4
-  B01101101,   // 5
-  B01111101,   // 6
-  B00000111,   // 7
-  B01111111,   // 8
-  B01101111    // 9
-};
-
-void updateShiftRegister(byte value) {
+void sendOut(byte chip[], int n) {
   digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, value);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
   digitalWrite(latchPin, HIGH);
 }
 
 void setup() {
   pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  for (int d = 0; d <= 9; d++) {
-    updateShiftRegister(digitCodes[d]);
-    delay(500);
-  }
-}
-```
-**教學重點**：這裡把字型碼直接寫成 `B00111111` 這種「二進位字面量」格式（`B` 開頭代表這是二進位數字），比關卡 3 的二維陣列更精簡——因為位移暫存器本來就是以「一個 byte（8 位元）」為單位傳輸資料，字型碼剛好也是 7~8 位元，兩者天生適合搭配使用。
-
-#### 範例 4-2：把顯示邏輯封裝成函式
-```cpp
-// ============================================
-// 範例 4-2：封裝成 displayDigit() 函式，方便重複呼叫
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-
-byte digitCodes[10] = {
-  B00111111, B00000110, B01011011, B01001111, B01100110,
-  B01101101, B01111101, B00000111, B01111111, B01101111
-};
-
-void displayDigit(int digit) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digitCodes[digit]);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
   pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-}
-
-void loop() {
-  displayDigit(8);   // 之後只要呼叫 displayDigit(想要的數字) 即可
-}
-```
-
----
-
-### 關卡 5：計數看板應用 — 按鈕與感測連動
-
-**機關故事**：真正的產線計數器需要能夠隨著事件即時累加數字，這一關我們把按鈕輸入與顯示邏輯結合。
-
-#### 範例 5-1：按鈕觸發計數遞增
-```cpp
-// ============================================
-// 範例 5-1：每按一次按鈕，顯示數字 +1（超過 9 就歸零）
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-int pinButton = 5;
-int lastButtonState = LOW;
-int count = 0;
-
-byte digitCodes[10] = {
-  B00111111, B00000110, B01011011, B01001111, B01100110,
-  B01101101, B01111101, B00000111, B01111111, B01101111
-};
-
-void displayDigit(int digit) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digitCodes[digit]);
-  digitalWrite(latchPin, HIGH);
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(pinButton, INPUT);
-  displayDigit(0);
-}
-
-void loop() {
-  int currentState = digitalRead(pinButton);
-
-  if (currentState == HIGH && lastButtonState == LOW) {
-    delay(50);
-    count = (count + 1) % 10;   // 超過 9 自動歸零，複習第 3 週的取餘數循環技巧
-    displayDigit(count);
-  }
-  lastButtonState = currentState;
-}
-```
-
-#### 範例 5-2：結合超音波感測器（自動計數，複習第 9 週）
-```cpp
-// ============================================
-// 範例 5-2：用超音波感測器取代按鈕，模擬產線物件通過自動計數
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-int pinTrig = 6;
-int pinEcho = 7;
-int count = 0;
-bool wasNear = false;
-
-byte digitCodes[10] = {
-  B00111111, B00000110, B01011011, B01001111, B01100110,
-  B01101101, B01111101, B00000111, B01111111, B01101111
-};
-
-void displayDigit(int digit) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digitCodes[digit]);
-  digitalWrite(latchPin, HIGH);
-}
-
-float readDistance() {
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  long duration = pulseIn(pinEcho, HIGH);
-  return duration / 58.0;
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  displayDigit(0);
-}
-
-void loop() {
-  float distance = readDistance();
-  bool isNear = distance < 15;
-
-  if (isNear && !wasNear) {
-    count = (count + 1) % 10;
-    displayDigit(count);
-  }
-  wasNear = isNear;
-  delay(100);
-}
-```
-
----
-
-### 🏆 BOSS 關：產線數字看板主控系統
-
-**機關故事**：整合本週所有技巧，打造完整的產線數字看板——按鈕手動計數、超音波自動計數雙模式切換、達到特定數字自動觸發提示。
-
-```cpp
-// ============================================
-// BOSS 關：產線數字看板主控系統 - 整合本週所有技巧
-// 功能：按鈕/超音波雙模式計數 + 位移暫存器驅動七段顯示 + 達標提示
-// ============================================
-
-int dataPin = 2;
-int latchPin = 3;
-int clockPin = 4;
-int pinButton = 5;
-int pinTrig = 6;
-int pinEcho = 7;
-
-int lastButtonState = LOW;
-int count = 0;
-bool wasNear = false;
-int targetCount = 5;   // 達到這個數字視為「一箱完成」
-
-byte digitCodes[10] = {
-  B00111111, B00000110, B01011011, B01001111, B01100110,
-  B01101101, B01111101, B00000111, B01111111, B01101111
-};
-
-void displayDigit(int digit) {
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digitCodes[digit]);
-  digitalWrite(latchPin, HIGH);
-}
-
-void flashAll() {
-  // 達標慶祝效果：讓顯示器快速閃爍（透過送出 0 與目前數字交替）
-  for (int i = 0; i < 3; i++) {
-    digitalWrite(latchPin, LOW);
-    shiftOut(dataPin, clockPin, MSBFIRST, 0);
-    digitalWrite(latchPin, HIGH);
-    delay(150);
-    displayDigit(count);
-    delay(150);
-  }
-}
-
-float readDistance() {
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  long duration = pulseIn(pinEcho, HIGH);
-  return duration / 58.0;
-}
-
-void incrementCount() {
-  count = (count + 1) % 10;
-  displayDigit(count);
-  Serial.print("目前計數: ");
-  Serial.println(count);
-
-  if (count == targetCount) {
-    Serial.println(">>> 已達標，一箱完成！ <<<");
-    flashAll();
-  }
-}
-
-void setup() {
-  pinMode(dataPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(pinButton, INPUT);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
   Serial.begin(9600);
-  displayDigit(0);
-  Serial.println("=== 產線數字看板系統啟動 ===");
 }
 
 void loop() {
-  // --- 按鈕手動計數 ---
-  int currentButtonState = digitalRead(pinButton);
-  if (currentButtonState == HIGH && lastButtonState == LOW) {
-    delay(50);
-    incrementCount();
+  byte chip[3];
+  for (int c = 0; c < chips; c++) {
+    for (int q = 0; q < 8; q++) {
+      for (int i = 0; i < chips; i++) chip[i] = 0;
+      chip[c] = 1 << q;
+      sendOut(chip, chips);
+      Serial.print("Chip ");
+      Serial.print(c + 1);
+      Serial.print("  Q");
+      Serial.println(q);
+      delay(400);
+    }
   }
-  lastButtonState = currentButtonState;
+}
+```
 
-  // --- 超音波自動計數 ---
-  float distance = readDistance();
-  bool isNear = distance < 15;
-  if (isNear && !wasNear) {
-    incrementCount();
+**檢查標準**：燈依 Q0 → Q7 的順序亮，和 Serial Monitor 一致。如果順序亂跳，檢查 Q0 是不是接到 Pin 15。
+
+### 🔧 工具 2：七段顯示器測試器
+
+接好七段顯示器後先跑這支：依序顯示 0～9，每個數字停 0.8 秒。
+
+```cpp
+int dataPin = 2, clockPin = 3, latchPin = 4;   // ← 改成你的腳位
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+}
+
+void loop() {
+  for (int n = 0; n < 10; n++) {
+    digitalWrite(latchPin, LOW);
+    shiftOut(dataPin, clockPin, MSBFIRST, font[n]);
+    digitalWrite(latchPin, HIGH);
+    delay(800);
   }
-  wasNear = isNear;
+}
+```
 
+**檢查標準**：數字形狀正確。如果「1」看起來像別的形狀，表示 a～g 的接線順序錯了。
+
+> 📌 **每個專案的固定流程**
+> 1. **Step 0**：算出需要幾個輸出 → 決定幾顆 74HC595 → 填腳位規劃表
+> 2. 先接 74HC595 和燈（或七段顯示器），用測試器確認
+> 3. 照 Step 1 → 2 → 3 逐步接線，每完成一步就把對應的功能開關改成 `true`
+
+---
+
+## 專案一：商店招牌燈效
+
+⭐ **難度**：1 顆 74HC595 ＋ 8 顆 LED，再加按鈕與旋鈕
+
+**客戶需求**：手搖飲店的招牌要裝 8 顆燈做燈效。店員按按鈕可以切換四種燈效（跑馬燈、交錯閃、堆疊、全閃），旋鈕調整速度。老闆特別交代：Arduino 的腳要省著用，以後還要加其他功能。
+
+### Step 0：腳位規劃
+
+| 問題 | 你的答案 |
+| --- | --- |
+| 8 顆燈直接接 Arduino 要幾隻腳？用 74HC595 要幾隻？ | |
+| 74HC595 的 MR、OE 各接哪裡？ | |
+
+| 元件 | 腳位 |
+| --- | --- |
+| 74HC595 DS／SHCP／STCP | |
+| 燈效切換鈕 | |
+| 速度旋鈕 | A0 |
+| **用了幾隻？還剩幾隻？** | |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | 74HC595＋8 顆 LED（各串 220Ω） | 跑馬燈效果 | （不用改） |
+| Step 2 | ＋1 顆按鈕 | 按一下切換下一種燈效 | `useButton = true` |
+| Step 3 | ＋1 顆旋鈕 | 旋鈕調整燈效速度 | `useKnob = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin  = ?;      // 74HC595 DS（Pin 14）
+int clockPin = ?;      // 74HC595 SHCP（Pin 11）
+int latchPin = ?;      // 74HC595 STCP（Pin 12）
+int btnMode  = ?;      // 燈效切換鈕
+int pinKnob  = A0;     // 速度旋鈕
+bool useButton = false; // Step 2 接好後改成 true
+bool useKnob   = false; // Step 3 接好後改成 true
+// ============================
+
+int effect = 0;
+int step = 0;
+int lastButton = LOW;
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(btnMode, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (useButton) {
+    int now = digitalRead(btnMode);
+    if (now == HIGH && lastButton == LOW) {
+      delay(50);
+      effect = (effect + 1) % 4;
+      step = 0;
+      Serial.print("Effect: ");
+      Serial.println(effect);
+    }
+    lastButton = now;
+  }
+
+  byte pattern = 0;
+  if (effect == 0)      pattern = 1 << (step % 8);                        // 跑馬燈
+  else if (effect == 1) pattern = (step % 2) ? 0b10101010 : 0b01010101;   // 交錯閃
+  else if (effect == 2) pattern = (1 << (step % 9)) - 1;                  // 堆疊
+  else                  pattern = (step % 2) ? 0b11111111 : 0b00000000;   // 全閃
+
+  byte chip[1] = { pattern };
+  sendOut(chip, 1);
+
+  int speed = 200;
+  if (useKnob) speed = map(analogRead(pinKnob), 0, 1023, 50, 500);
+  step++;
+  delay(speed);
+}
+```
+
+### 情境思考
+
+1. 本專案一共用了幾隻 Arduino 腳？如果沒有 74HC595，同樣的功能要幾隻？
+2. 想讓 8 顆燈「由左往右」跑，卻是「由右往左」。**不改程式**要怎麼修？
+3. 💼 招牌燈效太花俏會不會反而讓顧客不舒服？你會建議老闆在什麼時段用什麼燈效？
+
+### ✅ 專案一驗收
+
+- [ ] 74HC595 測試器確認 Q0～Q7 依序亮起
+- [ ] 跑馬燈效果正確
+- [ ] 按鈕能切換四種燈效
+- [ ] 旋鈕能調整速度
+- [ ] 8 顆 LED 各有 220Ω，MR 接 5V、OE 接 GND
+
+---
+
+## 專案二：行人號誌倒數器
+
+⭐⭐ **難度**：74HC595 ＋ 七段顯示器 ＋ 紅綠燈 ＋ 按鈕 ＋ 蜂鳴器
+
+**客戶需求**：市政府要在學校前的路口裝「按鈕式行人號誌」。平常行人紅燈；行人按下按鈕，2 秒後轉綠燈，七段顯示器從 9 倒數到 0，**最後 3 秒綠燈閃爍**提醒加快腳步，倒數結束回到紅燈。為了照顧視障者，綠燈期間蜂鳴器每秒「嗶」一聲，最後 3 秒改為急促的嗶聲（**無障礙號誌**）。
+
+### Step 0：腳位規劃
+
+| 元件 | 腳位 |
+| --- | --- |
+| 74HC595 DS／SHCP／STCP | |
+| 行人紅燈、綠燈 | |
+| 行人按鈕 | |
+| 蜂鳴器 | |
+
+> 🤔 紅燈、綠燈要接 Arduino，還是接 74HC595 的 Q7（七段的小數點用不到時）？兩種都可以，請說明你的選擇。本專案範例程式把紅綠燈接 Arduino。
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到／聽到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | 74HC595＋七段顯示器（a～dp 各串 220Ω） | 七段顯示器 9 → 0 循環倒數展示 | （不用改） |
+| Step 2 | ＋紅燈＋綠燈＋按鈕 | 平時紅燈；按下按鈕 2 秒後轉綠倒數，最後 3 秒綠燈閃 | `useButton = true` |
+| Step 3 | ＋蜂鳴器 | 綠燈每秒嗶一聲，最後 3 秒急促嗶 | `useSound = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin  = ?;      // 74HC595 DS
+int clockPin = ?;      // 74HC595 SHCP
+int latchPin = ?;      // 74HC595 STCP
+int ledRed   = ?;      // 行人紅燈
+int ledGreen = ?;      // 行人綠燈
+int btnWalk  = ?;      // 行人按鈕
+int pinBuzzer = ?;     // 蜂鳴器
+int walkTime = 9;      // 綠燈秒數（最多 9）
+bool useButton = false; // Step 2 接好後改成 true
+bool useSound  = false; // Step 3 接好後改成 true
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+void showDigit(int n) {               // n = -1 代表熄滅
+  byte chip[1] = { (n < 0) ? (byte)0 : font[n] };
+  sendOut(chip, 1);
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+  pinMode(ledGreen, OUTPUT);
+  pinMode(btnWalk, INPUT);
+}
+
+void loop() {
+  if (!useButton) {                   // Step 1：倒數展示
+    for (int s = 9; s >= 0; s--) { showDigit(s); delay(800); }
+    return;
+  }
+
+  digitalWrite(ledRed, HIGH);
+  digitalWrite(ledGreen, LOW);
+  showDigit(-1);
+
+  if (digitalRead(btnWalk) == HIGH) {
+    delay(2000);                      // 等車道轉紅
+    digitalWrite(ledRed, LOW);
+    for (int s = walkTime; s >= 0; s--) {
+      showDigit(s);
+      if (s > 3) {                    // 一般綠燈
+        digitalWrite(ledGreen, HIGH);
+        if (useSound) tone(pinBuzzer, 1000, 100);
+        delay(1000);
+      } else {                        // 最後 3 秒：綠燈閃、急促嗶
+        for (int k = 0; k < 4; k++) {
+          digitalWrite(ledGreen, k % 2 == 0 ? HIGH : LOW);
+          if (useSound) tone(pinBuzzer, 1500, 60);
+          delay(250);
+        }
+      }
+    }
+    digitalWrite(ledGreen, LOW);
+  }
+}
+```
+
+### 情境思考
+
+1. 七段顯示器的小數點（dp）這個專案沒用到，接在 Q7 上的那條線可以省略嗎？省略的話，Q7 可以拿來接什麼？
+2. 為什麼按下按鈕後要「等 2 秒」才轉綠燈，而不是立刻轉？
+3. 💼 學校前的路口，上下學時段行人多、其他時段行人少。號誌的綠燈秒數應該固定嗎？你會建議交通局怎麼調整？
+
+### ✅ 專案二驗收
+
+- [ ] 七段顯示器能正確顯示 9～0
+- [ ] 平時紅燈；按下按鈕 2 秒後轉綠並倒數
+- [ ] 最後 3 秒綠燈閃爍
+- [ ] 綠燈期間每秒嗶一聲，最後 3 秒急促嗶
+- [ ] 七段顯示器每段都有 220Ω，屬性為共陰極
+
+---
+
+## 專案三：兩位數產量計數器
+
+⭐⭐⭐ **難度**：**2 顆 74HC595 串接** ＋ 2 顆七段顯示器 ＋ 超音波 ＋ 旋鈕 ＋ 按鈕 ＋ 蜂鳴器
+
+**客戶需求**：食品工廠包裝線末端，要一個大大的兩位數計數器（00～99）。產品經過超音波時自動加 1。班長用旋鈕設定本班目標產量，**達標時蜂鳴器播放提示，個位數的小數點開始閃爍**。交班時按「歸零鈕」重新計數。
+
+### Step 0：腳位規劃（本專案的重頭戲）
+
+| 問題 | 你的答案 |
+| --- | --- |
+| 兩位數字需要幾個段位輸出？直接接 Arduino 要幾隻腳？ | |
+| 2 顆 74HC595 怎麼串接？第 1 顆的哪隻腳接到第 2 顆的哪隻腳？ | |
+| 哪一顆接十位數、哪一顆接個位數？ | 本專案：第 1 顆接十位、第 2 顆接個位 |
+
+| 元件 | 腳位 |
+| --- | --- |
+| 74HC595 DS（只接第 1 顆） | |
+| SHCP、STCP（兩顆並接） | |
+| HC-SR04 Trig／Echo | |
+| 目標旋鈕 | A0 |
+| 歸零鈕 | |
+| 蜂鳴器 | |
+| **一共用了幾隻？** | |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | 2 顆 74HC595 串接＋2 顆七段＋HC-SR04 | 產品每經過一次，計數 00 → 01 → … → 99 | （不用改） |
+| Step 2 | ＋旋鈕＋蜂鳴器 | 達到目標時播放提示，個位小數點閃爍 | `useTarget = true` |
+| Step 3 | ＋歸零鈕 | 按下歸零，Serial Monitor 印出本班產量 | `useReset = true` |
+
+### 程式（只改設定區）
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin  = ?;                   // 第 1 顆 74HC595 的 DS
+int clockPin = ?;                   // 兩顆的 SHCP（並接）
+int latchPin = ?;                   // 兩顆的 STCP（並接）
+int pinTrig = ?, pinEcho = ?;       // HC-SR04
+int pinKnob = A0;                   // 目標旋鈕
+int btnReset = ?;                   // 歸零鈕
+int pinBuzzer = ?;                  // 蜂鳴器
+float passCM = 10;                  // 小於這個距離算「產品經過」
+bool useTarget = false;             // Step 2 接好後改成 true
+bool useReset  = false;             // Step 3 接好後改成 true
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+int count = 0;
+bool wasPassing = false;
+bool reached = false;
+int lastReset = LOW;
+int tick = 0;
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+// 第 1 顆＝十位、第 2 顆＝個位；dot=true 時個位小數點亮
+void showNumber(int n, bool dot) {
+  byte chip[2];
+  chip[0] = font[(n / 10) % 10];
+  chip[1] = font[n % 10] | (dot ? 0b10000000 : 0);
+  sendOut(chip, 2);
+}
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  pinMode(btnReset, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  tick++;
+  bool passing = readCM(pinTrig, pinEcho) < passCM;
+  if (passing && !wasPassing && count < 99) count++;
+  wasPassing = passing;
+
+  int target = map(analogRead(pinKnob), 0, 1023, 5, 99);
+  if (useTarget && count >= target && !reached) {
+    reached = true;
+    Serial.println("TARGET REACHED");
+    tone(pinBuzzer, 1047, 200); delay(250);
+    tone(pinBuzzer, 1319, 400);
+  }
+  if (count < target) reached = false;
+
+  if (useReset) {
+    int now = digitalRead(btnReset);
+    if (now == HIGH && lastReset == LOW) {
+      delay(50);
+      Serial.print("Shift output: ");
+      Serial.println(count);
+      count = 0;
+      reached = false;
+    }
+    lastReset = now;
+  }
+
+  bool dot = useTarget && reached && (tick / 5) % 2;
+  showNumber(count, dot);
   delay(50);
 }
 ```
-**教學重點**：這段程式碼把「按鈕觸發」與「超音波觸發」兩種完全不同的輸入來源，統一導向同一個 `incrementCount()` 函式——這再次展現了模組化設計的價值：不管資料從哪裡來，只要呼叫同一個處理函式，就能確保計數邏輯、達標判斷、顯示更新永遠保持一致，不會因為輸入來源不同而出現邏輯分歧或重複程式碼。
+
+### 情境思考
+
+1. 用你的腳位規劃表說明：本專案一共用了幾隻 Arduino 腳？如果兩顆七段顯示器直接接 Arduino，還放得下 HC-SR04 和其他元件嗎？
+2. 接好後發現十位和個位顯示相反（例如計數 12 卻顯示 21）。**不改程式**要怎麼修？
+3. 💼 「達標」之後，產線應該停下來還是繼續生產？超產和缺產各有什麼成本？
+
+### ✅ 專案三驗收
+
+- [ ] 2 顆 74HC595 正確串接（Q7' → 第 2 顆 DS；時脈、鎖存並接）
+- [ ] 每經過一個產品計數只加 1，能從 00 數到 99
+- [ ] 達到旋鈕設定的目標時播放提示、個位小數點閃爍
+- [ ] 歸零鈕能將計數歸零並印出本班產量
+- [ ] 腳位規劃表說明串接後仍只用 3 隻腳
 
 ---
 
-## 常見錯誤除錯站
+## 專案四：產線安燈總看板
 
-| 現象 | 可能原因 | 解決方式 |
-|---|---|---|
-| 位移暫存器完全沒有任何輸出反應 | MR（重置腳）沒有接 5V，或 OE（致能腳）沒有接 GND | 檢查 Pin 10 與 Pin 13 是否依指示正確接線，這兩隻腳常被忽略 |
-| 送出的數字跟預期的燈光圖案不一樣 | 對二進位與十進位的對應關係理解有誤 | 用計算機的「程式設計師模式」把十進位數字轉換成二進位，逐一核對每個位元對應哪顆燈 |
-| 七段顯示器顯示出奇怪的字型（不是預期的數字） | 字型碼數值填寫錯誤，或共陰極/共陽極接線方式搞混 | 逐一核對 `digitCodes[]` 陣列中每個數字的二進位字型碼是否正確 |
-| 畫面更新有明顯的閃爍或過渡效果 | 忘記正確使用 `latchPin` 的「先拉低、送資料、再拉高」流程 | 檢查每次更新顯示時，是否確實依照「LOW → shiftOut → HIGH」的順序執行 |
-| 位元左移運算 `1 << i` 結果不如預期 | 對位元運算不熟悉，實際數值與想像有落差 | 建議先手動列出 `i` 從 0 到 7 時，`1 << i` 各自等於多少（1, 2, 4, 8, 16, 32, 64, 128），逐一驗證 |
-| 計數超過 9 沒有正確歸零 | `% 10` 的取餘數邏輯寫錯位置或漏寫 | 檢查 `count = (count + 1) % 10;` 是否正確 |
+⭐⭐⭐⭐ **難度**：**3 顆 74HC595 串接**（8 顆站點燈＋2 位數字）＋ 鍵盤 ＋ 蜂鳴器 ＋ I2C LCD
+
+**客戶需求**：電子工廠有 8 個工作站，現場要一塊**安燈（Andon）總看板**：
+
+- 8 顆紅燈代表 8 個工作站：某站出問題時，作業員到看板旁的鍵盤輸入**站號（1～8）＋ `#`**，該站紅燈亮起；問題排除後再輸入一次，紅燈熄滅
+- 兩位數七段顯示器顯示**今天累計的異常次數**
+- 只要有任何一站異常，蜂鳴器每秒提醒一次
+- I2C LCD 顯示**目前停最久的是哪一站、已經停了幾秒**（讓主管知道優先處理誰）
+
+> 🏭 **安燈（Andon）** 是豐田生產系統的核心工具：任何人發現問題都能「拉繩停線」，讓問題立刻被看見、被處理。第 3 週我們做過單站的安燈，這週升級成全廠的總看板。
+
+### Step 0：腳位規劃（本專案的重頭戲）
+
+**先算一次不用 74HC595：**
+
+| 元件 | 需要幾隻腳 |
+| --- | --- |
+| 8 顆站點燈 | 8 |
+| 2 位七段顯示器 | 16 |
+| 鍵盤（3 行） | 7 |
+| 蜂鳴器 | 1 |
+| I2C LCD | 2 |
+| **合計** | |
+| **Arduino 可用** | 18 |
+
+**再算一次用 3 顆 74HC595 串接：**
+
+| 元件 | 需要幾隻腳 | 腳位 |
+| --- | --- | --- |
+| 74HC595 × 3（串接） | 3 | |
+| 鍵盤（3 行） | 7 | |
+| 蜂鳴器 | 1 | |
+| I2C LCD | 2 | A4、A5 |
+| **合計** | | |
+| **還剩幾隻？** | | |
+
+| 74HC595 | 接什麼 |
+| --- | --- |
+| 第 1 顆（最靠近 Arduino） | 8 顆站點燈（Q0＝第 1 站 … Q7＝第 8 站） |
+| 第 2 顆 | 十位數七段顯示器 |
+| 第 3 顆 | 個位數七段顯示器 |
+
+### 逐步接線
+
+| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- |
+| Step 1 | 第 1 顆 74HC595＋8 顆紅燈＋鍵盤（3 行） | 輸入站號＋`#`，該站燈亮；再輸入一次熄滅 | （不用改） |
+| Step 2 | ＋第 2、3 顆 74HC595（串接）＋2 顆七段＋蜂鳴器 | 顯示累計異常次數；有異常時每秒嗶 | `useCount = true` |
+| Step 3 | ＋I2C LCD | 顯示停最久的站與秒數、目前異常站數 | `useLCD = true` |
+
+> 💡 Step 1 只接 1 顆，程式也只送 1 顆的資料；Step 2 加上兩顆後，把 `useCount` 打開，程式就會送 3 顆的資料。
+
+### 程式（只改設定區）
+
+```cpp
+#include <Keypad.h>
+#include <Adafruit_LiquidCrystal.h>
+
+// ===== 設定區：只改這裡 =====
+int dataPin  = ?;                   // 第 1 顆 74HC595 的 DS
+int clockPin = ?;                   // 三顆的 SHCP（並接）
+int latchPin = ?;                   // 三顆的 STCP（並接）
+byte rowPins[4] = { ?, ?, ?, ? };   // 鍵盤 R1~R4
+byte colPins[4] = { ?, ?, ?, ? };   // 鍵盤 C1~C3（C4 不接，隨便填一隻空腳）
+int pinBuzzer = ?;                  // 蜂鳴器
+bool useCount = false;              // Step 2 接好後改成 true
+bool useLCD   = false;              // Step 3 接好後改成 true
+// ============================
+// I2C LCD：SDA 接 A4、SCL 接 A5
+
+char keys[4][4] = {
+  { '1', '2', '3', 'A' },
+  { '4', '5', '6', 'B' },
+  { '7', '8', '9', 'C' },
+  { '*', '0', '#', 'D' }
+};
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, 4, 4);
+Adafruit_LiquidCrystal lcd(0);
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+bool down[8];
+unsigned long downSince[8];
+int events = 0;
+String input = "";
+unsigned long lastBeep = 0;
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+void showLine(int row, String text) {
+  while (text.length() < 16) text += " ";
+  lcd.setCursor(0, row);
+  lcd.print(text.substring(0, 16));
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  for (int s = 0; s < 8; s++) down[s] = false;
+  if (useLCD) {
+    lcd.begin(16, 2);
+    lcd.setBacklight(1);
+  }
+  Serial.begin(9600);
+}
+
+void loop() {
+  // ---- 鍵盤：站號 + # 切換異常／排除 ----
+  char k = keypad.getKey();
+  if (k >= '1' && k <= '8') {
+    input = String(k);
+  } else if (k == '*') {
+    input = "";
+  } else if (k == '#' && input.length() == 1) {
+    int s = input.toInt() - 1;
+    down[s] = !down[s];
+    if (down[s]) {
+      events++;
+      downSince[s] = millis();
+      Serial.print("STATION ");
+      Serial.print(s + 1);
+      Serial.println(" DOWN");
+    } else {
+      Serial.print("STATION ");
+      Serial.print(s + 1);
+      Serial.print(" RECOVERED after ");
+      Serial.print((millis() - downSince[s]) / 1000);
+      Serial.println(" s");
+    }
+    input = "";
+  }
+
+  // ---- 站點燈圖案：第 s 站異常 → 第 s 位為 1 ----
+  byte stations = 0;
+  int downCount = 0;
+  int oldest = -1;
+  for (int s = 0; s < 8; s++) {
+    if (down[s]) {
+      stations |= (1 << s);
+      downCount++;
+      if (oldest < 0 || downSince[s] < downSince[oldest]) oldest = s;
+    }
+  }
+
+  // ---- 送出到 74HC595 ----
+  if (useCount) {
+    byte chip[3] = { stations, font[(events / 10) % 10], font[events % 10] };
+    sendOut(chip, 3);
+    if (downCount > 0 && millis() - lastBeep > 1000) {
+      tone(pinBuzzer, 1500, 100);
+      lastBeep = millis();
+    }
+  } else {
+    byte chip[1] = { stations };
+    sendOut(chip, 1);
+  }
+
+  // ---- LCD：停最久的站 ----
+  if (useLCD) {
+    if (oldest >= 0) {
+      showLine(0, "ST" + String(oldest + 1) + " DOWN " + String((millis() - downSince[oldest]) / 1000) + "s");
+    } else {
+      showLine(0, "ALL RUNNING");
+    }
+    showLine(1, "DOWN NOW: " + String(downCount) + (input.length() ? "  >" + input : ""));
+  }
+  delay(30);
+}
+```
+
+### 情境思考
+
+1. 用你的兩張腳位計算表說明：沒有 74HC595 時這個看板做得出來嗎？用了之後還剩幾隻腳？
+2. LCD 顯示「停最久的站」而不是「最新停的站」。為什麼主管更需要知道「停最久」的？
+3. 💼 每次站點恢復時，Serial Monitor 印出「停了幾秒」。如果把一個月的紀錄整理起來，生產主管可以做哪些分析？（提示：哪一站最常停、平均修復時間 MTTR）
+
+### ✅ 專案四驗收
+
+- [ ] 3 顆 74HC595 正確串接，用 74HC595 測試器（`chips = 3`）確認 24 個輸出依序亮
+- [ ] 輸入站號＋`#`，對應的站點燈亮；再輸入一次熄滅
+- [ ] 兩位數七段顯示器顯示累計異常次數
+- [ ] 有任何一站異常時，蜂鳴器每秒提醒一次
+- [ ] LCD 顯示停最久的站與秒數、目前異常站數
+- [ ] 腳位規劃表比較「有／沒有 74HC595」兩種方案
 
 ---
 
-## 練習題大補帖
+## 練習題大補帖：情境配置挑戰
 
-### 🟢 基礎題
-1. 修改範例 1-3 的閃爍間隔，從 500 毫秒改成 200 毫秒。
-2. 修改範例 2-1，自行設計一個新的燈光圖案數值並觀察效果（提示：可以先用計算機把想要的圖案換算成二進位再轉十進位）。
-3. 修改範例 3-2 的字型碼陣列，讓數字 6 改成「不點亮上方橫段」的簡化版寫法（俗稱另一種常見的 6 字型）。
-4. 修改範例 4-1 的顯示速度，從 500 毫秒改成 1000 毫秒。
-5. 修改範例 5-1，把計數上限從 9 改成 5（超過 5 就歸零）。
-
-### 🟡 中等題
-6. 設計一個「倒數顯示」：從 9 開始，每按一次按鈕遞減 1，數到 0 之後額外觸發蜂鳴器（需自行擴充接線）。
-7. 修改範例 2-2 的跑馬燈，改成「兩顆燈同時點亮並一起移動」的效果（提示：可以用 `(1 << i) | (1 << (i+1))` 這種位元或運算組合出兩個位元同時為 1）。
-8. 結合第 6 週所學，設計一個「溫度整數位數顯示器」：讀取 TMP36 溫度，取整數部分（需了解如何把 `float` 轉換成 `int`），顯示在七段顯示器上。
-9. 設計一個「錯誤圖案」：當計數器達到某個特定值時，顯示器改為顯示一個自訂的「非數字」圖案（例如全部橫段組成的圖案），代表異常警示。
-10. 修改 BOSS 關程式碼，新增功能：達標慶祝閃爍時，額外統計「今天總共完成了幾箱」並印出。
-
-### 🔴 挑戰題
-11. **雙位數顯示挑戰（進階電路思考）**：如果想顯示兩位數字（例如 0~99），你會需要第二顆七段顯示器。請思考：這種情況下，你會如何設計電路與程式邏輯（提示：可以研究「共用位移暫存器、輪流快速切換兩個顯示器」的多工顯示技巧，這是真實多位數顯示器產品的常見做法）。
-12. **級聯多顆位移暫存器**：74HC595 有一隻「串接輸出腳（Q7'）」可以接到下一顆 74HC595 的資料輸入腳，理論上能無限串接擴充更多輸出。請查閱相關資料，說明這種「串接（Daisy Chain）」的接線方式與程式碼需要如何調整（本題為研究型挑戰，不強制要求完整實作）。
-13. **二進位圖案設計器**：設計一個透過旋鈕（需自行擴充接線）即時選擇 0~255 之間任意數值，並即時顯示對應燈光圖案的「二進位視覺化教具」，可以用來教其他同學認識二進位。
-14. **位元運算應用練習**：research並嘗試使用 `|`（位元或）、`&`（位元且）、`~`（位元反轉）等其他位元運算子，設計一個能「切換單一顆燈的開關狀態，而不影響其他顆燈」的函式（提示：這需要用到 XOR 位元運算 `^`）。
-15. **完全自訂數字看板應用**：不參考任何範例，設計一個「你認為最實用的產線數字看板應用」，至少要用到：`shiftOut()`、字型碼查表顯示、至少一種感測或按鈕觸發的計數邏輯。
+> 🎯 **本區定位**：四個範例專案是「跟著做」，這一區換你「自己規劃」。每一關先**算出需要幾個輸出**，決定用幾顆 74HC595，再規劃腳位、動手接線。
+>
+> 📈 **難度安排**：
+>
+> | 關卡 | 74HC595 | 顯示 | 其他元件 | 配線重點 |
+> | --- | --- | --- | --- | --- |
+> | Lv.1 | 1 | 1 位數字 | 2 按鈕 | 七段顯示器基本接法 |
+> | Lv.2 | 1 | 8 顆燈 | 旋鈕 | 燈條圖案 |
+> | Lv.3 | 1 | 1 位數字 | 按鈕＋蜂鳴器 | 用 Q7 小數點當指示燈 |
+> | Lv.4 | 2 | 2 位數字 | TMP36＋RGB | 串接＋RGB 調光 |
+> | Lv.5 | 3 | 8 顆燈＋2 位數字 | HC-SR04＋旋鈕＋按鈕＋蜂鳴器 | 3 顆串接 |
+> | Lv.6 | 自訂 | 自訂 | 自訂 | 顧問提案 |
+>
+> 📌 **作答規則**：每一關先填腳位規劃表（含「有／沒有 74HC595」的腳位比較），再接線；接好後先用測試器確認，最後才上傳程式。程式只需要改「設定區」。
 
 ---
 
-## 🎨 額外主題卡（給想多做的人）
+### 🟢 Lv.1 電梯樓層顯示
 
-> **主題卡 A：骰子模擬器**
-> 用位移暫存器搭配 8 顆 LED（排列成骰子的九宮格點位樣式），設計按下按鈕隨機顯示 1~6 點的骰子效果，可複習第 1 週學過的 `random()`。
+**情境**：三層樓以上的小型電梯（1～9 樓），車廂內有一顆七段顯示器。按「上樓鈕」電梯每 1 秒上一層，按「下樓鈕」每 1 秒下一層，一次移動一層，顯示器同步更新。到頂樓或一樓後按鈕無效。
 
-> **主題卡 B：倒數計時器看板**
-> 結合七段顯示器與蜂鳴器，設計一個從 9 開始倒數的計時器，數到 0 時觸發警報聲，模擬產線上的「循環週期計時器」。
+**元件**：1 顆 74HC595＋1 顆七段顯示器＋2 顆按鈕
 
-> **主題卡 C：二進位教學展示板**
-> 專門設計一套「輸入十進位數字（用第 12 週的矩陣鍵盤），自動轉換並顯示對應二進位燈光圖案」的教學小工具，適合用來介紹電腦如何用二進位儲存資料。
+**程式**：
 
-> **主題卡 D：分數等級燈號**
-> 結合第 4 週的旋鈕，把旋鈕數值轉換成 0~9 的等級並顯示在七段顯示器上，模擬遊戲機台的「難度選擇顯示」介面。
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin = ?, clockPin = ?, latchPin = ?;   // 74HC595
+int btnUp = ?, btnDown = ?;                    // 上樓鈕、下樓鈕
+int topFloor = 9;                              // 最高樓層
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+int floorNow = 1;
+
+void showDigit(int n) {
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, MSBFIRST, font[n]);
+  digitalWrite(latchPin, HIGH);
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(btnUp, INPUT);
+  pinMode(btnDown, INPUT);
+}
+
+void loop() {
+  showDigit(floorNow);
+  if (digitalRead(btnUp) == HIGH && floorNow < topFloor) {
+    delay(1000);
+    floorNow++;
+  }
+  if (digitalRead(btnDown) == HIGH && floorNow > 1) {
+    delay(1000);
+    floorNow--;
+  }
+}
+```
+
+**情境思考**：
+
+1. 本關只需要 a～g 七段，小數點沒用到。Q7 那條線可以不接嗎？
+2. 💼 很多大樓沒有「4 樓」或「13 樓」。如果客戶要求顯示時跳過 4 樓，需要改接線還是改程式？
+
+---
+
+### 🟢 Lv.2 音響音量燈條
+
+**情境**：音響面板上 8 顆燈排成一條，用旋鈕調音量時，燈條即時顯示音量大小（0～8 格）。第 4 週我們用 Arduino 直接接 5 顆燈做過類似的長條燈，這次改用 74HC595。
+
+**元件**：1 顆 74HC595＋8 顆 LED＋1 顆旋鈕
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin = ?, clockPin = ?, latchPin = ?;   // 74HC595
+int pinKnob = A0;                              // 音量旋鈕
+// ============================
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+}
+
+void loop() {
+  int lit = map(analogRead(pinKnob), 0, 1024, 0, 9);   // 0~8 格
+  byte pattern = (1 << lit) - 1;                       // 亮 lit 格
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, MSBFIRST, pattern);
+  digitalWrite(latchPin, HIGH);
+  delay(30);
+}
+```
+
+**情境思考**：
+
+1. 和第 4 週的 5 格長條燈相比，這次燈變多了，Arduino 的腳反而用得更少。各用了幾隻？
+2. 真實音響的音量燈條，最上面兩格通常是紅色、其他是綠色。不改程式，你要怎麼做到？
+
+---
+
+### 🟢 Lv.3 週年慶抽獎機
+
+**情境**：百貨公司週年慶的抽獎機。顧客按下按鈕，七段顯示器快速滾動數字，越滾越慢，最後停在 0～9 其中一個數字。抽到 **7** 是大獎：播放慶祝音樂，**小數點閃爍**；其他數字是普獎，嗶一聲。
+
+**元件**：1 顆 74HC595＋1 顆七段顯示器＋1 顆按鈕＋1 顆蜂鳴器
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin = ?, clockPin = ?, latchPin = ?;   // 74HC595
+int btnDraw = ?;                               // 抽獎鈕
+int pinBuzzer = ?;                             // 蜂鳴器
+int bigPrize = 7;                              // 大獎號碼
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+int lastButton = LOW;
+int result = 0;
+
+void show(byte pattern) {
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, MSBFIRST, pattern);
+  digitalWrite(latchPin, HIGH);
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(btnDraw, INPUT);
+  randomSeed(analogRead(A5));
+  show(font[0]);
+}
+
+void loop() {
+  int now = digitalRead(btnDraw);
+  if (now == HIGH && lastButton == LOW) {
+    delay(50);
+    for (int i = 0; i < 25; i++) {               // 越滾越慢
+      result = random(0, 10);
+      show(font[result]);
+      tone(pinBuzzer, 800, 20);
+      delay(30 + i * 12);
+    }
+    if (result == bigPrize) {
+      int notes[] = { 523, 659, 784, 1047 };
+      for (int k = 0; k < 8; k++) {
+        show(font[result] | ((k % 2) ? 0b10000000 : 0));   // 小數點閃爍
+        tone(pinBuzzer, notes[k % 4], 150);
+        delay(200);
+      }
+    } else {
+      tone(pinBuzzer, 600, 300);
+    }
+    show(font[result]);
+  }
+  lastButton = now;
+}
+```
+
+**情境思考**：
+
+1. 小數點本來是顯示數字用的，這裡拿來當「中大獎指示燈」。還有哪些情境可以這樣「一物多用」？
+2. 💼 抽中大獎的機率是 1/10。如果百貨公司預算只夠送出 5 個大獎，但預計有 200 人來抽，應該怎麼調整？這是技術問題還是管理問題？
+
+---
+
+### 🟡 Lv.4 機房兩位數溫度顯示
+
+**情境**：機房門口要一個大大的兩位數溫度顯示器（00～99°C），讓巡檢人員不用進門就看得到。旁邊一顆 RGB 燈用**漸層**顯示溫度：越冷越藍、越熱越紅。
+
+**元件**：2 顆 74HC595（串接）＋2 顆七段顯示器＋TMP36＋RGB
+
+**你要想的問題**：
+
+- RGB 要漸層變色，需要調光。它可以接在 74HC595 上嗎？為什麼？
+- 本關沒有伺服、蜂鳴器，RGB 可以用哪些 `~` 腳？
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin = ?, clockPin = ?, latchPin = ?;   // 74HC595（2 顆串接）
+int pinTemp = A0;                              // TMP36
+int pinR = ?, pinG = ?, pinB = ?;              // 漸層 RGB（~ 腳）
+int coldTemp = 18, hotTemp = 35;               // 藍色與紅色對應的溫度
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+
+float readC(int pin) {
+  float voltage = analogRead(pin) * 5.0 / 1023.0;
+  return (voltage - 0.5) * 100.0;
+}
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(pinR, OUTPUT);
+  pinMode(pinG, OUTPUT);
+  pinMode(pinB, OUTPUT);
+}
+
+void loop() {
+  int t = constrain((int)readC(pinTemp), 0, 99);
+  byte chip[2] = { font[t / 10], font[t % 10] };   // 第 1 顆十位、第 2 顆個位
+  sendOut(chip, 2);
+
+  int red = map(constrain(t, coldTemp, hotTemp), coldTemp, hotTemp, 0, 255);
+  analogWrite(pinR, red);
+  analogWrite(pinG, 0);
+  analogWrite(pinB, 255 - red);
+  delay(300);
+}
+```
+
+**情境思考**：
+
+1. 兩位數顯示器看不到小數（例如 24.7°C 顯示成 24）。對機房巡檢來說夠用嗎？如果要顯示一位小數，需要幾顆七段顯示器？小數點要亮哪一顆的？
+2. 💼 巡檢人員每天要記錄溫度。這個顯示器讓他不用進門，但還是要「人去看」。下一步可以怎麼省掉人工記錄？
+
+---
+
+### 🔴 Lv.5 產線節拍時間看板
+
+**情境**：汽車零件組裝線，每一件產品都要在**節拍時間（Takt Time）**內完成。產線旁的看板：
+
+- **兩位數七段顯示器**：倒數這一件剩下幾秒；產品完成（超音波偵測到產品送出）就重新開始倒數
+- 倒數到 0 還沒完成 → 蜂鳴器提醒、小數點閃爍，並記錄一次「延遲」
+- **8 顆燈**：本班進度，每完成目標的 1/8 多亮一格
+- 旋鈕設定節拍時間（10～60 秒），按鈕交班歸零，Serial Monitor 印出完成數與延遲次數
+
+> 🏭 **節拍時間（Takt Time）** ＝ 可用生產時間 ÷ 顧客需求數量。它是精實生產的「心跳」：每隔多久就必須完成一件，才能剛好滿足需求。
+
+**元件**：3 顆 74HC595（串接）＋8 顆 LED＋2 顆七段顯示器＋HC-SR04＋旋鈕＋按鈕＋蜂鳴器
+
+**Step 0：腳位規劃（本關重點）**
+
+| 74HC595 | 接什麼 |
+| --- | --- |
+| 第 1 顆 | 8 顆進度燈 |
+| 第 2 顆 | 十位數七段 |
+| 第 3 顆 | 個位數七段 |
+
+| 元件 | 不用 74HC595 | 用 74HC595 |
+| --- | --- | --- |
+| 8 顆燈＋2 位數字 | 24 | 3 |
+| HC-SR04 | 2 | 2 |
+| 旋鈕 | 1（A 腳） | 1（A 腳） |
+| 按鈕、蜂鳴器 | 2 | 2 |
+| **合計** | | |
+
+**程式**：
+
+```cpp
+// ===== 設定區：只改這裡 =====
+int dataPin = ?, clockPin = ?, latchPin = ?;   // 74HC595（3 顆串接）
+int pinTrig = ?, pinEcho = ?;                  // HC-SR04（產品送出偵測）
+int pinKnob = A0;                              // 節拍時間旋鈕
+int btnReset = ?;                              // 交班歸零鈕
+int pinBuzzer = ?;                             // 蜂鳴器
+int shiftTarget = 40;                          // 本班目標件數
+float doneCM = 10;                             // 小於這個距離算「產品送出」
+// ============================
+
+byte font[10] = {
+  0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
+  0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
+};
+int done = 0, late = 0;
+unsigned long cycleStart = 0;
+bool wasPassing = false, lateMarked = false;
+int lastReset = LOW;
+
+void sendOut(byte chip[], int n) {
+  digitalWrite(latchPin, LOW);
+  for (int i = n - 1; i >= 0; i--) shiftOut(dataPin, clockPin, MSBFIRST, chip[i]);
+  digitalWrite(latchPin, HIGH);
+}
+
+float readCM(int trig, int echo) {
+  digitalWrite(trig, LOW);  delayMicroseconds(2);
+  digitalWrite(trig, HIGH); delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH, 30000);
+  if (t == 0) return 999;
+  return t / 58.0;
+}
+
+void setup() {
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
+  pinMode(pinTrig, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  pinMode(btnReset, INPUT);
+  Serial.begin(9600);
+  cycleStart = millis();
+}
+
+void loop() {
+  int takt = map(analogRead(pinKnob), 0, 1023, 10, 60);
+  int elapsed = (millis() - cycleStart) / 1000;
+  int remain = max(takt - elapsed, 0);
+
+  // ---- 產品完成：重新開始倒數 ----
+  bool passing = readCM(pinTrig, pinEcho) < doneCM;
+  if (passing && !wasPassing) {
+    done++;
+    Serial.print("Unit ");
+    Serial.print(done);
+    Serial.print(" done in ");
+    Serial.print(elapsed);
+    Serial.println(" s");
+    cycleStart = millis();
+    lateMarked = false;
+    remain = takt;
+  }
+  wasPassing = passing;
+
+  // ---- 超過節拍時間 ----
+  if (remain == 0 && !lateMarked) {
+    late++;
+    lateMarked = true;
+    tone(pinBuzzer, 500, 600);
+    Serial.println("LATE!");
+  }
+
+  // ---- 交班歸零 ----
+  int now = digitalRead(btnReset);
+  if (now == HIGH && lastReset == LOW) {
+    delay(50);
+    Serial.print("SHIFT END  Done: ");
+    Serial.print(done);
+    Serial.print("  Late: ");
+    Serial.println(late);
+    done = 0;
+    late = 0;
+    cycleStart = millis();
+    lateMarked = false;
+  }
+  lastReset = now;
+
+  // ---- 看板 ----
+  int lit = min(done * 8 / shiftTarget, 8);
+  byte progress = (1 << lit) - 1;
+  bool blink = (remain == 0) && ((millis() / 300) % 2);
+  byte chip[3] = {
+    progress,
+    font[(remain / 10) % 10],
+    (byte)(font[remain % 10] | (blink ? 0b10000000 : 0))
+  };
+  sendOut(chip, 3);
+  delay(50);
+}
+```
+
+**情境思考**：
+
+1. 附上你的腳位規劃表：用 3 顆 74HC595 後一共用了幾隻腳？還剩幾隻？
+2. 如果節拍時間是 30 秒，但作業員平均要 35 秒才完成一件，會發生什麼事？要解決這個問題，可以從哪些方向下手？（提示：增加人力、改善工法、調整需求）
+3. 💼 「延遲次數」是要拿來「懲罰作業員」還是「找出改善機會」？兩種用法會對現場文化造成什麼不同影響？
+
+---
+
+### 🏆 Lv.6 BOSS 關：物聯網顧問提案
+
+**情境**：你的顧問公司接到新客戶。從下面三個案例中**任選一個**，自己完成需求分析、元件選擇、腳位規劃與 Tinkercad 實作。
+
+> **案例 A：餐廳取餐號碼牌**
+> 廚房按按鈕叫下一號，兩位數七段顯示器顯示目前取餐號碼，蜂鳴器提示；8 顆燈顯示目前排隊人數（每顆代表 1 人）；顧客取號用另一顆按鈕。
+>
+> **案例 B：停車場 16 格車位燈**
+> 2 顆 74HC595 串接控制 16 顆車位燈（紅＝有車），管理員用鍵盤輸入車位號碼切換狀態；I2C LCD 顯示剩餘車位與最久停放的車位。
+>
+> **案例 C：自訂情境**
+> 自己找一個需要「很多燈」或「數字顯示」的場域（例如：球場計分板、會議室預約燈牆、藥櫃取藥指示、考場座位燈）。
+
+**最低規格**：
+
+- 至少 2 顆 74HC595 串接
+- 至少 1 種輸入元件
+- 總共控制 16 個以上的輸出（燈或七段段位）
+- 程式可以從專案一～四或 Lv.1～Lv.5 改寫，說明你是從哪裡改來的、改了哪些設定
+
+**繳交內容**：
+
+1. **需求分析**：這個系統解決什麼問題？誰會看這塊看板？（3～5 句）
+2. **輸出數量計算**：需要幾個輸出？幾顆 74HC595？每顆接什麼？
+3. **腳位規劃表**：「有／沒有 74HC595」兩種方案比較
+4. **Tinkercad 實作**：電路截圖＋74HC595 測試器截圖（`chips` 設成你的顆數）
+5. **擴充建議**：如果客戶要再加一倍的燈，你的設計要怎麼改？Arduino 腳位會增加嗎？
+
+**驗收標準**：
+
+- [ ] 74HC595 的 MR 接 5V、OE 接 GND，串接正確
+- [ ] 每個燈、每個七段段位都有 220Ω
+- [ ] 74HC595 測試器確認所有輸出依序亮
+- [ ] 需要調光的元件、輸入元件仍接 Arduino
+- [ ] 麵包板依功能分區，晶片跨在凹槽上
+
+---
+
+## 配線除錯站
+
+| 現象 | 先檢查這裡 | 修正方式 |
+| --- | --- | --- |
+| 所有燈都不亮 | 16 接 5V、8 接 GND；**MR（10）接 5V、OE（13）接 GND** | 逐腳核對接線地圖 |
+| 燈全亮或亂亮，不受控制 | DS、SHCP、STCP 三條線是否接對；程式腳位是否一致 | 用 74HC595 測試器確認 |
+| 順序亂跳（Q0 不是第一個亮） | Q0 是否接到 Pin 15（右排） | Q0 在右邊，Q1～Q7 在左邊 |
+| 七段顯示的數字形狀怪怪的 | a～g 是否依序接 Q0～Q6 | 用七段測試器，對照段位圖調整 |
+| 七段完全不亮 | 共同腳是否接 GND；屬性是否為共陰極 | 改成 Cathode |
+| 串接後第 2 顆不動 | 第 1 顆 Q7'（Pin 9）是否接第 2 顆 DS（Pin 14）；時脈、鎖存是否並接 | 檢查三條串接線 |
+| 兩位數顯示相反（12 變 21） | 十位、個位接在哪一顆 | 對調兩顆七段，或交換兩顆 74HC595 的輸出線 |
+| 接在 74HC595 上的燈不能調光 | 74HC595 沒有調光功能 | 需要調光的燈改接 Arduino 的 `~` 腳 |
+| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+
+---
+
+## 成果繳交與評分
+
+### 範例專案繳交
+
+每個專案各自建立一個 Tinkercad 檔案，命名格式：`W13-專案編號-學號`（例如 `W13-P3-B12345678`）。
+
+| 繳交項目 | 專案一 | 專案二 | 專案三 | 專案四 |
+| --- | --- | --- | --- | --- |
+| Tinkercad 分享連結 | ✅ | ✅ | ✅ | ✅ |
+| 輸出數量計算與 74HC595 顆數 | ✅ | ✅ | ✅ | ✅ |
+| 腳位規劃表（有／沒有 74HC595 比較） | ✅ | ✅ | ✅ | ✅ |
+| 完成 Step 3 的電路截圖 | ✅ | ✅ | ✅ | ✅ |
+| 情境思考題作答 | ✅ | ✅ | ✅ | ✅ |
+
+> 🎯 **最低完成標準**：專案一、二完成 Step 3，專案三、四至少完成 Step 2。
+
+### 練習題繳交
+
+| 關卡 | 繳交內容 | 建議定位 |
+| --- | --- | --- |
+| Lv.1～Lv.3 | Tinkercad 連結＋情境思考題 | 課堂暖身，全班必做 |
+| Lv.4 | ＋腳位規劃表 | 課後作業，必做 |
+| Lv.5 | ＋腳位規劃表＋麵包板擺放截圖 | 選做加分 |
+| Lv.6 BOSS | 完整顧問提案 | 可分組，作為期末專題暖身 |
+
+### 評分比重建議
+
+| 項目 | 比重 | 說明 |
+| --- | --- | --- |
+| 電路正確性 | 35% | 74HC595 接線與串接正確，每個 Step 功能正常 |
+| 腳位規劃 | 25% | 正確計算輸出數量與 74HC595 顆數，能比較兩種方案 |
+| 情境思考題 | 25% | 尤其是節拍時間、安燈等 💼 管理面向論述 |
+| 麵包板擺放 | 15% | 晶片位置正確、電阻排列整齊、分區清楚 |
+
+### 課堂時間建議（3 節課）
+
+| 時段 | 內容 |
+| --- | --- |
+| 第 1 節前 40 分鐘 | 認識 74HC595（電梯比喻）、接線地圖、燈號圖案；全班一起接 1 顆＋8 顆燈並跑測試器 |
+| 第 1 節後段 | 專案一 |
+| 第 2 節 | 七段顯示器、專案二、專案三（串接是重點） |
+| 第 3 節前段 | 專案四 |
+| 第 3 節後段 | 練習題 Lv.1～Lv.3 當堂完成，其餘帶回家 |
+
+> 💡 **教學建議**：74HC595 最常卡在「Q0 在右邊」和「MR、OE 沒接」。建議第 1 節全班一起接到 74HC595 測試器能讓 8 顆燈依序亮，再開始專案。
 
 ---
 
 ## 📖 本週詞彙表
 
-| 英文 / 語法 | 中文對照 | 白話解釋 |
-|---|---|---|
-| 位移暫存器（Shift Register） | 位移暫存器 | 用少量腳位、透過序列傳輸控制大量輸出的晶片 |
-| `shiftOut()` | 位移輸出 | 把一個位元組的資料依序透過資料腳送出 |
-| MSBFIRST | 高位元優先 | 資料傳輸時，從最高位元開始送出的順序慣例 |
-| 位元（bit） | 位元 | 只能是 0 或 1 的最小資料單位 |
-| 位元組（byte） | 位元組 | 8 個位元組成的資料單位 |
-| 位元左移（`<<`） | 位元左移運算 | 把二進位數字的所有位元往左移動指定的格數 |
-| 七段顯示器（7-Segment Display） | 七段顯示器 | 由 7 段可獨立點亮的 LED 組成，能顯示 0~9 數字的元件 |
-| 字型碼（Segment Pattern） | 字型碼 | 每個數字對應應該點亮哪幾段的資料組合 |
-| 鎖存（Latch） | 鎖存 | 確保資料傳輸完成後才一次性更新顯示，避免中途閃爍 |
+| 名稱 | 白話解釋 |
+| --- | --- |
+| 位移暫存器 74HC595 | 用 3 條線控制 8 個輸出的晶片 |
+| 資料（DS）／時脈（SHCP）／鎖存（STCP） | 74HC595 接 Arduino 的 3 條線 |
+| 串接（Daisy Chain） | 把多顆 74HC595 頭尾相連，仍只用 3 隻 Arduino 腳 |
+| Q7'（串接輸出） | 第 9 腳，接到下一顆的 DS |
+| 七段顯示器 | 7 條燈管（a～g）＋小數點拼出數字 |
+| 共陰極 | 七段顯示器的共同腳接 GND，段位給 1 就亮 |
+| 燈號圖案 | 用 `0b` 開頭的 8 個 0/1 表示 8 顆燈的亮滅 |
+| 安燈（Andon） | 讓任何人都能立刻通報異常的目視化管理工具 |
+| 節拍時間（Takt Time） | 為了滿足需求，每多久必須完成一件產品 |
+| 平均修復時間（MTTR） | 從異常發生到恢復，平均花多少時間 |
 
 ---
 
 ## 反思與延伸討論
 
-1. 這週學到「用 3 隻腳位控制 8 個以上輸出」的位移暫存器技術，跟第 12 週學過「用 8 隻腳位讀取 16 顆按鍵」的矩陣鍵盤，都是「用巧妙設計突破硬體腳位限制」的例子。請討論：這種設計思維，對於一個腳位數量有限的微控制器（如 Arduino Uno 只有約 20 隻可用腳位）來說，帶來了什麼樣的擴充彈性？
-2. 這是這學期第一次正式接觸「二進位思維」——用一個數字的每個位元代表不同的開關狀態。請討論：這種「一個變數同時儲存多個獨立資訊」的手法，相較於「每個狀態各自用一個獨立變數儲存」，在記憶體使用與程式效率上分別有什麼優缺點？
-3. 七段顯示器的字型碼設計，再次運用了「資料表取代大量條件判斷」的手法（這學期已經在色票陣列、密碼表等地方看過多次類似手法）。請討論：你認為「查表法」相較於「條件判斷法」，在程式碼的可維護性上有什麼優勢？如果要新增一種新的顯示圖案（例如字母 A），哪一種寫法修改起來比較輕鬆？
+1. 本週用 3 隻腳控制 24 個輸出，靠的是「一次送一位、送完再一起顯示」。這種「把很多事情排隊、批次處理」的做法，在管理上有沒有類似的例子？（提示：批次結帳、集中採購、排程）
+2. 專案四的安燈看板和 Lv.5 的節拍時間看板，都把「異常」和「延遲」變成數字。這些數字可以用來**找出改善機會**，也可能被用來**責怪個人**。身為管理者，你會怎麼設計看板與制度，讓現場人員願意主動回報問題？
+3. 74HC595 讓我們幾乎不再受限於「腳位不夠」。但它也有代價：不能調光、不能讀輸入、多了晶片和線路。回顧整學期的省腳位技巧，你會怎麼總結「什麼時候該用哪一招」？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 理解位移暫存器如何用少量腳位控制大量輸出
-- [ ] 能正確使用 `shiftOut()` 函式
-- [ ] 理解二進位與位元運算的基本概念（特別是位元左移 `<<`）
-- [ ] 能用字型碼查表方式控制七段顯示器顯示數字
-- [ ] 能結合位移暫存器與七段顯示器，實作完整的數字看板
-- [ ] 能整合按鈕與感測器實作計數應用
-- [ ] 完成至少 8 題基礎/中等練習題
+- [ ] 能正確接上 74HC595（電源、MR、OE、DS、SHCP、STCP、Q0～Q7）
+- [ ] 能用 74HC595 測試器確認 8 個輸出依序亮
+- [ ] 能把 2～3 顆 74HC595 正確串接
+- [ ] 能正確接上共陰極七段顯示器，並用測試器確認 0～9
+- [ ] 能用「1 代表亮、0 代表滅」設計燈號圖案
+- [ ] 能依輸出數量決定 74HC595 顆數，並比較「有／沒有 74HC595」的腳位
+- [ ] 能說明安燈、節拍時間等看板指標的管理意義
+- [ ] 完成 4 個獨立專案，並各自繳交 Tinkercad 檔案
+- [ ] 完成練習題 Lv.1～Lv.4，挑戰 Lv.5 與 Lv.6
 
 ---
 
 ## 下週預告
 
-第 14 週我們要學習「繼電器」與「PIR 動作感測器」，打造一間「智慧感應與操作台」主題房，你會學到如何用小訊號切換大功率負載（這是真實工業配電盤的核心元件），並設計「自動偵測模式」與「手動搖桿操作模式」互相切換的完整控制邏輯。
+第 14 週要學**繼電器**和 **PIR 人體感測器**，打造「智慧感應與操作台」。繼電器是 L293D 之後的另一種「以小控大」元件，能讓 Arduino 控制電燈、電扇這類家電；PIR 則能直接偵測「有沒有人」，比光敏電阻、超音波更適合做節能照明與保全系統。
 
 ---
 
-## 🔬 補充實驗室：十進位轉二進位速查表
-
-這張表提供 0~9 及本週範例常用數值的十進位/二進位對照，方便你在設計燈光圖案時快速查閱，不用每次都重新計算：
-
-| 十進位 | 二進位（8 位元） | 對應說明 |
-|---|---|---|
-| 0 | 00000000 | 全部熄滅 |
-| 1 | 00000001 | 只有 Q0 亮 |
-| 2 | 00000010 | 只有 Q1 亮 |
-| 4 | 00000100 | 只有 Q2 亮 |
-| 8 | 00001000 | 只有 Q3 亮 |
-| 16 | 00010000 | 只有 Q4 亮 |
-| 32 | 00100000 | 只有 Q5 亮 |
-| 64 | 01000000 | 只有 Q6 亮 |
-| 128 | 10000000 | 只有 Q7 亮 |
-| 85 | 01010101 | Q0、Q2、Q4、Q6 交錯亮起 |
-| 170 | 10101010 | Q1、Q3、Q5、Q7 交錯亮起（與 85 互補） |
-| 255 | 11111111 | 全部點亮 |
-
-**小練習**：對照這張表，試著推算「三顆相鄰的燈同時亮起（例如 Q0、Q1、Q2）」對應的十進位數值應該是多少？寫出來後，實際在 Tinkercad 中驗證你的答案是否正確。
-
----
-
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 12 週](./week-12.md) | [下一週：第 14 週 — 智慧感應與操作台 ➡](./week-14.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 12 週](week-12.md) | [下一週：第 14 週 — 智慧感應與操作台 ➡](week-14.md)

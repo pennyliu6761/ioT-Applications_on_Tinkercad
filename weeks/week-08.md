@@ -1,834 +1,853 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 7 週](./week-07.md) | [下一週：第 9 週 — 停車場雷達 ➡](./week-09.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 7 週](week-07.md) | [下一週：第 9 週 — 停車場雷達 ➡](week-09.md)
 
 ---
 
-# 第 8 週：期中專題 — 智慧密室綜合監控站
-## 主題專案：把七週所學全部串在一起
+# 第 8 週：期中專題 — 智慧場域整合提案
 
-> 🎯 **本週定位**：這一週**沒有新元件、沒有新語法**。密室老闆要驗收成果了——你要把前 7 週學過的所有技巧（LED、按鈕、RGB、旋鈕、蜂鳴器、光敏電阻、溫度感測、伺服馬達）全部整合到同一個完整專案中，打造一套「智慧密室綜合監控站」。這是檢驗這一個半月學習成果最重要的里程碑，也是這學期第一次體驗「系統整合」的完整開發流程：**硬體佈局 → 個別測試 → 核心邏輯撰寫 → 邊界測試 → 展示優化**。
+## 主題專案：從客戶需求到可驗收的系統
+
+> 🎯 **本週定位**：本週**沒有新元件、沒有新語法**。你們的顧問團隊要承接一個完整的客戶案，把前七週學過的所有元件整合成一套「智慧場域監控站」。
+>
+> 和前幾週一樣，**重點不在寫程式**（程式模板都已準備好），而在於顧問真正要做的事：
+>
+> 1. **需求分析**：客戶要解決什麼問題？誰會使用？
+> 2. **規格訂定**：溫度幾度算危險？可以容納幾人？燈多暗要開？
+> 3. **腳位規劃**：全學期最多元件的一次，`~` 腳怎麼分？
+> 4. **分模組建置**：先把每個功能各自做好、各自驗收
+> 5. **整合與安全優先權**：功能衝突時，誰說了算？
+> 6. **驗收測試與提案簡報**：證明系統可靠，說服客戶買單
+>
+> 🏁 **期中成果**：每組繳交 **4 個獨立的 Tinkercad 檔案**（3 個功能模組＋1 個整合系統）、1 份規劃書、1 份驗收測試報告，並進行 5 分鐘提案簡報。
 
 ---
 
 ## 📋 目錄
+
 - [學習地圖](#學習地圖)
-- [開場任務簡報](#開場任務簡報)
-- [系統架構總覽](#系統架構總覽)
-- [模擬設計專案配置](#模擬設計專案配置)
-- [後端程式設計：五道整合關卡](#後端程式設計五道整合關卡)
-  - [關卡 1：硬體總體檢 — 逐一驗證每個元件](#關卡-1硬體總體檢--逐一驗證每個元件)
-  - [關卡 2：核心邏輯骨架 — 建立模組化函式架構](#關卡-2核心邏輯骨架--建立模組化函式架構)
-  - [關卡 3：環境監控子系統 — 光線與溫度整合](#關卡-3環境監控子系統--光線與溫度整合)
-  - [關卡 4：互動控制子系統 — 按鈕、旋鈕、馬達整合](#關卡-4互動控制子系統--按鈕旋鈕馬達整合)
-  - [關卡 5：安全優先權設計 — 緊急停止與連鎖邏輯](#關卡-5安全優先權設計--緊急停止與連鎖邏輯)
-  - [🏆 BOSS 關：智慧密室綜合監控站完整系統](#-boss-關智慧密室綜合監控站完整系統)
-- [QA 品質保證：邊界測試清單](#qa-品質保證邊界測試清單)
-- [常見錯誤除錯站](#常見錯誤除錯站)
-- [練習題大補帖](#練習題大補帖)
-- [🎨 期中專題加碼挑戰](#-期中專題加碼挑戰)
-- [📖 本週詞彙表](#-本週詞彙表)
+- [專題簡報：選擇你的客戶](#專題簡報選擇你的客戶)
+- [系統架構：四個模組](#系統架構四個模組)
+- [全元件清單與腳位預算](#全元件清單與腳位預算)
+- [里程碑 0：需求分析與規劃書](#里程碑-0需求分析與規劃書)
+- [里程碑 1：照明模組](#里程碑-1照明模組)
+- [里程碑 2：溫度安全模組](#里程碑-2溫度安全模組)
+- [里程碑 3：出入管制模組](#里程碑-3出入管制模組)
+- [里程碑 4：系統整合與安全優先權](#里程碑-4系統整合與安全優先權)
+- [里程碑 5：驗收測試（QA）](#里程碑-5驗收測試qa)
+- [里程碑 6：提案簡報](#里程碑-6提案簡報)
+- [配線除錯站](#配線除錯站)
+- [繳交清單與評分](#繳交清單與評分)
+- [時程建議](#時程建議)
 - [反思與延伸討論](#反思與延伸討論)
-- [期中專題檢核清單與自評表](#期中專題檢核清單與自評表)
+- [📎 教師參考：腳位配置範例](#-教師參考腳位配置範例)
 
 ---
 
 ## 學習地圖
 
-### 這一個半月你已經會的所有技能
-| 週次 | 核心技能 |
-|---|---|
-| 第 1 週 | `digitalWrite`、`for` 迴圈、陣列、自訂函式 |
-| 第 2 週 | `digitalRead`、`if-else`、防彈跳、狀態變數、`&&`/`\|\|` |
-| 第 3 週 | `analogWrite`（PWM）、RGB 混色、帶參數函式、二維陣列 |
-| 第 4 週 | `analogRead`、`map()`、`constrain()` |
-| 第 5 週 | `tone()`/`noTone()`、光敏電阻、狀態轉變偵測 |
-| 第 6 週 | TMP36 溫度換算、`float`、警報鎖定與人工復歸 |
-| 第 7 週 | `<Servo.h>`、物件導向雛形、安全連鎖 |
+### 你已經會的（第 1～7 週）
 
-### 這週不學新語法，而是學這件事
-| 觀念 | 說明 | 為什麼工業上重要 |
-|---|---|---|
-| 系統架構設計 | 先規劃整體架構，再逐步填入細節 | 任何專案開發的第一步都是架構設計，而非直接寫程式 |
-| 模組化開發 | 把大系統拆成獨立的子函式，各自開發、各自測試 | 大幅降低除錯難度，方便團隊分工合作 |
-| 邊界測試（QA） | 刻意用極端數值測試系統穩定性 | 產品上市前的必經流程，工程師的專業素養 |
-| 優先權設計 | 決定哪些邏輯（如安全條件）必須優先於其他邏輯執行 | 避免系統在多重條件衝突時做出錯誤反應 |
+| 週次 | 元件 | 本專題用在哪裡 |
+| --- | --- | --- |
+| 第 1 週 | 單色 LED、220Ω | 照明燈 |
+| 第 2 週 | 按鈕、10kΩ | 進場、離場、復歸、急停 |
+| 第 3 週 | RGB LED | 系統總狀態燈 |
+| 第 4 週 | 旋鈕 | 現場人員調整照明門檻 |
+| 第 5 週 | 蜂鳴器、光敏電阻 | 警報聲、環境光偵測 |
+| 第 6 週 | TMP36 | 溫度監控、鎖定與復歸 |
+| 第 7 週 | 伺服馬達 | 出入口閘門、安全連鎖 |
 
-### 使用平台
-本週繼續使用 [Tinkercad Circuits](https://www.tinkercad.com/)，程式編輯視窗維持「文字模式（Text）」。
+### 本週要練的能力（不是新元件，而是新層次）
+
+| 能力 | 白話說明 | 在職場上像什麼 |
+| --- | --- | --- |
+| 模組化 | 先把每個功能各自做好、驗收，再組合 | 專案管理的「工作分解結構（WBS）」 |
+| 優先權 | 兩個功能衝突時，誰先誰後 | 緊急事件處理 SOP 的層級 |
+| 驗收測試 | 主動找出系統的弱點，而不是等客戶抱怨 | 品管的出貨檢驗、使用者驗收測試（UAT） |
+| 提案簡報 | 用客戶聽得懂的語言說明價值與風險 | 顧問提案、業務簡報 |
 
 ---
 
-## 開場任務簡報
+## 專題簡報：選擇你的客戶
 
-> 📖 **情境**：密室老闆下週要帶投資人來參觀，要求你在這週把之前分散在各個房間的機關技術，整合成一套「總控室監控站」——集中顯示所有房間的環境狀態（光線、溫度）、控制核心機關（伺服馬達閘門）、並具備緊急應變能力（安全連鎖、警報系統）。這是你這學期第一次面對「不是學一個新東西，而是把很多舊東西組裝成一個更大的系統」的挑戰，這正是真實軟體工程師最常做的工作型態。
+> 📖 **情境**：顧問公司七週來接了 20 多個小案子，口碑傳開了。這次有三家客戶同時來詢問一個「整合型」的大案子。每組選一家客戶（或自訂），組成 3～4 人的顧問團隊承接。
+
+三家客戶的需求骨架相同，都由**照明、溫度安全、出入管制、緊急停止**四大功能組成，只是情境和規格不同：
+
+| 功能 | 案例 A：社區便利商店 | 案例 B：冷鏈倉儲中心 | 案例 C：溫室農場參觀園區 |
+| --- | --- | --- | --- |
+| **照明** | 天黑時招牌燈自動亮，越暗越亮 | 倉庫天黑時照明自動亮 | 陰天或傍晚補光燈自動亮 |
+| **溫度安全** | 冷藏櫃溫度監控 | 冷藏區溫度監控 | 溫室溫度監控 |
+| ─ 警戒線 | 7°C | 6°C | 32°C |
+| ─ 危險線 | 10°C | 8°C | 38°C |
+| **出入管制** | 自動門，店內人數上限 | 冷藏區門禁閘門，同時進入人數上限 | 參觀步道閘門，園區人數上限 |
+| ─ 人數上限 | 8 人 | 3 人 | 10 人 |
+| **緊急停止** | 店員急停鈕 | 倉管急停鈕 | 園區管理員急停鈕 |
+| **溫度危險時的連鎖** | 自動門鎖住不開（避免冷氣外洩、等待維修） | 門禁鎖住（避免人員進入異常區域） | 步道閘門鎖住（避免遊客進入過熱溫室） |
+
+> **案例 D：自訂客戶**
+> 自己找一個需要這四大功能的場域（例如：自習室、健身房、社區活動中心、實驗室）。須在里程碑 0 提出規格表，經老師同意後才能開始。
+
+> 💡 **思考**：三個案例的溫度危險線一個是 10°C、一個是 38°C，但程式邏輯完全相同——都是「超過危險線就鎖定」。這正是「把規格放在設定區」的好處：**同一套系統，換一組數字就能賣給不同客戶**。
+
+---
+
+## 系統架構：四個模組
+
+```
+┌──────────────── 智慧場域監控站 ────────────────┐
+│                                                │
+│  ┌─ 模組 1 照明 ─┐  ┌─ 模組 2 溫度安全 ─┐       │
+│  │ 光敏電阻       │  │ TMP36             │       │
+│  │ 旋鈕（門檻）   │  │ 蜂鳴器            │       │
+│  │ 照明燈（調光） │  │ RGB 狀態燈        │       │
+│  └────────────────┘  │ 復歸鈕            │       │
+│                      └───────────────────┘       │
+│  ┌─ 模組 3 出入管制 ─┐  ┌─ 模組 4 總控 ─┐       │
+│  │ 伺服閘門          │  │ 急停鈕         │       │
+│  │ 進場鈕、離場鈕    │  │ 優先權順序     │       │
+│  │ （共用蜂鳴器）    │  │ 安全連鎖       │       │
+│  └───────────────────┘  └────────────────┘       │
+└────────────────────────────────────────────────┘
+```
+
+**開發順序（也是繳交順序）**：
+
+| 里程碑 | 內容 | 產出 |
+| --- | --- | --- |
+| M0 | 需求分析、規格表、腳位規劃 | 規劃書（初稿） |
+| M1 | 照明模組 | Tinkercad 檔案 ①（獨立可運作） |
+| M2 | 溫度安全模組 | Tinkercad 檔案 ②（獨立可運作） |
+| M3 | 出入管制模組 | Tinkercad 檔案 ③（獨立可運作） |
+| M4 | 系統整合＋急停＋優先權 | Tinkercad 檔案 ④（完整系統） |
+| M5 | 驗收測試 | QA 測試報告 |
+| M6 | 提案簡報 | 5 分鐘簡報 |
+
+> 📌 **重要規則**：M1～M3 每個模組都要**照著 M0 的腳位規劃接線**。這樣到了 M4，只需要把三個電路「合併」到同一塊麵包板，腳位完全不用改。如果 M1～M3 各接各的，M4 會非常痛苦。
+
+---
+
+## 全元件清單與腳位預算
+
+### 元件清單
+
+| 元件 | 數量 | 用途 |
+| --- | --- | --- |
+| Arduino Uno R3 | 1 | 主控板 |
+| Breadboard | 1～2 | 電路佈局（元件多，可用兩塊） |
+| 光敏電阻＋10kΩ | 1 組 | 環境光偵測 |
+| 旋鈕 | 1 | 照明門檻調整 |
+| TMP36 | 1 | 溫度監控 |
+| 單色 LED＋220Ω | 1 組 | 照明燈 |
+| RGB LED＋220Ω × 3 | 1 組 | 系統總狀態燈 |
+| 蜂鳴器 | 1 | 警報與提示音 |
+| 伺服馬達 | 1 | 出入口閘門 |
+| 按鈕＋10kΩ | 4 組 | 進場、離場、復歸、急停 |
+
+### 腳位預算表（M0 必填）
+
+| 類別 | 元件 | 需要幾隻腳 | 需要哪一種腳？ |
+| --- | --- | --- | --- |
+| 類比輸入 | 光敏電阻、旋鈕、TMP36 | 3 | A 腳 |
+| 調光輸出 | 照明燈 | 1 | `~` 腳 |
+| 狀態輸出 | RGB | 3 | ？（請判斷） |
+| 數位輸出 | 蜂鳴器、伺服 | 2 | 一般腳即可 |
+| 數位輸入 | 4 顆按鈕 | 4 | 一般腳即可 |
+| **合計** | | **13** | |
+
+> 🤔 **規劃關鍵題**（回顧第 7 週「~ 腳可用表」）：
 >
-> 這週結束時，你會做出一套完整的「智慧密室綜合監控站」，具備以下功能：
-> 1. 環境光線自動照明
-> 2. 溫度異常警報（含鎖定與人工復歸）
-> 3. 旋鈕手動測試與參數調整
-> 4. 伺服馬達閘門控制（含容納量管制）
-> 5. 緊急停止機制（最高優先權）
-> 6. 完整的聲光反饋系統
+> 1. 系統裡同時有伺服和蜂鳴器，還能調光的 `~` 腳剩哪幾隻？
+> 2. 照明燈「越暗越亮」，一定要調光，它該接哪裡？
+> 3. RGB 總狀態燈只需要顯示綠、黃、紅、紫這些「全亮全滅組合」的顏色，它需要 `~` 腳嗎？
+> 4. 用完之後，還剩幾隻腳可以留給未來擴充？
 
 ---
 
-## 系統架構總覽
+## 里程碑 0：需求分析與規劃書
 
-在動手接線與寫程式之前，先花時間理解整個系統的架構藍圖，這是專業工程師開發任何系統前必做的第一步。
+**這是全專題最重要的一步，也是工管系最擅長的部分。** 規劃書請用以下格式（可以用 Word、Google 文件或簡報）：
 
-```
-┌─────────────────────────────────────────────────┐
-│              智慧密室綜合監控站                    │
-├─────────────────────────────────────────────────┤
-│                                                   │
-│  輸入層（感測與操作）      輸出層（反饋與動作）       │
-│  ─────────────────      ─────────────────       │
-│  • 光敏電阻 (A1)          • RGB LED 狀態燈 (~9~11) │
-│  • TMP36 溫度 (A2)        • 蜂鳴器警報 (Pin 8)     │
-│  • 旋鈕 (A0)              • 伺服馬達閘門 (Pin 6)   │
-│  • 進場按鈕 (Pin 7)        • 照明 LED (Pin 13)     │
-│  • 緊急停止鈕 (Pin 4)                              │
-│                                                   │
-├─────────────────────────────────────────────────┤
-│                邏輯判斷核心（loop()）                │
-│  優先權順序：                                       │
-│  ① 緊急停止（最高優先權，強制關閉所有輸出）             │
-│  ② 溫度安全連鎖（異常時鎖定閘門功能）                  │
-│  ③ 環境自動照明                                    │
-│  ④ 閘門容納量管制                                   │
-│  ⑤ 一般狀態顯示                                     │
-└─────────────────────────────────────────────────┘
-```
+### 一、需求分析（半頁）
 
-這張架構圖說明了兩件事：**「資料如何流動」**（感測器讀值 → 邏輯判斷 → 驅動輸出裝置）與**「優先權如何排序」**（安全相關的判斷永遠排在最前面）。這學期後半段的所有專題，都會沿用這種「先畫架構圖、再寫程式」的開發習慣。
+| 項目 | 你的回答 |
+| --- | --- |
+| 客戶是誰？目前遇到什麼問題？ | |
+| 這套系統的**使用者**有哪些角色？（例如：店員、顧客、維修人員） | |
+| 每個角色會「看到」或「操作」系統的哪些部分？ | |
+| 如果系統故障，最嚴重的後果是什麼？ | |
 
----
+### 二、規格表
 
-## 模擬設計專案配置
+| 規格項目 | 數值 | 理由或資料來源 |
+| --- | --- | --- |
+| 照明門檻（旋鈕可調範圍） | | |
+| 溫度警戒線 | | |
+| 溫度危險線 | | |
+| 人數上限 | | |
+| 閘門開啟角度／關閉角度 | | 用伺服測試器實測 |
+| 閘門開啟時間 | | |
 
-### 元件總表（本週不新增任何元件，全部沿用前 7 週）
-| 元件 | 數量 | 對應週次 | 腳位 |
-|---|---|---|---|
-| LED（照明燈） | 1 | 第 1 週 | Pin 13 |
-| Pushbutton（進場按鈕） | 1 | 第 2 週 | Pin 7 |
-| Pushbutton（緊急停止鈕） | 1 | 第 2 週 | Pin 4 |
-| 10kΩ 電阻 ×2 | 2 | 第 2 週 | 搭配上述按鈕 |
-| RGB LED（共陰極） | 1 | 第 3 週 | ~9 / ~10 / ~11 |
-| 220Ω 電阻 ×3 | 3 | 第 3 週 | 搭配 RGB LED |
-| Potentiometer | 1 | 第 4 週 | A0 |
-| Buzzer | 1 | 第 5 週 | Pin 8 |
-| Photoresistor | 1 | 第 5 週 | A1 |
-| 10kΩ 電阻（LDR 分壓用） | 1 | 第 5 週 | 搭配 LDR |
-| TMP36 | 1 | 第 6 週 | A2 |
-| Micro Servo | 1 | 第 7 週 | Pin 6 |
+### 三、狀態燈號定義表
 
-### 佈線建議
-麵包板空間有限，建議依照以下分區規劃，讓接線更有條理：
-- **左半部**：所有輸入類元件（兩顆按鈕、旋鈕、光敏電阻、TMP36）
-- **右半部**：所有輸出類元件（LED、RGB LED、蜂鳴器、伺服馬達）
-- **電源軌**：正負電源軌貫穿整塊麵包板共用，避免每個元件都各自接一條線回 Arduino
+RGB 總狀態燈同一時間只能顯示一種顏色，請定義**優先順序**（數字越小越優先）：
 
-### 完整腳位對照表
-| 元件 | 腳位 |
-|---|---|
-| 照明 LED | Pin 13 |
-| 進場按鈕 | Pin 7 |
-| 緊急停止鈕 | Pin 4 |
-| RGB LED - R / G / B | ~9 / ~10 / ~11 |
-| 旋鈕 | A0 |
-| 光敏電阻 | A1 |
-| TMP36 | A2 |
-| 蜂鳴器 | Pin 8 |
-| 伺服馬達 | Pin 6 |
+| 優先 | 狀況 | 顏色 | 蜂鳴器 |
+| --- | --- | --- | --- |
+| 1 | 緊急停止中 | 紅色閃爍 | 間歇低音 |
+| 2 | 溫度危險（已鎖定） | 紅色恆亮 | 持續高音 |
+| 3 | 溫度警戒 | 黃 | 間歇短嗶 |
+| 4 | 人數已滿 | 紫 | 有人要進場時發出拒絕聲 |
+| 5 | 一切正常 | 綠 | 安靜 |
 
-> 💡 **配置檢查清單**
-> - [ ] 12 個元件全部正確接線（可對照上表逐一勾選）
-> - [ ] 所有負極/接地線都確實接回同一個 GND 系統
-> - [ ] 沒有兩個元件誤用同一個腳位
+> 上表是範例，各組可以依客戶情境調整顏色或順序，但必須說明理由。
+
+### 四、腳位規劃表
+
+| 元件 | 腳位 | 是不是 `~` 腳？ | 為什麼這樣接？ |
+| --- | --- | --- | --- |
+| 光敏電阻 | | — | |
+| 旋鈕 | | — | |
+| TMP36 | | — | |
+| 照明燈 | | | |
+| RGB（R / G / B） | | | |
+| 蜂鳴器 | | | |
+| 伺服 | | | |
+| 進場鈕 | | | |
+| 離場鈕 | | | |
+| 復歸鈕 | | | |
+| 急停鈕 | | | |
+| **剩餘可擴充腳位** | | | |
+
+### 五、麵包板佈局草圖
+
+用紙筆或簡報畫出元件大致位置。建議：
+
+- **左半部放輸入**（感測器、按鈕），**右半部放輸出**（燈、蜂鳴器、伺服）
+- 同一模組的元件放在一起
+- 上下兩條電源軌：一條給感測器與旋鈕，一條給伺服與按鈕
+
+> ✅ **M0 審查點**：規劃書初稿交給老師確認後，才開始接線。腳位規劃錯了，後面全部要重來。
 
 ---
 
-## 後端程式設計：五道整合關卡
+## 里程碑 1：照明模組
 
-### 關卡 1：硬體總體檢 — 逐一驗證每個元件
+**功能**：環境變暗時，照明燈自動亮起，**越暗越亮**；現場人員用旋鈕調整「多暗才開始亮」。
 
-**機關故事**：在寫任何複雜邏輯之前，專業工程師的第一步永遠是「先確認每個元件個別都能正常運作」，這比一次寫完整個系統再除錯有效率得多。
+**接線**：光敏電阻（含 10kΩ）、旋鈕、照明燈。**腳位照 M0 規劃表**。
 
-#### 範例 1-1：逐一測試所有輸出裝置
 ```cpp
-// ============================================
-// 範例 1-1：依序測試每個輸出裝置是否正常運作
-// 測試原則：一次只測一個裝置，方便定位問題
-// ============================================
-
-#include <Servo.h>
-
-int pinLed = 13;
-int pinR = 9, pinG = 10, pinB = 11;
-int pinBuzzer = 8;
-Servo gateServo;
+// ===== M1 照明模組 =====
+// ===== 設定區：只改這裡 =====
+int pinLDR  = A1;   // 光敏電阻
+int pinKnob = A0;   // 照明門檻旋鈕
+int pinLamp = ?;    // 照明燈（調光）
+// ============================
 
 void setup() {
-  pinMode(pinLed, OUTPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  gateServo.attach(6);
+  pinMode(pinLamp, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  Serial.println("測試：照明 LED");
-  digitalWrite(pinLed, HIGH);
-  delay(500);
-  digitalWrite(pinLed, LOW);
-  delay(500);
+  int light = analogRead(pinLDR);
+  int threshold = analogRead(pinKnob);   // 旋鈕決定「多暗才開燈」
 
-  Serial.println("測試：RGB LED 紅色");
-  analogWrite(pinR, 255); analogWrite(pinG, 0); analogWrite(pinB, 0);
-  delay(500);
-  analogWrite(pinR, 0);
-
-  Serial.println("測試：蜂鳴器");
-  tone(pinBuzzer, 1000, 300);
-  delay(500);
-
-  Serial.println("測試：伺服馬達");
-  gateServo.write(90);
-  delay(500);
-  gateServo.write(0);
-  delay(1000);
-}
-```
-
-#### 範例 1-2：逐一測試所有輸入裝置
-```cpp
-// ============================================
-// 範例 1-2：確認所有感測器與按鈕都能正確讀值
-// ============================================
-
-int pinButton = 7;
-int pinEmergency = 4;
-int pinPot = A0;
-int pinLdr = A1;
-int pinTemp = A2;
-
-void setup() {
-  pinMode(pinButton, INPUT);
-  pinMode(pinEmergency, INPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  Serial.print("進場鈕: "); Serial.print(digitalRead(pinButton));
-  Serial.print("  緊急鈕: "); Serial.print(digitalRead(pinEmergency));
-  Serial.print("  旋鈕: "); Serial.print(analogRead(pinPot));
-  Serial.print("  光線: "); Serial.print(analogRead(pinLdr));
-  Serial.print("  溫度原始值: "); Serial.println(analogRead(pinTemp));
-  delay(300);
-}
-```
-**教學重點**：這種「把所有感測器讀值印在同一行」的除錯手法，是這學期第一次真正意義上的「系統健檢」，往後每次開發新專題，第一步都應該先做類似的總體檢，確認所有硬體都連接正確，再開始撰寫邏輯功能。
-
----
-
-### 關卡 2：核心邏輯骨架 — 建立模組化函式架構
-
-**機關故事**：確認硬體都正常後，接下來要規劃程式碼的「骨架」——把整個系統拆成幾個獨立的函式，各自負責一部分功能，這是專業軟體開發的標準做法。
-
-#### 範例 2-1：建立空白的函式骨架
-```cpp
-// ============================================
-// 範例 2-1：先寫出所有函式的「空殼」，確立整體架構
-// 好處：可以先確認架構合理，再逐一填入細節，不會迷失在細節中
-// ============================================
-
-#include <Servo.h>
-
-// --- 腳位宣告區 ---
-int pinLed = 13;
-int pinButton = 7;
-int pinEmergency = 4;
-int pinR = 9, pinG = 10, pinB = 11;
-int pinPot = A0;
-int pinLdr = A1;
-int pinTemp = A2;
-int pinBuzzer = 8;
-Servo gateServo;
-
-// --- 函式宣告區（先寫空殼） ---
-void checkEmergency() {
-  // 之後會在這裡填入緊急停止邏輯
-}
-
-void updateLighting() {
-  // 之後會在這裡填入自動照明邏輯
-}
-
-void checkTemperature() {
-  // 之後會在這裡填入溫度監控邏輯
-}
-
-void handleGate() {
-  // 之後會在這裡填入閘門控制邏輯
-}
-
-void setup() {
-  pinMode(pinLed, OUTPUT);
-  pinMode(pinButton, INPUT);
-  pinMode(pinEmergency, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  gateServo.attach(6);
-  Serial.begin(9600);
-}
-
-void loop() {
-  checkEmergency();
-  updateLighting();
-  checkTemperature();
-  handleGate();
-}
-```
-**教學重點**：這是這學期最重要的架構設計示範——`loop()` 現在讀起來就像一份「劇本大綱」，清楚列出系統要做的四件事，完全看不到任何實作細節。這種寫法讓程式碼的「可讀性」大幅提升，也讓後續每個函式可以獨立開發、獨立測試，互不干擾。
-
-#### 範例 2-2：填入第一個函式 — 自動照明
-```cpp
-// ============================================
-// 範例 2-2：先完成 updateLighting()，驗證架構可行
-// ============================================
-
-int pinLdr = A1;
-int pinLed = 13;
-
-void updateLighting() {
-  int lightLevel = analogRead(pinLdr);
-  if (lightLevel < 300) {
-    digitalWrite(pinLed, HIGH);
-  } else {
-    digitalWrite(pinLed, LOW);
+  int lamp = 0;
+  if (light < threshold) {
+    lamp = map(light, 0, threshold, 255, 30);   // 越暗越亮
   }
-}
+  analogWrite(pinLamp, lamp);
 
-void setup() {
-  pinMode(pinLed, OUTPUT);
-}
-
-void loop() {
-  updateLighting();
+  Serial.print("Light: ");
+  Serial.print(light);
+  Serial.print("   Threshold: ");
+  Serial.print(threshold);
+  Serial.print("   Lamp: ");
+  Serial.println(lamp);
+  delay(200);
 }
 ```
 
+**M1 驗收**：
+
+- [ ] 拖曳光線滑桿變暗，照明燈亮起，且越暗越亮
+- [ ] 轉旋鈕能改變開燈門檻（Serial Monitor 的 Threshold 有變化）
+- [ ] 接線與 M0 腳位規劃表一致
+
+**存檔**：`MID-M1-組別`
+
 ---
 
-### 關卡 3：環境監控子系統 — 光線與溫度整合
+## 里程碑 2：溫度安全模組
 
-**機關故事**：把第 5 週與第 6 週學過的光線與溫度監控邏輯，整合進骨架中的對應函式。
+**功能**：溫度分正常、警戒、危險三段，RGB 與蜂鳴器提示；進入危險後**鎖定**，溫度降回危險線以下並按「復歸鈕」才解除。
 
-#### 範例 3-1：完整的溫度監控函式（含警報鎖定與人工復歸）
+**接線**：TMP36、RGB、蜂鳴器、復歸鈕。**腳位照 M0 規劃表**。
+
 ```cpp
-// ============================================
-// 範例 3-1：把第 6 週學過的完整溫度邏輯，封裝成一個函式
-// ============================================
+// ===== M2 溫度安全模組 =====
+// ===== 設定區：只改這裡 =====
+int pinTemp   = A2;                 // TMP36
+int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB
+int pinBuzzer = ?;                  // 蜂鳴器
+int btnReset  = ?;                  // 復歸鈕
+float warnLine   = 30.0;            // 警戒線（依客戶規格修改）
+float dangerLine = 35.0;            // 危險線（依客戶規格修改）
+// ============================
 
-int pinTemp = A2;
-int pinBuzzer = 8;
-int pinEmergency = 4;   // 這裡借用緊急停止鈕，模擬復歸鈕的功能
-float tempThreshold = 32.0;
-bool tempAlarmLatched = false;
+bool tempLocked = false;
+int lastReset = LOW;
+int tick = 0;
 
-float readTemperature() {
-  int rawValue = analogRead(pinTemp);
-  float voltage = rawValue * (5.0 / 1023.0);
+float readC(int pin) {
+  float voltage = analogRead(pin) * 5.0 / 1023.0;
   return (voltage - 0.5) * 100.0;
 }
-
-void checkTemperature() {
-  float celsius = readTemperature();
-
-  if (celsius > tempThreshold) {
-    tempAlarmLatched = true;
-  }
-  if (digitalRead(pinEmergency) == HIGH && celsius <= tempThreshold) {
-    tempAlarmLatched = false;
-  }
-
-  if (tempAlarmLatched) {
-    tone(pinBuzzer, 2000);
-  } else {
-    noTone(pinBuzzer);
-  }
-}
-
-void setup() {
-  pinMode(pinEmergency, INPUT);
-}
-
-void loop() {
-  checkTemperature();
-}
-```
-
-#### 範例 3-2：把光線與溫度整合進 RGB 燈號顯示
-```cpp
-// ============================================
-// 範例 3-2：用 RGB LED 同時呈現光線與溫度的綜合狀態
-// ============================================
-
-int pinLdr = A1;
-int pinTemp = A2;
-int pinR = 9, pinG = 10, pinB = 11;
-float tempThreshold = 32.0;
 
 void setColor(int r, int g, int b) {
-  analogWrite(pinR, r);
-  analogWrite(pinG, g);
-  analogWrite(pinB, b);
-}
-
-float readTemperature() {
-  int rawValue = analogRead(pinTemp);
-  float voltage = rawValue * (5.0 / 1023.0);
-  return (voltage - 0.5) * 100.0;
-}
-
-void updateStatusLight() {
-  float celsius = readTemperature();
-  int lightLevel = analogRead(pinLdr);
-
-  if (celsius > tempThreshold) {
-    setColor(255, 0, 0);       // 溫度異常：紅色優先顯示
-  } else if (lightLevel < 300) {
-    setColor(0, 0, 255);       // 夜間模式：藍色
-  } else {
-    setColor(0, 255, 0);       // 一切正常：綠色
-  }
+  digitalWrite(pinR, r);
+  digitalWrite(pinG, g);
+  digitalWrite(pinB, b);
 }
 
 void setup() {
   pinMode(pinR, OUTPUT);
   pinMode(pinG, OUTPUT);
   pinMode(pinB, OUTPUT);
+  pinMode(btnReset, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  updateStatusLight();
-}
-```
-**教學重點**：注意這裡的 `if-else if-else` 判斷順序——溫度異常的判斷寫在最前面，代表它擁有最高的顯示優先權，即使當下同時是夜間、光線又暗，只要溫度異常，燈號一定優先顯示紅色。這種「多重條件下決定顯示優先順序」的思考方式，是這週期中專題最重要的訓練重點之一。
+  tick++;
+  float t = readC(pinTemp);
 
----
+  if (t >= dangerLine && !tempLocked) {
+    tempLocked = true;
+    Serial.println("TEMP DANGER - LOCKED");
+  }
 
-### 關卡 4：互動控制子系統 — 按鈕、旋鈕、馬達整合
-
-**機關故事**：把第 4 週的旋鈕、第 2 週的按鈕與第 7 週的伺服馬達整合成完整的閘門控制子系統。
-
-#### 範例 4-1：閘門控制函式（含容納量管制）
-```cpp
-// ============================================
-// 範例 4-1：把第 7 週學過的閘門邏輯封裝成函式
-// ============================================
-
-#include <Servo.h>
-
-Servo gateServo;
-int pinButton = 7;
-int lastButtonState = LOW;
-int occupantCount = 0;
-int maxCapacity = 5;
-
-void handleGate() {
-  int currentState = digitalRead(pinButton);
-
-  if (currentState == HIGH && lastButtonState == LOW) {
+  int now = digitalRead(btnReset);
+  if (now == HIGH && lastReset == LOW) {
     delay(50);
-    if (occupantCount < maxCapacity) {
-      occupantCount++;
-      gateServo.write(90);
-      delay(1500);
-      gateServo.write(0);
+    if (tempLocked && t < dangerLine) {
+      tempLocked = false;
+      noTone(pinBuzzer);
+      Serial.println("Temp lock RESET");
+    } else if (tempLocked) {
+      Serial.println("Cannot reset: still too hot");
     }
   }
-  lastButtonState = currentState;
-}
+  lastReset = now;
 
-void setup() {
-  gateServo.attach(6);
-  pinMode(pinButton, INPUT);
-}
-
-void loop() {
-  handleGate();
-}
-```
-
-#### 範例 4-2：旋鈕作為現場手動測試工具
-```cpp
-// ============================================
-// 範例 4-2：旋鈕不是用來控制正式功能，而是提供「現場手動測試模式」
-// 情境：維修人員可以隨時切換到手動模式，直接用旋鈕測試馬達角度
-// ============================================
-
-#include <Servo.h>
-
-Servo gateServo;
-int pinPot = A0;
-int pinButton = 7;
-int lastButtonState = LOW;
-bool manualTestMode = false;
-
-void setup() {
-  gateServo.attach(6);
-  pinMode(pinButton, INPUT);
-}
-
-void checkManualMode() {
-  // 這裡示範一種簡化判斷：如果旋鈕被轉到接近最大值，視為進入手動測試模式
-  int potValue = analogRead(pinPot);
-  manualTestMode = potValue > 1000;
-}
-
-void loop() {
-  checkManualMode();
-
-  if (manualTestMode) {
-    int potValue = analogRead(pinPot);
-    int angle = map(potValue, 0, 1023, 0, 180);
-    gateServo.write(angle);
+  if (tempLocked) {
+    setColor(HIGH, LOW, LOW);                        // 紅
+    tone(pinBuzzer, 2000);
+  } else if (t >= warnLine) {
+    setColor(HIGH, HIGH, LOW);                       // 黃
+    if (tick % 20 == 0) tone(pinBuzzer, 1000, 80);
   } else {
-    // 一般模式：維持正常關閉狀態，等待按鈕觸發
-    gateServo.write(0);
+    setColor(LOW, HIGH, LOW);                        // 綠
   }
+
+  if (tick % 10 == 0) {
+    Serial.print("Temp: ");
+    Serial.print(t);
+    Serial.println(" C");
+  }
+  delay(50);
 }
 ```
 
+> 💡 注意：本模組的 `setColor()` 用的是 `digitalWrite`（全亮或全滅），所以 RGB **不需要接 `~` 腳**。這正是 M0 規劃關鍵題第 3 題的答案。
+
+**M2 驗收**：
+
+- [ ] 溫度依客戶規格顯示綠／黃／紅
+- [ ] 進入危險後即使降溫也維持紅燈與警報
+- [ ] 溫度仍高於危險線時按復歸無效；降溫後按復歸才解除
+- [ ] 接線與 M0 腳位規劃表一致
+
+**存檔**：`MID-M2-組別`
+
 ---
 
-### 關卡 5：安全優先權設計 — 緊急停止與連鎖邏輯
+## 里程碑 3：出入管制模組
 
-**機關故事**：整個系統最重要的一環——緊急停止機制必須擁有絕對最高的優先權，不管系統當下處於什麼狀態，只要緊急停止被觸發，一切都要立刻停止。
+**功能**：按「進場鈕」代表有人要進入：未客滿時閘門打開 2 秒再關上，人數加 1；客滿時閘門不動並發出拒絕聲。按「離場鈕」人數減 1。
 
-#### 範例 5-1：緊急停止函式
+**接線**：伺服、進場鈕、離場鈕、蜂鳴器。**腳位照 M0 規劃表**。
+
 ```cpp
-// ============================================
-// 範例 5-1：緊急停止邏輯 - 強制關閉所有輸出
-// ============================================
-
+// ===== M3 出入管制模組 =====
 #include <Servo.h>
 
-int pinEmergency = 4;
-int pinLed = 13;
-int pinR = 9, pinG = 10, pinB = 11;
-int pinBuzzer = 8;
-Servo gateServo;
+// ===== 設定區：只改這裡 =====
+int pinServo  = ?;      // 閘門伺服
+int btnEnter  = ?;      // 進場鈕
+int btnExit   = ?;      // 離場鈕
+int pinBuzzer = ?;      // 蜂鳴器
+int capacity    = 5;    // 人數上限（依客戶規格修改）
+int closedAngle = 0;    // 閘門關閉角度
+int openAngle   = 90;   // 閘門開啟角度
+int openTime    = 2000; // 開啟時間（毫秒）
+// ============================
 
-void setColor(int r, int g, int b) {
-  analogWrite(pinR, r);
-  analogWrite(pinG, g);
-  analogWrite(pinB, b);
-}
+Servo gate;
+int inside = 0;
+int lastEnter = LOW, lastExit = LOW;
 
-bool checkEmergency() {
-  bool emergencyActive = digitalRead(pinEmergency) == HIGH;
-
-  if (emergencyActive) {
-    digitalWrite(pinLed, LOW);
-    setColor(0, 0, 0);
-    noTone(pinBuzzer);
-    gateServo.write(0);
+void sweepTo(int from, int to) {
+  int step = (to > from) ? 1 : -1;
+  for (int a = from; a != to; a += step) {
+    gate.write(a);
+    delay(8);
   }
-
-  return emergencyActive;   // 回傳結果，讓 loop() 知道是否要跳過後續邏輯
+  gate.write(to);
 }
 
 void setup() {
-  pinMode(pinEmergency, INPUT);
-  pinMode(pinLed, OUTPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  gateServo.attach(6);
+  gate.attach(pinServo);
+  gate.write(closedAngle);
+  pinMode(btnEnter, INPUT);
+  pinMode(btnExit, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  if (checkEmergency()) {
-    return;   // 緊急停止觸發，立刻結束本輪迴圈，跳過所有其他邏輯
+  int nowEnter = digitalRead(btnEnter);
+  if (nowEnter == HIGH && lastEnter == LOW) {
+    delay(50);
+    if (inside >= capacity) {
+      tone(pinBuzzer, 300, 600);
+      Serial.println("FULL - entry refused");
+    } else {
+      inside++;
+      tone(pinBuzzer, 1200, 100);
+      Serial.print("Enter. Inside: ");
+      Serial.println(inside);
+      sweepTo(closedAngle, openAngle);
+      delay(openTime);
+      sweepTo(openAngle, closedAngle);
+    }
   }
+  lastEnter = nowEnter;
 
-  // 這裡才會執行一般的系統邏輯（本範例先省略，BOSS 關會完整呈現）
+  int nowExit = digitalRead(btnExit);
+  if (nowExit == HIGH && lastExit == LOW) {
+    delay(50);
+    if (inside > 0) inside--;
+    Serial.print("Exit. Inside: ");
+    Serial.println(inside);
+  }
+  lastExit = nowExit;
 }
 ```
-**教學重點**：`checkEmergency()` 這個函式回傳一個 `bool` 值，讓 `loop()` 能夠判斷「這一輪要不要繼續往下執行」。這種「函式回傳布林值，決定後續流程」的寫法，是這學期第一次接觸的重要設計模式，你會發現它比單純用一堆巢狀 `if-else` 更清晰易讀。
+
+**M3 驗收**：
+
+- [ ] 未客滿時按進場，閘門平滑打開、停留、關上，人數加 1
+- [ ] 客滿時按進場，閘門不動並發出拒絕聲
+- [ ] 按離場人數減 1，人數不會變成負數
+- [ ] 接線與 M0 腳位規劃表一致
+
+**存檔**：`MID-M3-組別`
 
 ---
 
-### 🏆 BOSS 關：智慧密室綜合監控站完整系統
+## 里程碑 4：系統整合與安全優先權
 
-**機關故事**：整合本週所有子系統，打造完整的智慧密室綜合監控站——這是這學期目前為止規模最大、功能最完整的專案。
+### 整合步驟
+
+1. **另存新檔**：從 M3 的檔案另存為 `MID-M4-組別`。
+2. **合併電路**：把 M1、M2 的元件照原腳位搬到同一塊麵包板，再加上**急停鈕**。
+3. **全面體檢**：用接線驗證器、類比讀值檢查器、溫度讀值檢查器、伺服測試器逐一確認。
+4. **上傳整合程式**：填好設定區，依序打開四個功能開關，每開一個就測一次。
+
+### 優先權：功能衝突時，誰說了算？
+
+整合後最大的問題是「功能互相打架」。例如：溫度危險時，有人按進場鈕，閘門該不該開？程式用**檢查順序**決定優先權，越前面越優先：
+
+```
+每一輪 loop 依序檢查：
+  ① 急停中？        → 是：所有馬達停止，只保留照明與警示，後面全部跳過
+  ② 溫度危險鎖定？  → 是：閘門鎖住（安全連鎖），照明照常運作
+  ③ 照明控制        → 依光線調整
+  ④ 出入管制        → 只有在 ①② 都沒事時才會執行
+  ⑤ 總狀態燈        → 依燈號定義表顯示最優先的狀況
+```
+
+> 🤔 **急停時照明要不要關？** 本範本選擇「急停時照明保持運作」——因為緊急狀況下人員需要看得見才能疏散。你的客戶情境也是這樣嗎？請在規劃書說明。
+
+### 整合程式（只改設定區）
 
 ```cpp
-// ============================================
-// BOSS 關：智慧密室綜合監控站 - 期中專題完整系統
-// 架構：緊急停止（最高優先權）→ 溫度安全連鎖 → 環境監控 → 閘門控制
-// ============================================
-
+// ===== M4 智慧場域監控站：整合系統 =====
 #include <Servo.h>
 
-// --- 腳位宣告區 ---
-int pinLed = 13;
-int pinButton = 7;
-int pinEmergency = 4;
-int pinR = 9, pinG = 10, pinB = 11;
-int pinPot = A0;
-int pinLdr = A1;
-int pinTemp = A2;
-int pinBuzzer = 8;
-Servo gateServo;
+// ===== 設定區：只改這裡 =====
+// --- 腳位（照 M0 規劃表） ---
+int pinKnob = A0, pinLDR = A1, pinTemp = A2;
+int pinLamp   = ?;                  // 照明燈（調光 ~ 腳）
+int pinR = ?, pinG = ?, pinB = ?;   // 總狀態 RGB
+int pinBuzzer = ?;                  // 蜂鳴器
+int pinServo  = ?;                  // 閘門伺服
+int btnEnter  = ?;                  // 進場鈕
+int btnExit   = ?;                  // 離場鈕
+int btnReset  = ?;                  // 復歸鈕
+int btnEStop  = ?;                  // 急停鈕
+// --- 客戶規格 ---
+float warnLine   = 30.0;            // 溫度警戒線
+float dangerLine = 35.0;            // 溫度危險線
+int capacity     = 5;               // 人數上限
+int closedAngle  = 0;               // 閘門關閉角度
+int openAngle    = 90;              // 閘門開啟角度
+int openTime     = 2000;            // 閘門開啟時間（毫秒）
+// --- 功能開關：逐一打開測試 ---
+bool useLighting = false;           // 照明模組
+bool useTemp     = false;           // 溫度安全模組
+bool useGate     = false;           // 出入管制模組
+bool useEStop    = false;           // 急停
+// ============================
 
-// --- 系統參數區 ---
-float tempThreshold = 32.0;
-int lightThreshold = 300;
-int maxCapacity = 5;
+Servo gate;
+bool eStopped = false;
+bool tempLocked = false;
+int inside = 0;
+int tick = 0;
+int lastEnter = LOW, lastExit = LOW, lastReset = LOW, lastEStop = LOW;
 
-// --- 狀態變數區 ---
-bool tempAlarmLatched = false;
-int lastButtonState = LOW;
-int occupantCount = 0;
-
-// --- 工具函式區 ---
-void setColor(int r, int g, int b) {
-  analogWrite(pinR, r);
-  analogWrite(pinG, g);
-  analogWrite(pinB, b);
-}
-
-float readTemperature() {
-  int rawValue = analogRead(pinTemp);
-  float voltage = rawValue * (5.0 / 1023.0);
+float readC(int pin) {
+  float voltage = analogRead(pin) * 5.0 / 1023.0;
   return (voltage - 0.5) * 100.0;
 }
 
-// --- 子系統函式區 ---
-
-// ① 緊急停止（最高優先權）
-bool checkEmergency() {
-  bool emergencyActive = digitalRead(pinEmergency) == HIGH;
-  if (emergencyActive) {
-    digitalWrite(pinLed, LOW);
-    setColor(0, 0, 0);
-    noTone(pinBuzzer);
-    gateServo.write(0);
-    Serial.println("!!! 緊急停止已觸發，系統全面暫停 !!!");
-  }
-  return emergencyActive;
+void setColor(int r, int g, int b) {
+  digitalWrite(pinR, r);
+  digitalWrite(pinG, g);
+  digitalWrite(pinB, b);
 }
 
-// ② 溫度安全連鎖
-bool checkTemperatureSafety() {
-  float celsius = readTemperature();
-
-  if (celsius > tempThreshold) {
-    tempAlarmLatched = true;
+void sweepTo(int from, int to) {
+  int step = (to > from) ? 1 : -1;
+  for (int a = from; a != to; a += step) {
+    gate.write(a);
+    delay(8);
   }
-  // 溫度恢復正常後，警報會在下方環境監控函式中視情況解除（此處僅負責判斷是否鎖定）
-
-  if (tempAlarmLatched) {
-    setColor(255, 0, 0);
-    tone(pinBuzzer, 2000);
-    delay(80);
-    noTone(pinBuzzer);
-    delay(80);
-  }
-
-  return tempAlarmLatched;   // true 代表系統應鎖定閘門功能
+  gate.write(to);
 }
 
-// ③ 環境監控（照明 + 狀態燈）
-void updateEnvironment() {
-  int lightLevel = analogRead(pinLdr);
-  digitalWrite(pinLed, lightLevel < lightThreshold ? HIGH : LOW);
-
-  if (!tempAlarmLatched) {
-    if (lightLevel < lightThreshold) {
-      setColor(0, 0, 255);   // 夜間模式：藍色
-    } else {
-      setColor(0, 255, 0);   // 正常：綠色
-    }
-  }
+// 偵測按鈕「剛按下」的瞬間
+bool pressed(int pin, int &last) {
+  int now = digitalRead(pin);
+  bool edge = (now == HIGH && last == LOW);
+  last = now;
+  if (edge) delay(50);
+  return edge;
 }
 
-// ④ 閘門控制（含容納量管制）
-void handleGate() {
-  int currentState = digitalRead(pinButton);
-
-  if (currentState == HIGH && lastButtonState == LOW) {
-    delay(50);
-    if (occupantCount < maxCapacity) {
-      occupantCount++;
-      Serial.print("玩家進場，目前人數：");
-      Serial.println(occupantCount);
-      tone(pinBuzzer, 1200, 150);
-      gateServo.write(90);
-      delay(1500);
-      gateServo.write(0);
-    } else {
-      Serial.println("已達容納上限，閘門拒絕開啟！");
-      tone(pinBuzzer, 400, 150);
-    }
-  }
-  lastButtonState = currentState;
+// ---- 模組 1：照明 ----
+void handleLighting() {
+  int light = analogRead(pinLDR);
+  int threshold = analogRead(pinKnob);
+  int lamp = 0;
+  if (light < threshold) lamp = map(light, 0, threshold, 255, 30);
+  analogWrite(pinLamp, lamp);
 }
 
 void setup() {
-  pinMode(pinLed, OUTPUT);
-  pinMode(pinButton, INPUT);
-  pinMode(pinEmergency, INPUT);
+  gate.attach(pinServo);
+  gate.write(closedAngle);
+  pinMode(pinLamp, OUTPUT);
   pinMode(pinR, OUTPUT);
   pinMode(pinG, OUTPUT);
   pinMode(pinB, OUTPUT);
-  gateServo.attach(6);
-  gateServo.write(0);
+  pinMode(btnEnter, INPUT);
+  pinMode(btnExit, INPUT);
+  pinMode(btnReset, INPUT);
+  pinMode(btnEStop, INPUT);
   Serial.begin(9600);
-  Serial.println("=== 智慧密室綜合監控站啟動 ===");
+  Serial.println("=== Smart Site Monitor READY ===");
 }
 
 void loop() {
-  // 優先權 ①：緊急停止，最高優先權，一旦觸發立刻結束本輪
-  if (checkEmergency()) {
-    return;
+  tick++;
+  bool enterHit = pressed(btnEnter, lastEnter);
+  bool exitHit  = pressed(btnExit, lastExit);
+  bool resetHit = pressed(btnReset, lastReset);
+  bool eStopHit = pressed(btnEStop, lastEStop);
+
+  float t = readC(pinTemp);
+
+  // ===== ① 急停：最高優先 =====
+  if (useEStop) {
+    if (eStopHit && !eStopped) {
+      eStopped = true;
+      gate.write(closedAngle);
+      Serial.println("!!! EMERGENCY STOP !!!");
+    }
+    if (eStopped) {
+      if (resetHit) {
+        eStopped = false;
+        resetHit = false;                         // 這一按只用來解除急停
+        noTone(pinBuzzer);
+        Serial.println("E-STOP released by reset");
+      } else {
+        if (useLighting) handleLighting();       // 急停時照明保持運作
+        bool blink = (tick / 10) % 2;
+        setColor(blink ? HIGH : LOW, LOW, LOW);   // 紅色閃爍
+        if (tick % 20 == 0) tone(pinBuzzer, 400, 150);
+        delay(30);
+        return;                                   // 後面全部跳過
+      }
+    }
   }
 
-  // 優先權 ②：溫度安全連鎖，異常時鎖定閘門功能
-  bool isLocked = checkTemperatureSafety();
+  // ===== ② 溫度安全 =====
+  int tempLevel = 0;                              // 0=正常, 1=警戒, 2=危險
+  if (useTemp) {
+    if (t >= dangerLine)    tempLevel = 2;
+    else if (t >= warnLine) tempLevel = 1;
 
-  // 優先權 ③：環境監控（在溫度正常時才更新一般狀態顯示）
-  updateEnvironment();
-
-  // 優先權 ④：閘門控制（溫度異常鎖定時，跳過此功能）
-  if (!isLocked) {
-    handleGate();
+    if (tempLevel == 2 && !tempLocked) {
+      tempLocked = true;
+      Serial.println("TEMP DANGER - LOCKED, gate disabled");
+    }
+    if (resetHit && tempLocked) {
+      if (tempLevel < 2) {
+        tempLocked = false;
+        noTone(pinBuzzer);
+        Serial.println("Temp lock RESET");
+      } else {
+        Serial.println("Cannot reset: still too hot");
+      }
+    }
   }
+
+  // ===== ③ 照明 =====
+  if (useLighting) handleLighting();
+
+  // ===== ④ 出入管制（溫度鎖定時不執行：安全連鎖） =====
+  if (useGate && !tempLocked) {
+    if (enterHit) {
+      if (inside >= capacity) {
+        tone(pinBuzzer, 300, 600);
+        Serial.println("FULL - entry refused");
+      } else {
+        inside++;
+        tone(pinBuzzer, 1200, 100);
+        Serial.print("Enter. Inside: ");
+        Serial.println(inside);
+        sweepTo(closedAngle, openAngle);
+        delay(openTime);
+        sweepTo(openAngle, closedAngle);
+      }
+    }
+    if (exitHit) {
+      if (inside > 0) inside--;
+      Serial.print("Exit. Inside: ");
+      Serial.println(inside);
+    }
+  } else if (useGate && tempLocked && enterHit) {
+    Serial.println("Gate LOCKED by temperature interlock");
+  }
+
+  // ===== ⑤ 總狀態燈（依燈號定義表的優先順序） =====
+  if (tempLocked) {
+    setColor(HIGH, LOW, LOW);                     // 紅：溫度危險
+    tone(pinBuzzer, 2000);
+  } else if (tempLevel == 1) {
+    setColor(HIGH, HIGH, LOW);                    // 黃：溫度警戒
+    if (tick % 30 == 0) tone(pinBuzzer, 1000, 80);
+  } else if (useGate && inside >= capacity) {
+    setColor(HIGH, LOW, HIGH);                    // 紫：客滿
+  } else {
+    setColor(LOW, HIGH, LOW);                     // 綠：一切正常
+  }
+
+  if (tick % 30 == 0) {
+    Serial.print("Temp: ");
+    Serial.print(t);
+    Serial.print(" C   Inside: ");
+    Serial.print(inside);
+    Serial.print("/");
+    Serial.println(capacity);
+  }
+  delay(30);
 }
 ```
-**教學重點**：這是這學期目前為止最完整的「多層優先權」系統設計——`loop()` 的四行呼叫，清楚呈現了整個系統的執行順序與優先權邏輯。這種寫法完全體現了關卡 2 提到的「模組化開發」精神：每個函式各自獨立、職責單一，整合起來卻能完成複雜的系統行為。**這正是這學期到目前為止，最接近真實軟體工程專案的一次完整演練。**
+
+**M4 驗收**：
+
+- [ ] 四個功能開關全部打開後，各模組功能都和 M1～M3 一樣正常
+- [ ] 按急停：閘門關閉並停止回應，RGB 紅色閃爍，照明仍運作；按復歸解除
+- [ ] 溫度危險時按進場鈕，閘門不動（Serial Monitor 顯示被溫度連鎖鎖住）
+- [ ] 總狀態燈依燈號定義表的優先順序顯示
+
+**存檔**：`MID-M4-組別`
 
 ---
 
-## QA 品質保證：邊界測試清單
+## 里程碑 5：驗收測試（QA）
 
-完成 BOSS 關程式碼後，請依照以下清單逐一進行「刁難測試」，這是專業軟體開發流程中不可或缺的一環：
+> 🏭 **為什麼要做 QA？** 工程師的工作不只是「讓它動起來」，還要**主動找出系統在什麼情況下會出錯**。客戶發現的每一個 bug，都比你自己發現的貴十倍。
 
-| 測試項目 | 測試方式 | 預期結果 |
-|---|---|---|
-| 緊急停止優先權 | 同時觸發溫度異常與緊急停止 | 系統應完全靜止，不受溫度異常影響 |
-| 溫度鎖定閘門 | 溫度異常時嘗試按下進場按鈕 | 閘門不應有任何反應 |
-| 容納量上限 | 連續按壓進場按鈕超過 5 次 | 第 6 次起應顯示拒絕訊息，馬達不動作 |
-| 夜間模式與溫度警報衝突 | 在光線昏暗的同時觸發溫度異常 | 應優先顯示紅色（溫度警報），而非藍色（夜間模式） |
-| 快速連續操作 | 快速連續按壓進場按鈕與緊急停止鈕 | 系統不應出現邏輯錯亂或當機 |
-| 旋鈕極端值 | 旋鈕轉到最左與最右極限 | 手動測試模式應正常切換，不應出現異常角度 |
+### 測試案例表（每組必測，並記錄結果）
 
----
+| 編號 | 測試情境 | 操作步驟 | 預期結果 | 實際結果 | 通過？ |
+| --- | --- | --- | --- | --- | --- |
+| T1 | 正常進場 | 正常溫度下按進場鈕 | 閘門開 → 關，人數 +1，綠燈 | | |
+| T2 | 客滿拒絕 | 連續按進場超過上限 | 第（上限＋1）次起閘門不動、拒絕聲、紫燈 | | |
+| T3 | 離場歸零 | 人數 0 時按離場 | 人數維持 0，不變負數 | | |
+| T4 | 溫度連鎖 | 溫度拉過危險線後按進場 | 閘門不動、紅燈長鳴 | | |
+| T5 | 復歸條件 | 溫度仍在危險線上方時按復歸 | 無法解除 | | |
+| T6 | 急停優先 | 溫度危險時再按急停 | 紅色閃爍（急停優先於溫度） | | |
+| T7 | 急停照明 | 天黑時按急停 | 照明燈保持亮著 | | |
+| T8 | 旋鈕極端值 | 旋鈕轉到兩端 | 照明分別「永遠不亮」與「幾乎一直亮」，系統不當機 | | |
+| T9 | 快速連按 | 快速交替按進場、離場、急停 | 系統不錯亂，人數合理 | | |
+| T10 | 自訂測試 | （由各組設計） | | | |
 
-## 常見錯誤除錯站
+### 同儕交叉測試
 
-| 現象 | 可能原因 | 解決方式 |
-|---|---|---|
-| 緊急停止觸發後，系統似乎「卡住」無法恢復 | `return;` 導致每輪迴圈都提前結束，這其實是正確的設計行為 | 這不是錯誤！只要放開緊急停止鈕，下一輪迴圈就會恢復正常，這正是安全連鎖該有的行為 |
-| 溫度異常鎖定後，閘門仍然可以開啟 | `handleGate()` 沒有被正確包在 `if (!isLocked)` 判斷內 | 檢查 `loop()` 中呼叫 `handleGate()` 的位置是否正確加上條件判斷 |
-| 多個函式之間互相影響、出現無法預期的行為 | 函式之間共用的全域變數被不同函式意外修改 | 檢查每個函式修改的變數是否符合設計預期，必要時加上 Serial 除錯輸出追蹤 |
-| 系統邏輯順序調換後行為完全不同 | `loop()` 中呼叫函式的順序，直接決定了優先權高低 | 這正是這週的教學重點：呼叫順序即優先權順序，務必謹慎安排 |
-| Serial Monitor 訊息量太大看不清楚 | 太多函式都在做 `Serial.println()` | 可以暫時註解掉不需要的除錯輸出，只保留當下關注的部分 |
+1. 兩組交換 Tinkercad 連結。
+2. 對方組依測試案例表測試你的系統，**並至少再設計 2 個你們沒想到的測試**。
+3. 記錄對方發現的問題，以及你們的修正方式。
 
----
-
-## 練習題大補帖
-
-### 🟢 基礎題
-1. 修改 BOSS 關程式碼的 `tempThreshold`，從 32.0 改成 30.0，並測試效果。
-2. 修改 `maxCapacity`，從 5 改成 3，測試容納量管制是否正確運作。
-3. 在 `checkEmergency()` 函式中，新增一行 Serial 訊息，印出「所有裝置已強制關閉」。
-4. 修改 `updateEnvironment()`，把光線門檻從 300 改成 400。
-5. 幫 `handleGate()` 新增功能：每次成功開門，額外閃爍一次照明 LED 作為視覺提示。
-
-### 🟡 中等題
-6. 新增一個「離場按鈕」（可沿用第 7 週練習題 7 的邏輯），讓 `occupantCount` 可以遞減。
-7. 設計一個「溫度警戒」（尚未達到鎖定門檻但已偏高）的中間狀態，此時 RGB 顯示黃色，但閘門仍可正常使用。
-8. 幫緊急停止機制新增「解除確認」邏輯：緊急停止鈕放開後，還需要額外按一次進場按鈕才能真正恢復系統運作（模擬「二次確認」的安全設計）。
-9. 統計「系統啟動至今，緊急停止總共被觸發幾次」，並在每次觸發時印出累計次數。
-10. 設計一個「維護模式」：當旋鈕轉到最小值（接近 0）時，系統進入維護模式，此時所有一般功能暫停，只顯示各感測器的即時原始讀值方便除錯。
-
-### 🔴 挑戰題
-11. **多重異常優先權排序**：目前系統只有「緊急停止」與「溫度異常」兩種會鎖定系統的條件。如果新增第三種異常（例如自行定義「光線感測器讀值異常波動」），你會把它排在優先權順序的哪個位置？為什麼？
-12. **狀態機重構挑戰**：嘗試把 BOSS 關程式碼中「系統目前是否被鎖定」的邏輯，改用第 6 週提過的 `enum` 概念（可自行查詢語法），定義一個 `SystemState` 列舉型別（例如 NORMAL、TEMP_LOCKED、EMERGENCY），取代目前用多個布林變數判斷的寫法。
-13. **事件日誌系統**：設計一個簡易的「事件記錄」機制，把系統運作過程中發生的重要事件（開門、溫度異常、緊急停止觸發）依序記錄在一個字串陣列中，並能在 Serial Monitor 印出「最近 5 筆事件」。
-14. **多重感測器投票機制**：想像系統加裝了第二顆 TMP36（需自行擴充接線），設計一個「兩個溫度感測器同時異常才觸發鎖定」的判斷邏輯，模擬工業上常見的「多重感測器交叉驗證」設計，避免單一感測器故障造成誤判。
-15. **完整系統重新設計**：不修改 BOSS 關程式碼，而是完全重新設計一套「你認為更合理的密室監控站架構」，至少要包含：4 個獨立子函式、明確的優先權順序、至少一種安全連鎖機制。並寫一段文字（5-6 句話）說明你的架構設計理念與 BOSS 關版本的差異。
+> 💼 **思考**：交叉測試發現的問題，你們會怎麼分類？哪些是「一定要修」、哪些是「寫進使用說明書提醒使用者」就好？這就是真實產品開發中的「問題分級」。
 
 ---
 
-## 🎨 期中專題加碼挑戰
+## 里程碑 6：提案簡報
 
-如果你已經熟練掌握 BOSS 關的完整系統，這裡提供更具開放性的加碼挑戰，作為期中專題的加分項目：
+每組 **5 分鐘簡報＋2 分鐘問答**，對象是「客戶老闆」（不懂技術的人）。
 
-> **加碼挑戰 A：訪客體驗優化**
-> 設計一套「開機迎賓」流程：系統啟動時，先讓 RGB LED 依序播放一輪彩虹效果（可複習第 3 週的技巧），搭配蜂鳴器播放一小段歡迎旋律（複習第 5 週的技巧），最後才進入正常監控模式。
+| 段落 | 時間 | 內容 |
+| --- | --- | --- |
+| 1. 客戶痛點 | 1 分鐘 | 客戶目前遇到什麼問題？不解決會損失什麼？ |
+| 2. 系統展示 | 2 分鐘 | Tinkercad 現場操作：正常情境 → 異常情境 → 急停 |
+| 3. 安全與可靠度 | 1 分鐘 | 你們設計了哪些安全連鎖？QA 測過哪些極端情況？ |
+| 4. 擴充與建議 | 1 分鐘 | 還剩幾隻腳可擴充？下一階段建議加什麼功能？ |
 
-> **加碼挑戰 B：容納量視覺化**
-> 想像新增 5 顆額外的 LED（需自行擴充接線），設計一個「容納量長條圖」——目前有幾位訪客在場內，就點亮對應數量的燈（複習第 4 週的長條圖技巧）。
+**簡報規則**：
 
-> **加碼挑戰 C：自動化壓力測試腳本**
-> 設計一段「自我測試模式」程式碼：系統開機後自動依序模擬觸發各種異常情境（不需要真的操作感測器，而是暫時用固定數值取代真實讀值），驗證系統各項安全機制是否正常運作，這模擬了真實軟體工程中的「自動化測試」概念。
+- 不准講程式碼。客戶不在乎 `if` 和 `else`，在乎「店員按這顆鈕會發生什麼事」。
+- 每個技術名詞都要翻成客戶聽得懂的話。例如「安全連鎖」→「冷藏櫃壞掉時，自動門會自動鎖住，避免冷氣外洩」。
 
 ---
 
-## 📖 本週詞彙表
+## 配線除錯站
 
-| 英文 / 語法 | 中文對照 | 白話解釋 |
-|---|---|---|
-| 系統架構（System Architecture） | 系統架構 | 描述系統各部件如何組織、互相關聯的整體藍圖 |
-| 模組化（Modularization） | 模組化 | 把大系統拆解成多個獨立、職責單一的小單元 |
-| 優先權（Priority） | 優先權 | 決定多個條件同時成立時，何者應優先被處理 |
-| 安全連鎖（Safety Interlock） | 安全連鎖 | 確保安全條件優先滿足，否則鎖定其他功能的設計原則 |
-| QA（Quality Assurance） | 品質保證 | 透過系統化測試，確保產品在各種情境下都穩定可靠 |
-| 邊界測試（Boundary Testing） | 邊界測試 | 刻意用極端或臨界數值測試系統穩定性 |
-| 回傳布林值決策 | 回傳布林值決策 | 函式回傳 true/false，讓呼叫端決定後續流程走向 |
+| 現象 | 先檢查這裡 | 修正方式 |
+| --- | --- | --- |
+| M1～M3 各自正常，合併後某個功能失效 | 兩個模組是否用了同一隻腳 | 對照 M0 腳位規劃表 |
+| 照明燈只有全亮全滅 | 是否接在 9、10（伺服借走）或 3、11（蜂鳴器借走） | 改接 5 或 6 |
+| 急停後系統「卡住」不動 | 這是正確設計 | 按復歸鈕解除 |
+| 溫度鎖定後閘門還能開 | `useTemp` 是否打開 | 開啟功能開關後重測 |
+| 合併後感測器讀值亂跳 | 電源軌是否有斷開（麵包板中間的分段） | 檢查 5V、GND 是否全部連通 |
+| 伺服動作時其他元件異常 | 伺服紅、棕線是否接在共用電源軌 | 確認電源軌連接 |
+| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+| Serial Monitor 訊息太多看不清 | 正常現象 | 只看事件訊息（Enter、LOCKED、E-STOP） |
+
+---
+
+## 繳交清單與評分
+
+### 繳交清單
+
+| 項目 | 格式 | 對應里程碑 |
+| --- | --- | --- |
+| 規劃書（需求分析、規格表、燈號定義、腳位規劃、佈局草圖） | PDF 或線上文件 | M0 |
+| 照明模組 | Tinkercad 連結 `MID-M1-組別` | M1 |
+| 溫度安全模組 | Tinkercad 連結 `MID-M2-組別` | M2 |
+| 出入管制模組 | Tinkercad 連結 `MID-M3-組別` | M3 |
+| 整合系統 | Tinkercad 連結 `MID-M4-組別` | M4 |
+| QA 測試報告（含同儕交叉測試紀錄） | PDF 或線上文件 | M5 |
+| 提案簡報檔 | PPT／PDF | M6 |
+
+### 評分標準
+
+| 項目 | 比重 | 優秀（A） | 合格（C） |
+| --- | --- | --- | --- |
+| 規劃書 | 20% | 需求分析具體、規格有資料來源、腳位規劃正確處理 `~` 腳限制並說明理由 | 表格填寫完整 |
+| 三個功能模組 | 15% | 三個模組各自完整運作，接線與規劃書一致 | 至少兩個模組可運作 |
+| 整合系統 | 20% | 四大功能整合正常，優先權與安全連鎖正確 | 整合後主要功能可運作 |
+| QA 測試報告 | 15% | 測試案例完整、有自訂測試、交叉測試問題有分級與修正 | 完成必測案例 |
+| 提案簡報 | 20% | 以客戶語言說明價值與風險，展示流暢，回答問題得當 | 能完整展示系統功能 |
+| 團隊分工與麵包板整潔 | 10% | 分工明確、佈局分區清楚 | 有分工紀錄 |
+
+### 自評與互評
+
+每位組員填寫：
+
+| 項目 | 自評（1～5） | 說明 |
+| --- | --- | --- |
+| 我在 M0 規劃中的貢獻 | | |
+| 我負責的模組 | | |
+| 我在整合與除錯中的貢獻 | | |
+| 我在 QA 與簡報中的貢獻 | | |
+
+---
+
+## 時程建議
+
+本專題建議安排 **2 週**（第 8 週課堂＋第 9 週前半，或依課程調整）：
+
+| 時段 | 內容 | 檢核點 |
+| --- | --- | --- |
+| 第 1 節 | 選客戶、分組、需求分析、規格表 | — |
+| 第 2 節 | 腳位規劃、佈局草圖 | ✅ M0 審查（老師簽核後才能接線） |
+| 第 3 節 | 分工完成 M1、M2、M3（每人負責一個模組） | ✅ M1～M3 現場驗收 |
+| 課後 | M4 整合、M5 QA 測試、同儕交叉測試 | — |
+| 下次上課 | M6 提案簡報 | ✅ 期中成績 |
+
+> 💡 **分工建議**：3 人組一人一個模組；4 人組多出的一人擔任「整合與 QA 負責人」，從 M0 開始就負責腳位規劃表與測試案例。
 
 ---
 
 ## 反思與延伸討論
 
-1. 這週的核心精神是「模組化」——把系統拆成多個各自獨立的函式。請討論：如果沒有採用模組化設計，把所有邏輯擠在同一個 `loop()` 裡面寫成一長串程式碼，對於「除錯」與「日後修改」會造成什麼樣的困難？
-2. BOSS 關程式碼的 `loop()` 中，四個子系統函式的呼叫順序就是優先權順序。請討論：如果今天把「環境監控」的呼叫順序調到「緊急停止」判斷之前，會發生什麼問題？這說明了什麼重要的程式設計原則？
-3. QA 品質保證測試清單裡的「邊界測試」，故意用各種極端情境（同時觸發多個條件、快速連續操作）去「刁難」系統。請討論：為什麼工程師需要主動尋找系統的弱點，而不是等到使用者發現問題才修正？這種心態對於未來你們在職場上開發任何系統（不限於程式），會有什麼樣的啟發？
-
----
-
-## 期中專題檢核清單與自評表
-
-### 功能完整性檢核
-- [ ] 緊急停止機制正常運作，且具備最高優先權
-- [ ] 溫度監控具備警報鎖定與人工復歸功能
-- [ ] 環境光線自動照明正常運作
-- [ ] 閘門控制具備容納量管制
-- [ ] 系統各子函式模組化清楚，`loop()` 保持精簡易讀
-
-### 自我評分表（1~5 分，5 分為最高）
-| 評分項目 | 自評分數 |
-|---|---|
-| 硬體接線正確性（是否 12 個元件都正確接線） | ___ / 5 |
-| 程式碼可讀性（變數命名、註解是否清楚） | ___ / 5 |
-| 邏輯完整性（是否涵蓋所有優先權情境） | ___ / 5 |
-| 邊界測試表現（QA 測試清單通過情況） | ___ / 5 |
-| 個人挑戰題完成度（完成多少中等/挑戰題） | ___ / 5 |
-
-完成自評後，建議找同組或鄰座同學互相測試彼此的系統，用 QA 品質保證測試清單互相「刁難」對方的作品，這是這學期第一次進行同儕互評，能幫助你們發現自己沒注意到的設計死角。
+1. 本專題先分三個模組各自完成，再整合。如果一開始就把所有元件接在一起、寫一支大程式，會遇到什麼困難？這和專案管理中的「工作分解結構（WBS）」有什麼關係？
+2. 整合程式的優先權順序是「急停 → 溫度 → 照明 → 出入管制」。如果把出入管制移到溫度檢查之前，會發生什麼事？這說明了什麼設計原則？
+3. 三個客戶案例用的是**同一套程式**，只改設定區的數字。從商業角度來看，這種「平台化」的做法對顧問公司有什麼好處？有什麼風險？
+4. 為什麼要主動做 QA 測試，而不是等客戶用了再修？請從成本、商譽、安全三個角度說明。
 
 ---
 
 ## 下週預告
 
-期中專題告一段落，第 9 週我們要進入第三階段——工業物聯網基礎元件。密室老闆想打造一間「停車場雷達」主題房，你將學會使用超音波測距模組，讓機關真正具備「感知空間距離」的能力，這也是後續幾週動力控制與自動避障邏輯的重要基礎。
+第 9 週我們要加入**超音波測距模組**，打造「停車場雷達」——系統第一次能「感知距離」。第 5 週用旋鈕假裝的倒車雷達，下週就能換成真正的距離感測器了。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 7 週](./week-07.md) | [下一週：第 9 週 — 停車場雷達 ➡](./week-09.md)
+## 📎 教師參考：腳位配置範例
+
+<details>
+<summary>點此展開（建議 M0 審查後再公布）</summary>
+
+| 元件 | 腳位 | 理由 |
+| --- | --- | --- |
+| 旋鈕 | A0 | 類比輸入 |
+| 光敏電阻 | A1 | 類比輸入 |
+| TMP36 | A2 | 類比輸入 |
+| 照明燈 | ~5 | 需要調光；有伺服＋蜂鳴器時只剩 5、6 能調光 |
+| RGB（R / G / B） | 9 / 10 / 11 | 只用全亮全滅顏色，接在被借走的 `~` 腳也沒問題，等於回收利用 |
+| 蜂鳴器 | 8 | 一般腳 |
+| 伺服 | 12 | 一般腳，把 ~6 留給未來擴充 |
+| 進場鈕 | 2 | 一般腳 |
+| 離場鈕 | 3 | 一般腳（~3 已被蜂鳴器借走，拿來接按鈕剛好） |
+| 復歸鈕 | 4 | 一般腳 |
+| 急停鈕 | 7 | 一般腳 |
+| **剩餘** | ~6、13、A3～A5 | ~6 可再接一顆調光燈 |
+
+**審查重點**：
+
+- 照明燈是否接在 5 或 6（最常見錯誤：接在 9 或 10）
+- 學生是否能說明 RGB 為什麼不需要 `~` 腳
+- 是否有「把被借走的 `~` 腳拿去接按鈕、RGB」的資源回收思維（加分）
+
+</details>
+
+---
+
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 7 週](week-07.md) | [下一週：第 9 週 — 停車場雷達 ➡](week-09.md)
