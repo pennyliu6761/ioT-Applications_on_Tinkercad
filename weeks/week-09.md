@@ -1,4 +1,4 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 8 週](week-08.md) | [下一週：第 10 週 — 智慧輸送帶 ➡](week-10.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 8 週](week-08.md) | [下一週：第 10 週 — 會持續運轉的智慧場域 ➡](week-10.md)
 
 ---
 
@@ -6,17 +6,13 @@
 
 ## 主題專案：讓系統知道「東西離我多遠」
 
-> 🎯 **本週定位**：期中專題結束，顧問公司接案能力大增。這一週加入新感官：**超音波測距感測器 HC-SR04**。前面學過的感測器只能回答「亮不亮」「熱不熱」，超音波可以直接回答「**離我幾公分**」。第 5 週用旋鈕「假裝」的倒車雷達，這週終於可以用真的了。
+> 🎯 **本週定位**：期中專題結束，顧問公司接案能力大增。這一週加入新感官：**超音波測距感測器 HC-SR04**。前面學過的感測器只能回答「亮不亮」「熱不熱」，超音波可以直接回答「**離我幾公分**」。
 >
-> 和前幾週一樣，本週**重點不在寫程式**，而在於：
+> 超音波一顆就佔 **2 隻腳**，系統裡有兩顆就是 4 隻，**一般腳位不夠、要借 A 腳**是本週最大的配線挑戰。另外，感測器「裝在哪裡、朝哪裡看」決定了量到的數字代表什麼——這是本週最重要的情境思考。
 >
-> 1. 讀懂情境需求，判斷需要哪些元件
-> 2. 規劃腳位，在 Tinkercad 把電路一步步接起來
-> 3. 想清楚感測器**裝在哪裡、朝哪個方向**，量到的距離代表什麼意思
+> 每一個關卡照「五個固定環節」進行：抽**客戶限制卡** → 回答**接線前決策題** → 照**接線任務**一步步接 → 套用**程式模板**（只改腳位區、參數區） → 完成**配線變化挑戰**（程式一個字都不改，只改線）。
 >
-> 「發射超音波、換算公分」的程式已經寫好，你只需要填腳位、調整距離門檻、把功能開關從 `false` 改成 `true`。
->
-> 🏁 **本週成果**：完成 **4 個獨立專案**，每個專案存成一個獨立的 Tinkercad 檔案繳交。
+> 🏁 **本週成果**：完成 **4 個關卡** ＋ **練習題 Lv.1～Lv.6**（套用本週的程式模板 T17～T20）。
 
 ---
 
@@ -25,19 +21,22 @@
 - [學習地圖](#學習地圖)
 - [開場任務簡報](#開場任務簡報)
 - [認識新元件：超音波測距感測器 HC-SR04](#認識新元件超音波測距感測器-hc-sr04)
+- [本週配線新技巧](#本週配線新技巧)
 - [配線口訣卡](#配線口訣卡)
 - [共用工具](#共用工具)
-- [專案一：感應式給皂機](#專案一感應式給皂機)
-- [專案二：停車格倒車引導](#專案二停車格倒車引導)
-- [專案三：智慧垃圾桶](#專案三智慧垃圾桶)
-- [專案四：停車場入口管理](#專案四停車場入口管理)
+- [關卡怎麼玩：五個固定環節](#關卡怎麼玩五個固定環節)
+- [關卡 1：感應式給皂機（模板 T17）](#關卡-1感應式給皂機模板-t17)
+- [關卡 2：停車格倒車引導（模板 T18）](#關卡-2停車格倒車引導模板-t18)
+- [關卡 3：智慧垃圾桶（模板 T19）](#關卡-3智慧垃圾桶模板-t19)
+- [關卡 4：停車場出入口管理（模板 T20）](#關卡-4停車場出入口管理模板-t20)
 - [練習題大補帖：情境配置挑戰](#練習題大補帖情境配置挑戰)
   - [Lv.1 圖書館座位使用偵測](#-lv1-圖書館座位使用偵測)
   - [Lv.2 遊樂設施身高檢測](#-lv2-遊樂設施身高檢測)
-  - [Lv.3 社區水塔水位監測](#-lv3-社區水塔水位監測)
-  - [Lv.4 自動門防夾安全](#-lv4-自動門防夾安全)
-  - [Lv.5 倉庫貨架缺貨偵測](#-lv5-倉庫貨架缺貨偵測)
-  - [🏆 Lv.6 BOSS 關：物聯網顧問提案](#-lv6-boss-關物聯網顧問提案)
+  - [Lv.3 社區水塔水位面板](#-lv3-社區水塔水位面板)
+  - [Lv.4 診所自動門防夾](#-lv4-診所自動門防夾)
+  - [Lv.5 展覽館人流管制](#-lv5-展覽館人流管制)
+  - [🏆 Lv.6 BOSS 關：顧問提案](#-lv6-boss-關顧問提案)
+  - [📝 配線設計單](#-配線設計單)
 - [配線除錯站](#配線除錯站)
 - [成果繳交與評分](#成果繳交與評分)
 - [📖 本週詞彙表](#-本週詞彙表)
@@ -52,26 +51,25 @@
 
 - ✅ LED、RGB、蜂鳴器、伺服四種輸出元件
 - ✅ 按鈕、旋鈕、光敏電阻、TMP36 四種輸入元件
+- ✅ 配線技巧：兩燈共腳、光敏電阻反相、全亮全滅顏色接一般腳、逐腳判斷 `~` 腳、兩顆伺服共用訊號線
 - ✅ 「~ 腳可用表」：伺服借走 9、10；蜂鳴器借走 3、11
-- ✅ 狀態改變偵測、鎖定與復歸、安全連鎖、優先權
-- ✅ 期中專題的模組化與腳位規劃
+- ✅ 安全連鎖、鎖定與復歸、期中專題的模組化與腳位總表
 
 ### 這週要新學的
 
 | 新東西 | 白話說明 | 在職場上像什麼 |
 | --- | --- | --- |
 | 超音波感測器 HC-SR04 | 發出聲波、聽回音，算出前方物體距離 | 倒車雷達、感應水龍頭、水位計 |
-| 距離翻譯機 `readCM()` | 已經寫好的函式，回傳幾公分 | 把儀器讀數換成報表單位 |
-| 「安裝位置換算」 | 感測器量到的是「到我的距離」，要換算成真正想知道的數字 | 從天花板量身高、從桶頂量垃圾高度 |
-| 多顆感測器輪流量 | 兩顆以上一起量會互相干擾，要一顆一顆來 | 會議中大家輪流發言 |
+| 安裝位置換算 | 感測器量到的是「到我的距離」，要換算成客戶真正想知道的數字 | 從天花板量身高、從桶頂量垃圾高度 |
+| 兩顆感測器角色互換 | 入口、出口裝反了，對調兩組線就好 | 現場施工裝錯位置的快速修正 |
+| 程式模板 T17～T20 | 本週四個新模板 | 公司的標準表單 |
 
 ### 本週可用元件（只限這些）
 
 | 元件 | 第幾週學的 |
 | --- | --- |
-| 單色 LED、220Ω 電阻 | 第 1 週 |
-| 按鈕、10kΩ 電阻 | 第 2 週 |
-| RGB LED（共陰極） | 第 3 週 |
+| 單色 LED、RGB LED、220Ω | 第 1、3 週 |
+| 按鈕、10kΩ | 第 2 週 |
 | 旋鈕 | 第 4 週 |
 | 蜂鳴器、光敏電阻 | 第 5 週 |
 | TMP36 | 第 6 週 |
@@ -84,14 +82,12 @@
 
 > 📖 **情境**：期中提案大獲好評，客戶開始帶朋友來。這週的四個新委託，都需要系統「知道東西有多遠」。
 >
-> | 客戶 | 委託內容 | 難度 |
-> | --- | --- | --- |
-> | 連鎖餐廳 | 感應式給皂機 | ⭐ |
-> | 社區管委會 | 停車格倒車引導 | ⭐⭐ |
-> | 科技園區 | 智慧垃圾桶 | ⭐⭐⭐ |
-> | 購物中心 | 停車場入口管理 | ⭐⭐⭐⭐ |
->
-> 每個專案都分成 3 個步驟，從最簡單的版本開始，每一步多接幾個元件、多一項功能。
+> | 關卡 | 客戶 | 委託內容 | 套用模板 | 難度 |
+> | --- | --- | --- | --- | --- |
+> | 1 | 連鎖餐廳 | 感應式給皂機 | T17 近接觸發 | ⭐ |
+> | 2 | 社區管委會 | 停車格倒車引導 | T18 距離分段指示 | ⭐⭐ |
+> | 3 | 科技園區 | 智慧垃圾桶 | T19 雙感測開蓋＋容量 | ⭐⭐⭐ |
+> | 4 | 購物中心 | 停車場出入口管理 | T20 進出計數柵欄 | ⭐⭐⭐⭐ |
 
 ---
 
@@ -120,20 +116,19 @@ HC-SR04 正面有兩個圓筒，像一對「眼睛」，其實是**一張嘴和�
 | HC-SR04 的腳 | 接到哪裡 |
 | --- | --- |
 | VCC | 5V |
-| Trig（發射） | 任何一隻數位腳位 |
-| Echo（接收） | 任何一隻數位腳位 |
+| Trig（發射） | 任何一隻數位腳位（也可以借 A 腳） |
+| Echo（接收） | 任何一隻數位腳位（也可以借 A 腳） |
 | GND | GND |
 
-- Trig、Echo 接**一般腳位就可以**，不需要 `~` 腳。
-- **一顆 HC-SR04 要佔 2 隻腳**。系統裡有兩顆，就要 4 隻——這是本週腳位壓力的來源。
-- 在 Tinkercad 開始模擬後，**點一下感測器**，前方會出現一個可以拖曳的小圓點，代表「物體」。把它拉近拉遠，就能模擬距離變化。
+- Trig、Echo 接**一般腳位就可以**，不需要 `~` 腳——把 `~` 腳留給要調光的燈。
+- **一顆 HC-SR04 佔 2 隻腳**。系統裡有兩顆，就要 4 隻。
+- 在 Tinkercad 元件庫搜尋「Ultrasonic Distance Sensor」，選 **4 隻腳**的版本（HC-SR04）。開始模擬後**點一下感測器**，前方會出現一個可以拖曳的小圓點，代表「物體」。把它拉近拉遠，就能模擬距離變化。
 
 ### 程式裡的「距離翻譯機」
 
-本週所有程式都附上同一個函式，你**不需要修改它**，只要知道它會回傳「幾公分」：
+本週所有模板都附上同一個函式，你**不需要修改它**，只要知道它會回傳「幾公分」：
 
 ```cpp
-// 距離翻譯機：輸入 Trig、Echo 腳位，回傳公分
 float readCM(int trig, int echo) {
   digitalWrite(trig, LOW);  delayMicroseconds(2);
   digitalWrite(trig, HIGH); delayMicroseconds(10);   // 發出一聲超音波
@@ -144,18 +139,37 @@ float readCM(int trig, int echo) {
 }
 ```
 
-### ⭐ 本週最重要的觀念：安裝位置換算
+---
+
+## 本週配線新技巧
+
+### 技巧 1：先想「站在哪、看向哪」——安裝位置換算
 
 感測器量到的永遠是「**物體到感測器**」的距離，但客戶想知道的常常是別的數字：
 
 | 情境 | 感測器裝在哪 | 量到的距離 | 客戶真正想知道的 | 換算方式 |
 | --- | --- | --- | --- | --- |
-| 倒車雷達 | 車尾 | 車尾到牆 | 車尾到牆 | 不用換算 |
-| 身高測量 | 天花板（200 cm 高） | 頭頂到天花板 | 身高 | 200 − 距離 |
-| 垃圾桶 | 桶蓋內側（桶深 60 cm） | 垃圾表面到桶蓋 | 垃圾裝了多滿 | (60 − 距離) ÷ 60 |
-| 水塔 | 水塔頂端（深 100 cm） | 水面到頂端 | 水位還有多高 | 100 − 距離 |
+| 倒車雷達 | 牆上，朝向車尾 | 車尾到牆 | 車尾到牆 | 不用換算 |
+| 身高測量 | 天花板（200 cm 高），朝下 | 頭頂到天花板 | 身高 | 200 − 距離 |
+| 垃圾桶 | 桶蓋內側（桶深 60 cm），朝下 | 垃圾表面到桶蓋 | 裝了幾成滿 | (60 − 距離) ÷ 60 |
+| 水塔 | 水塔頂蓋（深 100 cm），朝下 | 水面到頂蓋 | 水位高度 | 100 − 距離 |
 
-> 💡 **口訣：先想清楚感測器「站在哪裡、看向哪裡」，再決定要不要換算。**
+> 💡 和第 7 週的伺服一樣：**換算是參數區的事，不是改線的事**。本週模板都有「安裝高度」或「深度」參數，填對就會自動換算。
+
+### 技巧 2：兩顆感測器角色互換 → 對調兩組線
+
+系統有兩顆 HC-SR04（例如入口、出口），現場卻發現裝反了：
+
+```
+原本：入口那顆 → Pin 7、8（程式當作入口）    出口那顆 → Pin 12、13（程式當作出口）
+修正：把兩顆感測器的 Trig、Echo 線「整組」對調，程式一個字都不用改
+```
+
+> ⚠️ 要**整組**對調（Trig 跟 Trig 換、Echo 跟 Echo 換），只換一條會兩顆都量不到。
+
+### 技巧 3：Trig、Echo 可以借 A 腳
+
+A0～A5 也能當數位腳用。兩顆超音波＋伺服＋燈號時，一般腳常常不夠，把 Trig、Echo 搬到 A 腳是最常見的解法——但**旋鈕、光敏電阻、TMP36 只能接 A 腳**，借之前先保留它們的位置。
 
 ---
 
@@ -163,13 +177,13 @@ float readCM(int trig, int echo) {
 
 | 口訣 | 說明 |
 | --- | --- |
-| ① **HC-SR04：VCC 5V、Trig 數位腳、Echo 數位腳、GND** | 不用電阻，一顆佔 2 隻腳 |
+| ① **HC-SR04：VCC 5V、Trig、Echo、GND** | 不用電阻，一顆佔 2 隻腳 |
 | ② Trig、Echo 不要佔 `~` 腳 | 把 `~` 腳留給需要調光的燈 |
-| ③ 多顆超音波要「輪流量」 | 每量完一顆，稍等一下再量下一顆 |
-| ④ 有伺服，9、10 不能調光；有蜂鳴器，3、11 不能調光 | 兩者都有時只剩 5、6 |
-| ⑤ 不需要漸變的 RGB，接哪都行 | 只用全亮全滅顏色時，`setColor` 改用 `digitalWrite` |
-| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | HC-SR04、伺服、蜂鳴器、旋鈕、TMP36 不用電阻 |
-| ⑦ Pin 0、1 先不要用；腳位不夠時借 A 腳 | A 腳也能接 Trig、Echo、燈、按鈕 |
+| ③ 先想「站在哪、看向哪」，換算填在參數區 | 量身高、水位、垃圾高度都要換算 |
+| ④ 兩顆感測器裝反 → 整組對調 Trig、Echo 線 | 程式不用改 |
+| ⑤ 有伺服，9、10 不能調光；有蜂鳴器，3、11 不能調光 | 兩者都有時只剩 5、6 |
+| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | HC-SR04、伺服、蜂鳴器、旋鈕、TMP36 不用 |
+| ⑦ Pin 0、1 不用；腳位不夠時借 A 腳 | 先保留旋鈕、光敏電阻、TMP36 的 A 腳 |
 
 ---
 
@@ -177,7 +191,7 @@ float readCM(int trig, int echo) {
 
 ### 🔧 工具 1：超音波測距檢查器
 
-接好 HC-SR04 後先跑這支。拖曳 Tinkercad 前方的小圓點，確認 Serial Monitor 顯示的公分數**跟畫面上標示的距離差不多**。
+接好 HC-SR04 後先跑這支。拖曳 Tinkercad 前方的小圓點，確認 Serial Monitor 顯示的公分數**跟畫面上標示的距離差不多**。有兩顆感測器時，**每一顆都要各測一次**。
 
 ```cpp
 int pinTrig = 7;   // ← 改成你 Trig 接的腳位
@@ -206,7 +220,14 @@ void loop() {
 }
 ```
 
-**檢查標準**：小圓點拉到 50 cm 附近，顯示約 48～52 cm。如果一直顯示 999，表示沒收到回音——先檢查 Trig、Echo 有沒有接反。
+**檢查標準**：小圓點拉到 50 cm 附近，顯示約 48～52 cm。如果一直顯示 999，先檢查 Trig、Echo 有沒有接反。
+
+**距離記錄表**（每顆感測器都要填）：
+
+| 感測器 | Trig／Echo 接在 | 小圓點 20 cm 時顯示 | 小圓點 100 cm 時顯示 | 朝向（看什麼？） |
+| --- | --- | --- | --- | --- |
+| 第 1 顆 | | | | |
+| 第 2 顆 | | | | |
 
 ### 🔧 其他工具（沿用前幾週）
 
@@ -215,55 +236,113 @@ void loop() {
 | 接線驗證器 | 檢查所有燈的腳位 | 第 3 週起 |
 | 類比讀值檢查器 | 檢查旋鈕、光敏電阻 | 第 5 週 |
 | 蜂鳴器測試器 | 檢查蜂鳴器 | 第 5 週 |
-| 伺服測試器 | 找出伺服的開、關角度 | 第 7 週 |
-
-> 📌 **每個專案的固定流程**
-> 1. **Step 0**：讀完情境，先填好腳位規劃表，並畫出「感測器裝在哪、朝哪看」
-> 2. 把腳位填進程式的「設定區」，並確認距離門檻符合情境
-> 3. 照 Step 1 → 2 → 3 逐步接線，每完成一步就把對應的功能開關改成 `true`
-> 4. 每一步都先用工具確認接線，再拖曳小圓點測試
+| 伺服測試器（角度記錄表） | 找出伺服的開、關角度 | 第 7 週 |
 
 ---
 
-## 專案一：感應式給皂機
+## 關卡怎麼玩：五個固定環節
+
+| 環節 | 你要做什麼 | 產出 |
+| --- | --- | --- |
+| 🃏 **① 抽客戶限制卡** | 依座號尾數找到你的限制卡 | 圈出你的限制卡 |
+| ✏️ **② 接線前決策題** | 回答配線判斷題，畫出**感測器安裝示意圖**，填好**腳位規劃表** | 決策題答案＋示意圖＋規劃表 |
+| 🔌 **③ 接線任務** | 照 Step 1 → 2 → 3 接線，每一步都用工具檢查 | 檢查截圖＋距離記錄表 |
+| 💻 **④ 套用程式模板** | 只改「腳位區」和「參數區」，再把功能開關逐一打開 | 可運作的 Tinkercad 檔案 |
+| 🔄 **⑤ 配線變化挑戰** | **程式一個字都不能改**，只靠改線完成客戶的臨時需求 | 修改後的截圖＋說明 |
+
+| 座號尾數 | 抽到 |
+| --- | --- |
+| 1、4、7 | 限制卡 A |
+| 2、5、8 | 限制卡 B |
+| 3、6、9、0 | 限制卡 C |
+
+---
+
+## 關卡 1：感應式給皂機（模板 T17）
 
 ⭐ **難度**：HC-SR04 ＋ LED，再逐步加蜂鳴器與旋鈕
 
-**客戶需求**：連鎖餐廳的洗手台要裝感應式給皂機。手伸到出口下方，給皂一次（出皂燈亮 0.8 秒），而且**手不拿開就不會再給**，避免浪費。給皂時發出短促提示音。不同分店的洗手台高度不同，感應距離要能用旋鈕調整（5～30 cm）。
+### 📖 情境
 
-### Step 0：腳位規劃
+連鎖餐廳的洗手台要裝感應式給皂機。手伸到出口下方，給皂一次（出皂燈亮 0.8 秒），而且**手不拿開就不會再給**，避免浪費。給皂時發出短促提示音。不同分店的洗手台高度不同，感應距離要能用旋鈕調整（5～30 cm）。
 
-| 元件 | 腳位 | 需要 `~` 腳嗎？為什麼？ |
-| --- | --- | --- |
-| HC-SR04 Trig | | |
-| HC-SR04 Echo | | |
-| 出皂燈（單色 LED） | | |
-| 提示蜂鳴器 | | |
-| 感應距離旋鈕 | | — |
+### 🎯 本關配線學習目標
 
-### 逐步接線
+- 第一次接 HC-SR04，用測距檢查器確認讀值
+- 判斷 Trig、Echo 要不要 `~` 腳，練習借 A 腳
 
-| 步驟 | 接上哪些元件 | 完成後會看到／聽到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | HC-SR04＋出皂燈 | 小圓點拉到 10 cm 內，出皂燈亮一下；不拉開不會再亮 | （不用改） |
-| Step 2 | ＋蜂鳴器 | 給皂時嗶一聲 | `useBuzzer = true` |
-| Step 3 | ＋旋鈕 | 旋鈕調整感應距離 5～30 cm | `useKnob = true` |
+### 🃏 ① 客戶限制卡
 
-### 程式（只改設定區）
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：一個出皂口、一顆出皂燈 |
+| **B** | 洗手台控制盒已佔用 **Pin 7～13**；**兩個出皂口同步**出皂，兩顆出皂燈只能用 **1 隻腳** |
+| **C** | 客戶要「可使用」**綠色待機燈**（沒有手時亮）＋**藍色出皂燈**；蜂鳴器必須接 **A1**，HC-SR04 必須接 **A2（Trig）、A3（Echo）** |
+
+### ✏️ ② 接線前決策題
+
+1. HC-SR04 需要電阻嗎？Trig、Echo 需要 `~` 腳嗎？
+2. 給皂機的感測器要裝在出皂口的哪裡、朝哪個方向？畫出示意圖。
+3. 限制卡 B：Pin 7～13 不能用，剩下哪些腳？夠不夠接所有元件？兩顆出皂燈怎麼接？
+4. 限制卡 C：待機燈要填在模板的哪個腳位？旋鈕還能接 A0 嗎？
+
+**腳位規劃表**：
+
+| 元件 | 腳位 |
+| --- | --- |
+| HC-SR04 Trig | |
+| HC-SR04 Echo | |
+| 出皂燈（B：兩顆共用） | |
+| 待機燈（限制卡 C） | |
+| 蜂鳴器 | |
+| 感應距離旋鈕 | |
+
+### 🔌 ③ 接線任務
+
+**Step 1：HC-SR04＋出皂燈**
+
+1. HC-SR04 的 VCC 接 5V 軌、GND 接 GND 軌，Trig、Echo 接你規劃的腳位。
+2. 出皂燈（限制卡 C 再加待機燈）各串 220Ω。
+3. ✅ 檢查：**工具 1**（填距離記錄表）、接線驗證器。
+
+**Step 2：蜂鳴器**
+
+1. 接好蜂鳴器。
+2. ✅ 檢查：蜂鳴器測試器。
+
+**Step 3：旋鈕**
+
+1. 旋鈕兩側接 5V、GND，中間接 A 腳。
+2. ✅ 檢查：類比讀值檢查器，確認 0～1023。
+
+### 💻 ④ 套用程式模板 T17
 
 ```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig   = ?;      // HC-SR04 Trig
-int pinEcho   = ?;      // HC-SR04 Echo
-int ledPump   = ?;      // 出皂燈
-int pinBuzzer = ?;      // 提示蜂鳴器
-int pinKnob   = A0;     // 感應距離旋鈕
-float triggerCM = 10;   // 預設感應距離（公分）
-bool useBuzzer = false; // Step 2 接好後改成 true
-bool useKnob   = false; // Step 3 接好後改成 true
-// ============================
+// ===== 程式模板 T17：近接觸發 =====
 
-bool wasNear = false;
+// ----- 腳位區（沒接的元件填 -1）-----
+int pinTrig   = ?;                  // HC-SR04 Trig
+int pinEcho   = ?;                  // HC-SR04 Echo
+int ledAction = ?;                  // 動作燈（偵測到時亮）
+int ledIdle   = -1;                 // 待機燈（沒偵測到時亮）
+int pinBuzzer = ?;                  // 提示蜂鳴器
+int pinKnob   = -1;                 // 感應距離旋鈕
+
+// ----- 參數區 -----
+float triggerCM = 10;               // 小於這個距離算「偵測到」（有接旋鈕時由旋鈕決定）
+int knobMinCM = 5, knobMaxCM = 30;  // 旋鈕可調範圍（公分）
+int confirmTime = 0;                // 連續偵測多久才算數（毫秒）；0：立刻算
+int actionTime  = 800;              // 動作燈亮多久（毫秒）；0：東西在就一直亮
+int beepTone    = 1500;             // 提示音高
+String eventName = "Dispense";      // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useBuzzer = false;             // Step 2：蜂鳴器
+bool useKnob   = false;             // Step 3：旋鈕
+
+// ===== 以下不用改 =====
+bool wasNear = false, counted = false;
+unsigned long nearSince = 0;
 int count = 0;
 
 float readCM(int trig, int echo) {
@@ -275,97 +354,181 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
+void setLights(bool on) {
+  if (ledAction >= 0) digitalWrite(ledAction, on ? HIGH : LOW);
+  if (ledIdle >= 0)   digitalWrite(ledIdle,   on ? LOW : HIGH);
+}
+
 void setup() {
   pinMode(pinTrig, OUTPUT);
   pinMode(pinEcho, INPUT);
-  pinMode(ledPump, OUTPUT);
+  if (ledAction >= 0) pinMode(ledAction, OUTPUT);
+  if (ledIdle >= 0)   pinMode(ledIdle, OUTPUT);
+  setLights(false);
   Serial.begin(9600);
 }
 
 void loop() {
-  if (useKnob) triggerCM = map(analogRead(pinKnob), 0, 1023, 5, 30);
+  if (useKnob && pinKnob >= 0) {
+    triggerCM = map(analogRead(pinKnob), 0, 1023, knobMinCM, knobMaxCM);
+  }
 
   float d = readCM(pinTrig, pinEcho);
   bool near = d < triggerCM;
+  if (near && !wasNear) nearSince = millis();               // 剛偵測到，開始計時
+  bool confirmed = near && (millis() - nearSince >= (unsigned long)confirmTime);
 
-  if (near && !wasNear) {                 // 手剛伸進來
+  if (confirmed && !counted) {                              // 一次靠近只算一次
+    counted = true;
     count++;
-    digitalWrite(ledPump, HIGH);
-    if (useBuzzer) tone(pinBuzzer, 1500, 80);
-    delay(800);                           // 出皂 0.8 秒
-    digitalWrite(ledPump, LOW);
-    Serial.print("Dispense #");
+    if (useBuzzer && pinBuzzer >= 0) tone(pinBuzzer, beepTone, 80);
+    Serial.print(eventName + " #");
     Serial.print(count);
-    Serial.print("   (trigger < ");
+    Serial.print("   distance ");
+    Serial.print(d);
+    Serial.print(" cm (trigger < ");
     Serial.print(triggerCM);
-    Serial.println(" cm)");
+    Serial.println(")");
+    if (actionTime > 0) {
+      setLights(true);
+      delay(actionTime);
+      setLights(false);
+    }
   }
+  if (!near) counted = false;                               // 離開後才能再觸發
+  if (actionTime == 0) setLights(counted);
+
   wasNear = near;
   delay(100);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
+
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表填入；限制卡 C 的 `pinTrig = A2`、`pinEcho = A3`、`pinBuzzer = A1`，`ledIdle` 填綠燈腳位 |
+| 參數區 | 本關不用改（`actionTime = 800` 就是出皂 0.8 秒） |
+| 功能開關 | Step 2 → `useBuzzer = true`；Step 3 → `useKnob = true` |
+
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
+
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「隔壁洗手台也要一顆出皂燈，跟這台同步亮」（限制卡 B 的同學：改成拿掉一顆） | |
+| 「旋鈕往右轉應該是感應距離**變短**」 | |
+| 「給皂機一直沒反應」——老師會動手腳，找出來並修好 | （提示：看 Serial Monitor 顯示的距離） |
+
+### 💼 情境思考
 
 1. 為什麼要設計成「手不拿開就不會再給」？如果每 0.1 秒偵測到手就給一次，一天下來會浪費多少？
 2. 感應距離設太遠（例如 30 cm）會發生什麼事？（提示：洗手台下方的水槽、旁邊經過的人）
-3. 💼 Serial Monitor 記錄了給皂次數。對餐廳管理者來說，這個數字可以拿來做什麼？（提示：補貨、衛生稽核、尖峰時段）
+3. Serial Monitor 記錄了給皂次數。對餐廳管理者來說，這個數字可以拿來做什麼？（提示：補貨、衛生稽核、尖峰時段）
 
-### ✅ 專案一驗收
+### ✅ 關卡 1 驗收
 
-- [ ] 手（小圓點）靠近時給皂一次，不拿開不會重複給
-- [ ] 給皂時嗶一聲
-- [ ] 旋鈕能調整感應距離（Serial Monitor 顯示 trigger 數值變化）
-- [ ] Trig、Echo 沒有佔用 `~` 腳
+- [ ] 距離記錄表已填，Trig、Echo 沒有佔用 `~` 腳
+- [ ] 手（小圓點）靠近時給皂一次，不拿開不會重複給；給皂時嗶一聲
+- [ ] 旋鈕能調整感應距離（Serial Monitor 的 trigger 數值會變）
+- [ ] 依限制卡完成（B：兩燈同步；C：待機綠燈、A 腳配置正確）
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案二：停車格倒車引導
+## 關卡 2：停車格倒車引導（模板 T18）
 
-⭐⭐ **難度**：HC-SR04 ＋ RGB ＋ 蜂鳴器 ＋ 5 顆長條燈
+⭐⭐ **難度**：HC-SR04 ＋ RGB ＋ 蜂鳴器 ＋ 長條燈（注意蜂鳴器借走 3、11）
 
-**客戶需求**：社區地下停車場的狹窄車位，牆上裝一套倒車引導燈。駕駛倒車時，燈號告訴他還能退多少：
+### 📖 情境
+
+社區地下停車場的狹窄車位，牆上裝一套倒車引導燈。駕駛倒車時，燈號告訴他還能退多少：
 
 | 車尾到牆距離 | RGB | 蜂鳴器 | 長條燈 |
 | --- | --- | --- | --- |
 | 60 cm 以上 | 綠（繼續倒） | 150 cm 內開始間歇嗶 | 越近亮越多格 |
-| 20～60 cm | 黃（慢慢倒） | 越近嗶越急 | |
-| 20 cm 以下 | 紅（停！） | 長鳴 | 5 格全亮 |
+| 20～60 cm | 黃 (255,180,0)（慢慢倒） | 越近嗶越急 | |
+| 20 cm 以下 | 紅（停！） | 長鳴 | 全亮 |
 
-### Step 0：腳位規劃
+### 🎯 本關配線學習目標
+
+- 逐腳判斷 RGB 哪一腳需要 `~`，並避開蜂鳴器借走的 3、11
+- 用參數讓三顆單色燈「當成」RGB 使用
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：RGB ＋ 5 格長條燈 |
+| **B** | 管委會想要**紅、黃、綠三顆單色燈**（像紅綠燈）取代 RGB；長條燈 5 格 |
+| **C** | 長條燈只要 **3 格**；**~5、~6** 已被車位照明佔用 |
+
+### ✏️ ② 接線前決策題
+
+1. 逐腳判斷：綠 (0,255,0)、黃 (255,180,0)、紅 (255,0,0) 三種顏色中，R、G、B 哪一腳會出現中間值？
+2. 有蜂鳴器時，需要 `~` 的那一腳可以接哪些腳位？限制卡 C 再扣掉 5、6 呢？
+3. 長條燈只需要亮滅，接在 `~3` 或 `~11` 會有問題嗎？
+4. 限制卡 B：三顆單色燈分別接在 `pinR`、`pinG`、`pinB` 的哪一個？三種顏色參數要怎麼改？需要 `~` 腳嗎？
+5. 感測器要裝在牆上的什麼高度？太低（地板附近）或太高（天花板附近）各會量到什麼？
+
+**腳位規劃表**：
 
 | 元件 | 腳位 | 是不是 `~` 腳？ |
 | --- | --- | --- |
 | HC-SR04 Trig／Echo | | |
-| 狀態 RGB（R / G / B） | | |
+| RGB 的 R／G／B（B：紅、綠、黃三顆燈） | | |
 | 蜂鳴器 | | |
-| 長條燈 × 5 | | |
+| 長條燈 × 5（C：× 3），由遠到近 | | |
 
-> 🤔 **規劃提示**：黃色用的是「紅全亮＋綠 180」，需要調光。有蜂鳴器時 RGB 要避開哪兩隻腳？長條燈可以接在那兩隻腳嗎？
+### 🔌 ③ 接線任務
 
-### 逐步接線
+**Step 1：HC-SR04＋RGB（或三顆單色燈）**
 
-| 步驟 | 接上哪些元件 | 完成後會看到／聽到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | HC-SR04＋RGB | 依距離顯示綠／黃／紅 | （不用改） |
-| Step 2 | ＋蜂鳴器 | 越近嗶越急，20 cm 內長鳴 | `useBuzzer = true` |
-| Step 3 | ＋5 顆長條燈 | 越近亮越多格 | `useBar = true` |
+1. HC-SR04 接法同關卡 1。
+2. RGB 三條腳各串 220Ω（限制卡 B：三顆單色燈各串 220Ω）。
+3. ✅ 檢查：工具 1、接線驗證器。
 
-### 程式（只改設定區）
+**Step 2：蜂鳴器**
+
+1. 接好蜂鳴器。
+2. ✅ 檢查：蜂鳴器測試器。
+
+**Step 3：長條燈**
+
+1. 長條燈由**遠到近**排成一列，各串 220Ω。
+2. ✅ 檢查：接線驗證器，確認亮的順序和排列順序一致。
+
+### 💻 ④ 套用程式模板 T18
 
 ```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;       // HC-SR04
-int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（避開 3、11）
-int pinBuzzer = ?;                  // 蜂鳴器
-int bar[5] = { ?, ?, ?, ?, ? };     // 長條燈（遠 → 近）
-float stopCM = 20;                  // 停止距離
-float slowCM = 60;                  // 減速距離
-float farCM  = 150;                 // 開始提示距離
-bool useBuzzer = false;             // Step 2 接好後改成 true
-bool useBar    = false;             // Step 3 接好後改成 true
-// ============================
+// ===== 程式模板 T18：距離分段指示 =====
 
+// ----- 腳位區（沒接的元件填 -1）-----
+int pinTrig = ?, pinEcho = ?;       // HC-SR04
+int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（或三顆單色燈）
+int pinBuzzer = ?;                  // 蜂鳴器
+int bar[5] = { ?, ?, ?, ?, ? };     // 長條燈（由遠到近；沒接的填 -1）
+int numBars = 5;                    // 實際接了幾格
+
+// ----- 參數區 -----
+float mountCM  = 0;                 // 0：數值 = 距離；大於 0：數值 = mountCM − 距離（量高度、水位）
+float stopLine = 20;                // 數值 ≤ 這個 → 停止區
+float slowLine = 60;                // 數值 ≤ 這個 → 減速區
+float beepLine = 150;               // 數值 ≤ 這個 → 開始嗶（越小越急）；0：不嗶
+float barMax   = 150;               // 長條燈的量程上限
+bool barMoreWhenSmall = true;       // true：數值越小亮越多格（倒車）；false：越大亮越多格（水位）
+int colorStop[3] = { 255, 0, 0 };   // 停止區顏色（紅）
+int colorSlow[3] = { 255, 180, 0 }; // 減速區顏色（黃）
+int colorGo[3]   = { 0, 255, 0 };   // 安全區顏色（綠）
+int beepTone = 1000;                // 嗶聲音高
+String valueName = "Distance";      // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useBuzzer = false;             // Step 2：蜂鳴器
+bool useBar    = false;             // Step 3：長條燈
+
+// ===== 以下不用改 =====
 float readCM(int trig, int echo) {
   digitalWrite(trig, LOW);  delayMicroseconds(2);
   digitalWrite(trig, HIGH); delayMicroseconds(10);
@@ -375,126 +538,190 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
-void setColor(int r, int g, int b) {
-  analogWrite(pinR, r);
-  analogWrite(pinG, g);
-  analogWrite(pinB, b);
+void setColor(int c[]) {
+  if (pinR >= 0) analogWrite(pinR, c[0]);
+  if (pinG >= 0) analogWrite(pinG, c[1]);
+  if (pinB >= 0) analogWrite(pinB, c[2]);
 }
 
 void setup() {
   pinMode(pinTrig, OUTPUT);
   pinMode(pinEcho, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  for (int i = 0; i < 5; i++) pinMode(bar[i], OUTPUT);
+  if (pinR >= 0) pinMode(pinR, OUTPUT);
+  if (pinG >= 0) pinMode(pinG, OUTPUT);
+  if (pinB >= 0) pinMode(pinB, OUTPUT);
+  for (int i = 0; i < numBars; i++) if (bar[i] >= 0) pinMode(bar[i], OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
   float d = readCM(pinTrig, pinEcho);
+  float v = (mountCM > 0) ? (mountCM - d) : d;             // 安裝位置換算
+  if (mountCM > 0 && v < 0) v = 0;
 
-  if (d <= stopCM)      setColor(255, 0, 0);     // 停：紅
-  else if (d <= slowCM) setColor(255, 180, 0);   // 慢：黃
-  else                  setColor(0, 255, 0);     // 繼續：綠
+  if (v <= stopLine)      setColor(colorStop);
+  else if (v <= slowLine) setColor(colorSlow);
+  else                    setColor(colorGo);
 
   if (useBar) {
-    float dd = constrain(d, stopCM, farCM);
-    int lit = map((int)dd, (int)farCM, (int)stopCM, 0, 5);   // 越近亮越多
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(bar[i], (i < lit) ? HIGH : LOW);
+    float vv = constrain(v, stopLine, barMax);
+    int lit;
+    if (barMoreWhenSmall) lit = map((int)vv, (int)barMax, (int)stopLine, 0, numBars);
+    else                  lit = map((int)vv, (int)stopLine, (int)barMax, 0, numBars);
+    for (int i = 0; i < numBars; i++) {
+      if (bar[i] >= 0) digitalWrite(bar[i], (i < lit) ? HIGH : LOW);
     }
   }
 
-  Serial.print("Distance: ");
-  Serial.print(d);
+  Serial.print(valueName + ": ");
+  Serial.print(v);
   Serial.println(" cm");
 
-  if (useBuzzer && d <= stopCM) {
-    tone(pinBuzzer, 1500);                      // 長鳴
+  if (useBuzzer && pinBuzzer >= 0 && beepLine > 0 && v <= stopLine) {
+    tone(pinBuzzer, beepTone);                              // 停止區：長鳴
     delay(100);
-  } else if (useBuzzer && d <= farCM) {
-    int gap = map((int)d, (int)stopCM, (int)farCM, 80, 600);   // 越近間隔越短
-    tone(pinBuzzer, 1000, 50);
+  } else if (useBuzzer && pinBuzzer >= 0 && v <= beepLine) {
+    int gap = map((int)v, (int)stopLine, (int)beepLine, 80, 600);   // 越接近停止區越急
+    tone(pinBuzzer, beepTone, 50);
     delay(gap);
   } else {
-    noTone(pinBuzzer);
+    if (pinBuzzer >= 0) noTone(pinBuzzer);
     delay(100);
   }
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 感測器要裝在牆上的什麼高度？太低（地板附近）或太高（天花板附近）各會量到什麼？
-2. 長條燈只需要亮滅，如果接在 `~3` 或 `~11` 會有問題嗎？為什麼？
-3. 💼 管委會問：「既然新車都有倒車雷達，為什麼還要在牆上裝？」請從「誰的車都能用」「維護成本」「事故糾紛」三個角度回答。
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表填入；限制卡 C 的 `numBars = 3`，`bar[]` 後兩格填 `-1` |
+| 參數區 | 本關距離規格和模板預設相同；限制卡 B 依決策題 4 改三種顏色（提示：黃燈接在哪一腳，`colorSlow` 就只讓那一腳是 255） |
+| 功能開關 | Step 2 → `useBuzzer = true`；Step 3 → `useBar = true` |
 
-### ✅ 專案二驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] RGB 依距離顯示綠／黃／紅，且 RGB 沒有接在 3、11
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「駕駛座那一側的柱子上也要一顆『停』紅燈，跟主燈的紅色同時亮」 | |
+| 「長條燈裝反了：車子越近，亮的是靠牆那一端」——讓亮燈方向反過來 | |
+| 「顏色亂了：該綠的時候亮紅」——老師會動手腳，找出來並修好 | |
+
+### 💼 情境思考
+
+1. 長條燈只需要亮滅，如果接在 `~3` 或 `~11` 會有問題嗎？為什麼？
+2. 管委會問：「既然新車都有倒車雷達，為什麼還要在牆上裝？」請從「誰的車都能用」「維護成本」「事故糾紛」三個角度回答。
+
+### ✅ 關卡 2 驗收
+
+- [ ] RGB（或三顆單色燈）依距離顯示綠／黃／紅；需要 `~` 的那一腳沒有接在 3、11（限制卡 C：也不在 5、6）
 - [ ] 越近嗶得越急，20 cm 內長鳴，150 cm 外安靜
-- [ ] 長條燈越近亮越多格
-- [ ] 腳位規劃表說明長條燈能不能用 3、11
+- [ ] 長條燈越近亮越多格（限制卡 C：3 格）
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案三：智慧垃圾桶
+## 關卡 3：智慧垃圾桶（模板 T19）
 
-⭐⭐⭐ **難度**：**2 顆 HC-SR04**（一顆朝外、一顆朝內）＋ 伺服 ＋ 滿桶連鎖
+⭐⭐⭐ **難度**：**2 顆 HC-SR04**（一顆朝外、一顆朝內）＋ 伺服 ＋ 容量燈 ＋ 滿桶連鎖
 
-**客戶需求**：科技園區的公共區域要換成智慧垃圾桶：
+### 📖 情境
 
-- **桶外**一顆超音波：有人靠近（25 cm 內）時，桶蓋自動打開；人離開 2 秒後關上
-- **桶內**一顆超音波（裝在桶蓋內側往下看）：量垃圾表面高度，換算「裝了幾成滿」，用三顆燈顯示：空、半滿、快滿
-- **滿桶連鎖**：裝到 85% 以上時，桶蓋**不再打開**（避免垃圾滿出來），並發出提醒聲；清潔人員按「維護鈕」可以強制開蓋 5 秒
+科技園區的公共區域要換成智慧垃圾桶：
 
-### Step 0：腳位規劃
+- **桶外**一顆超音波：有人靠近（25 cm 內）時，桶蓋自動打開；人離開 2 秒後慢慢關上。**關蓋途中有人再靠近，立刻重新打開**（防夾手）。
+- **桶內**一顆超音波（裝在桶蓋內側往下看）：量垃圾表面高度，換算「裝了幾成滿」，三顆燈顯示：少、半滿（50% 以上）、快滿（85% 以上）。
+- **滿桶連鎖**：裝到 85% 以上時桶蓋**不再打開**，並發出提醒聲；清潔人員按「維護鈕」可以強制開蓋 5 秒。
 
-| 元件 | 腳位 | 是不是 `~` 腳？ |
-| --- | --- | --- |
-| 桶外 HC-SR04 Trig／Echo | | |
-| 桶內 HC-SR04 Trig／Echo | | |
-| 桶蓋伺服 | | |
-| 容量燈（空／半滿／快滿） | | |
-| 蜂鳴器 | | |
-| 維護鈕 | | |
+### 🎯 本關配線學習目標
 
-> 🤔 **規劃提示**：
-> - 兩顆 HC-SR04 共要幾隻腳？麵包板上怎麼擺，才不會把「桶外」和「桶內」的線接錯？
-> - 先畫出示意圖：一顆朝外看人、一顆朝下看垃圾。
+- 兩顆 HC-SR04 在麵包板上分區擺放，不混淆
+- 用「深度」參數完成安裝位置換算
+- 一般腳不夠時，決定把誰搬到 A 腳
 
-### 逐步接線
+### 🃏 ① 客戶限制卡
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 桶外 HC-SR04＋伺服 | 有人靠近開蓋，離開 2 秒後關蓋 | （不用改） |
-| Step 2 | ＋桶內 HC-SR04＋3 顆容量燈 | 依垃圾高度顯示空／半滿／快滿 | `useFill = true` |
-| Step 3 | ＋蜂鳴器＋維護鈕 | 85% 以上不開蓋並提醒；維護鈕強制開蓋 5 秒 | `useFullLock = true` |
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：桶深 **60 cm** |
+| **B** | 大型桶，桶深 **80 cm**；園區監視系統已佔用 **Pin 2～5** |
+| **C** | **雙開蓋**（兩顆伺服同步，只能用 1 隻腳）；客戶要求滿桶時**不鎖蓋、只提醒**（避免民眾把垃圾丟在地上） |
 
-### 程式（只改設定區）
+### ✏️ ② 接線前決策題
+
+1. 畫出垃圾桶示意圖：兩顆感測器各裝在哪裡、朝哪裡看？
+2. 桶內感測器量到 9 cm，表示垃圾裝了幾成滿？請寫出換算過程（限制卡 B 用 80 cm 算）。
+3. 本關一般腳位需要幾隻？（兩顆 HC-SR04、伺服、3 顆燈、蜂鳴器、按鈕）限制卡 B 的可用腳位夠嗎？不夠要借幾隻 A 腳？
+4. 麵包板上怎麼擺，才不會把「桶外」和「桶內」的線接錯？
+5. 限制卡 C：「不鎖蓋、只提醒」要改哪個參數？兩顆伺服怎麼接？
+
+**腳位規劃表**：
+
+| 元件 | 腳位 |
+| --- | --- |
+| 桶外 HC-SR04 Trig／Echo | |
+| 桶內 HC-SR04 Trig／Echo | |
+| 桶蓋伺服（C：兩顆共用） | |
+| 容量燈：少／半滿／快滿 | |
+| 蜂鳴器 | |
+| 維護鈕 | |
+
+### 🔌 ③ 接線任務
+
+**Step 1：桶外 HC-SR04＋伺服**
+
+1. 桶外感測器放在麵包板**左側**，伺服的紅線接 5V 軌、棕線接 GND 軌、橘線接你規劃的腳位。
+2. ✅ 檢查：工具 1（桶外那顆）、伺服測試器（填角度記錄表：蓋子「關」和「開」各是幾度？）。
+
+**Step 2：桶內 HC-SR04＋容量燈**
+
+1. 桶內感測器放在麵包板**右側**，和桶外那顆分開。
+2. 三顆容量燈各串 220Ω。
+3. ✅ 檢查：工具 1（桶內那顆）、接線驗證器。
+
+**Step 3：蜂鳴器＋維護鈕**
+
+1. 接好蜂鳴器、維護鈕（配 10kΩ）。
+2. ✅ 檢查：蜂鳴器測試器。
+
+### 💻 ④ 套用程式模板 T19
 
 ```cpp
+// ===== 程式模板 T19：雙感測開蓋＋容量 =====
 #include <Servo.h>
 
-// ===== 設定區：只改這裡 =====
-int trigOut = ?, echoOut = ?;       // 桶外 HC-SR04（偵測人）
-int trigIn  = ?, echoIn  = ?;       // 桶內 HC-SR04（偵測垃圾高度）
-int pinServo  = ?;                  // 桶蓋伺服
-int fillLed[3] = { ?, ?, ? };       // 容量燈：空、半滿、快滿
-int pinBuzzer = ?;                  // 蜂鳴器
+// ----- 腳位區（沒接的元件填 -1）-----
+int trigOut = ?, echoOut = ?;       // 外側 HC-SR04（偵測人）
+int trigIn  = ?, echoIn  = ?;       // 內側 HC-SR04（偵測容量）
+int pinServo = ?;                   // 蓋子（門）伺服
+int fillLed[3] = { ?, ?, ? };       // 容量燈：少、半滿、快滿
+int pinBuzzer  = ?;                 // 蜂鳴器
 int btnService = ?;                 // 維護鈕
-float openCM   = 25;                // 有人靠近的距離
-float binDepth = 60;                // 桶蓋到桶底的深度（公分）
-int closedAngle = 0, openAngle = 100;
-bool useFill     = false;           // Step 2 接好後改成 true
-bool useFullLock = false;           // Step 3 接好後改成 true
-// ============================
 
+// ----- 參數區 -----
+float openCM = 25;                  // 外側：有人靠近的距離
+int holdTime = 2000;                // 人離開後幾毫秒關蓋
+float depthCM = 60;                 // 內側感測器到底部的距離（安裝位置換算）
+int midLine  = 50;                  // 幾 % 以上算半滿
+int fullLine = 85;                  // 幾 % 以上算快滿
+int closedAngle = 0, openAngle = 100;   // 依角度記錄表
+int sweepDelay = 8;                 // 每轉 1 度等幾毫秒（越大越慢）
+bool fullLock = true;               // true：快滿時不開蓋；false：只提醒
+int serviceTime = 5000;             // 維護鈕開蓋幾毫秒
+int alertTone = 800;                // 提醒音高
+String deviceName = "Bin";          // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useFill    = false;            // Step 2：內側感測器＋容量燈
+bool useService = false;            // Step 3：蜂鳴器＋維護鈕＋滿桶處理
+
+// ===== 以下不用改 =====
 Servo lid;
+bool lidOpen = false, wasFull = false;
 unsigned long lastNear = 0;
-bool wasFull = false;
-int lastService = LOW;
+int lastService = LOW, tick = 0;
 
 float readCM(int trig, int echo) {
   digitalWrite(trig, LOW);  delayMicroseconds(2);
@@ -503,145 +730,242 @@ float readCM(int trig, int echo) {
   long t = pulseIn(echo, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
+}
+
+void sweepTo(int from, int to) {
+  int step = (to > from) ? 1 : -1;
+  for (int a = from; a != to; a += step) { lid.write(a); delay(sweepDelay); }
+  lid.write(to);
+}
+
+void closeLid() {                                          // 關蓋途中有人靠近就重開（防夾）
+  int step = (closedAngle > openAngle) ? 1 : -1;
+  for (int a = openAngle; a != closedAngle; a += step) {
+    lid.write(a);
+    delay(sweepDelay);
+    if (a % 10 == 0 && readCM(trigOut, echoOut) < openCM) {
+      sweepTo(a, openAngle);
+      lastNear = millis();
+      if (useService && pinBuzzer >= 0) tone(pinBuzzer, 1500, 200);
+      Serial.println("Anti-pinch: reopen");
+      return;
+    }
+  }
+  lid.write(closedAngle);
+  lidOpen = false;
+  Serial.println(deviceName + " CLOSED");
 }
 
 void setup() {
   lid.attach(pinServo);
   lid.write(closedAngle);
   pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT);
-  pinMode(trigIn, OUTPUT);  pinMode(echoIn, INPUT);
-  for (int i = 0; i < 3; i++) pinMode(fillLed[i], OUTPUT);
-  pinMode(btnService, INPUT);
+  if (trigIn >= 0) { pinMode(trigIn, OUTPUT); pinMode(echoIn, INPUT); }
+  for (int i = 0; i < 3; i++) if (fillLed[i] >= 0) pinMode(fillLed[i], OUTPUT);
+  if (btnService >= 0) pinMode(btnService, INPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  // ---- 桶內：垃圾裝了幾成？ ----
+  tick++;
+
+  // ---- 內側：裝了幾成滿？ ----
   bool full = false;
   if (useFill) {
     float dIn = readCM(trigIn, echoIn);
-    int level = (int)((binDepth - dIn) / binDepth * 100);   // 安裝位置換算
-    level = constrain(level, 0, 100);
-    int idx = 0;                                             // 0=空, 1=半滿, 2=快滿
-    if (level >= 85)      idx = 2;
-    else if (level >= 50) idx = 1;
+    int level = constrain((int)((depthCM - dIn) / depthCM * 100), 0, 100);   // 安裝位置換算
+    int idx = 0;
+    if (level >= fullLine)     idx = 2;
+    else if (level >= midLine) idx = 1;
     for (int i = 0; i < 3; i++) {
-      digitalWrite(fillLed[i], (i == idx) ? HIGH : LOW);
+      if (fillLed[i] >= 0) digitalWrite(fillLed[i], (i == idx) ? HIGH : LOW);
     }
-    full = (level >= 85);
-    delay(30);                                               // 輪流量，避免互相干擾
+    full = (level >= fullLine);
+    if (tick % 20 == 0) {
+      Serial.print("Level: ");
+      Serial.print(level);
+      Serial.println(" %");
+    }
+    delay(30);                                             // 兩顆輪流量，避免互相干擾
   }
 
-  // ---- 滿桶連鎖 ----
-  if (useFullLock) {
+  // ---- 維護與滿桶處理 ----
+  if (useService) {
     if (full && !wasFull) {
-      Serial.println("BIN FULL - please empty");
-      tone(pinBuzzer, 800, 500);
+      Serial.println(deviceName + " FULL - please empty");
+      if (pinBuzzer >= 0) tone(pinBuzzer, alertTone, 500);
     }
     wasFull = full;
 
-    int now = digitalRead(btnService);
+    int now = (btnService >= 0) ? digitalRead(btnService) : LOW;
     if (now == HIGH && lastService == LOW) {
       delay(50);
-      Serial.println("Service mode: lid open 5 s");
-      lid.write(openAngle);
-      delay(5000);
-      lid.write(closedAngle);
+      Serial.println("Service mode: open");
+      if (!lidOpen) sweepTo(closedAngle, openAngle);
+      delay(serviceTime);
+      lidOpen = true;
+      closeLid();
     }
     lastService = now;
 
-    if (full) {
-      lid.write(closedAngle);                                // 滿了不開蓋
+    if (full && fullLock) {                                // 滿桶連鎖：不開蓋
+      if (lidOpen) closeLid();
       delay(100);
       return;
     }
   }
 
-  // ---- 桶外：有人靠近就開蓋 ----
+  // ---- 外側：有人靠近就開蓋 ----
   float dOut = readCM(trigOut, echoOut);
   if (dOut < openCM) {
-    lid.write(openAngle);
     lastNear = millis();
-  } else if (millis() - lastNear > 2000) {
-    lid.write(closedAngle);                                  // 人離開 2 秒後關蓋
+    if (!lidOpen) {
+      sweepTo(closedAngle, openAngle);
+      lidOpen = true;
+      Serial.println(deviceName + " OPEN");
+    }
+  } else if (lidOpen && millis() - lastNear > (unsigned long)holdTime) {
+    closeLid();
   }
   delay(100);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 桶內感測器量到 9 cm，表示垃圾裝了幾成滿？請寫出換算過程。
-2. 測試時，拖曳「桶外」的小圓點，卻是容量燈在變。最可能哪裡接錯？用哪個工具最快確認？
-3. 💼 如果每個垃圾桶都能回報「幾成滿」，清潔公司的排班方式可以怎麼改變？（提示：固定路線 vs. 依需求派車）
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表填入（限制卡 B 借用的 A 腳寫 `A0`、`A1`…） |
+| 參數區 | `closedAngle`、`openAngle` 依角度記錄表；限制卡 B 的 `depthCM = 80`；限制卡 C 的 `fullLock = false` |
+| 功能開關 | Step 2 → `useFill = true`；Step 3 → `useService = true` |
 
-### ✅ 專案三驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] 有人靠近時開蓋，離開 2 秒後關蓋
-- [ ] 容量燈依垃圾高度正確顯示空／半滿／快滿
-- [ ] 85% 以上時有人靠近也不開蓋，並響提醒聲（只響一次）
-- [ ] 維護鈕能強制開蓋 5 秒
-- [ ] 兩顆 HC-SR04 在麵包板上分區清楚，能說明哪顆朝外、哪顆朝內
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「拖曳桶外的小圓點，卻是容量燈在變」——老師把兩顆感測器的線動了手腳，找出來並修好 | （提示：技巧 2） |
+| 「清潔站也要看到『快滿』燈，跟桶上的快滿燈同步」 | |
+| 「改成雙開蓋」（限制卡 C 的同學：改回單蓋） | |
+
+### 💼 情境思考
+
+1. 本關的防夾設計：關蓋途中有人靠近就重開。如果是你設計，還有哪些「蓋子（門）會傷人」的情況要考慮？
+2. 限制卡 A、B 滿桶時鎖蓋，限制卡 C 不鎖蓋只提醒。兩種設計各自的風險是什麼？你會建議客戶選哪一種？
+3. 如果每個垃圾桶都能回報「幾成滿」，清潔公司的排班方式可以怎麼改變？（提示：固定路線 vs. 依需求派車）
+
+### ✅ 關卡 3 驗收
+
+- [ ] 兩顆感測器分區擺放，距離記錄表與角度記錄表已填
+- [ ] 有人靠近時開蓋，離開 2 秒後平滑關蓋；關蓋途中靠近會重開
+- [ ] 容量燈依垃圾高度正確顯示（限制卡 B 用 80 cm 換算）
+- [ ] 快滿時依限制卡鎖蓋或只提醒（提醒聲只響一次）；維護鈕能強制開蓋
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案四：停車場入口管理
+## 關卡 4：停車場出入口管理（模板 T20）
 
-⭐⭐⭐⭐ **難度**：入口、出口**各一顆 HC-SR04** ＋ 伺服柵欄 ＋ RGB ＋ 蜂鳴器 ＋ 4 顆剩餘車位燈 ＋ 旋鈕 → **腳位不夠，要借 A 腳**
+⭐⭐⭐⭐ **難度**：入口、出口**各一顆 HC-SR04** ＋ 伺服柵欄 ＋ 看板燈 ＋ 蜂鳴器 ＋ 剩餘車位燈 ＋ 旋鈕 → **一般腳不夠，要借 A 腳**
 
-**客戶需求**：購物中心停車場的入口和出口各裝一顆超音波感測器（朝向車道）：
+### 📖 情境
 
-- **入口**：車子開到柵欄前（50 cm 內）時，若還有空位，柵欄升起，等車子通過後 1 秒放下，場內車數 +1；若客滿，柵欄不開並發出拒絕聲
+購物中心停車場的入口和出口各裝一顆超音波感測器（朝向車道）：
+
+- **入口**：車子開到柵欄前（50 cm 內）時，若還有空位，柵欄升起，等車子通過後 1 秒放下，場內車數 +1；若客滿，柵欄不開並發出拒絕聲。**車子停在柵欄下不走時，柵欄絕對不放下**，改為每 10 秒提醒一次。
 - **出口**：車子經過時，場內車數 −1
-- **剩餘車位看板**：RGB 顯示綠（充足）／黃（剩 2 格以下）／紅（客滿）；4 顆燈顯示剩餘比例
+- **看板燈**：綠（充足）／黃（剩 2 格以下）／紅（客滿）；**剩餘車位燈**顯示剩餘比例
 - **總車位數**：管理員用旋鈕設定（1～20 格），因應部分車位施工封閉
 
-### Step 0：腳位規劃（本專案的重頭戲）
+### 🎯 本關配線學習目標
 
-| 元件 | 需要幾隻腳 | 腳位 | 是不是 `~` 腳？ |
-| --- | --- | --- | --- |
-| 總車位旋鈕 | 1（A 腳） | A0 | — |
-| 入口 HC-SR04 Trig／Echo | 2 | | |
-| 出口 HC-SR04 Trig／Echo | 2 | | |
-| 柵欄伺服 | | | |
-| 看板 RGB | | | |
-| 蜂鳴器 | | | |
-| 剩餘車位燈 × 4 | | | |
-| **一般腳位需求合計** | | | |
-| **Pin 2～13 可用數量** | 12 | | |
+- 完整的腳位預算：一般腳、A 腳、`~` 腳一起算
+- 兩顆感測器角色互換、柵欄共用訊號線的綜合應用
 
-> 🤔 **規劃提示**：
-> - 一般腳位夠不夠？不夠的從 A1～A5 借，借來的 A 腳適合接什麼？
-> - 伺服＋蜂鳴器同時存在，RGB 能調光嗎？本專案的黃色是「紅＋綠全亮」，需要調光嗎？
+### 🃏 ① 客戶限制卡
 
-### 逐步接線
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：一支柵欄、RGB 看板燈、4 顆剩餘車位燈 |
+| **B** | **雙車道入口**，兩支柵欄同步（只能用 1 隻腳）；**Pin 12、13** 已被收費機佔用 |
+| **C** | 看板改用**紅、綠、黃三顆單色燈**；剩餘車位燈只要 **2 顆** |
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 入口 HC-SR04＋伺服＋蜂鳴器 | 車來柵欄升、通過後放下，計數；滿 8 台拒絕 | （不用改） |
-| Step 2 | ＋出口 HC-SR04＋RGB | 出場車數 −1；看板顯示綠／黃／紅 | `useExit = true` |
-| Step 3 | ＋旋鈕＋4 顆剩餘車位燈 | 旋鈕設定總車位；4 顆燈顯示剩餘比例 | `useBoard = true` |
+### ✏️ ② 接線前決策題
 
-### 程式（只改設定區）
+1. 看板燈只顯示綠、黃 (1,1,0)、紅這種「全亮全滅」顏色，需要 `~` 腳嗎？
+2. 填寫下方腳位預算表。一般腳位夠嗎？不夠要借哪幾隻 A 腳？（旋鈕已經佔 A0）
+3. 限制卡 C：三顆單色燈要怎麼對應 `pinR`、`pinG`、`pinB`？`colorFew`（快滿）要改成什麼？
+4. 入口柵欄打開後，車子停在柵欄下不走，柵欄會怎樣？為什麼這樣設計？
+
+**腳位預算表**：
+
+| 元件 | 需要幾隻腳 | 腳位 |
+| --- | --- | --- |
+| 總車位旋鈕 | 1（A 腳） | A0 |
+| 入口 HC-SR04 Trig／Echo | 2 | |
+| 出口 HC-SR04 Trig／Echo | 2 | |
+| 柵欄伺服（B：兩顆共用） | 1 | |
+| 看板燈 R／G／B（C：三顆單色燈） | 3 | |
+| 蜂鳴器 | 1 | |
+| 剩餘車位燈（A、B：4 顆；C：2 顆） | | |
+| **一般腳位需求合計** | | |
+| **可用的一般腳位（扣掉限制卡）** | | |
+| **要借幾隻 A 腳？借哪幾隻？** | | |
+
+### 🔌 ③ 接線任務
+
+**Step 1：入口 HC-SR04＋伺服＋蜂鳴器**
+
+1. 入口感測器放在麵包板**左側**；柵欄伺服（限制卡 B：兩顆橘線接同一隻腳）。
+2. ✅ 檢查：工具 1（入口那顆）、伺服測試器（填角度記錄表）、蜂鳴器測試器。
+
+**Step 2：出口 HC-SR04＋看板燈**
+
+1. 出口感測器放在麵包板**右側**。
+2. 看板燈各串 220Ω。
+3. ✅ 檢查：工具 1（出口那顆）、接線驗證器。
+
+**Step 3：旋鈕＋剩餘車位燈**
+
+1. 旋鈕接 A0；剩餘車位燈各串 220Ω。
+2. ✅ 檢查：類比讀值檢查器、接線驗證器。
+
+### 💻 ④ 套用程式模板 T20
 
 ```cpp
+// ===== 程式模板 T20：進出計數柵欄 =====
 #include <Servo.h>
 
-// ===== 設定區：只改這裡 =====
+// ----- 腳位區（沒接的元件填 -1）-----
 int trigIn  = ?, echoIn  = ?;       // 入口 HC-SR04
 int trigOut = ?, echoOut = ?;       // 出口 HC-SR04
 int pinServo  = ?;                  // 柵欄伺服
-int pinR = ?, pinG = ?, pinB = ?;   // 看板 RGB（只用全亮全滅顏色）
 int pinBuzzer = ?;                  // 蜂鳴器
-int slotLed[4] = { ?, ?, ?, ? };    // 剩餘車位燈
+int pinR = ?, pinG = ?, pinB = ?;   // 看板燈（只用全亮全滅顏色）
+int slotLed[4] = { ?, ?, ?, ? };    // 剩餘車位燈（沒接的填 -1）
+int numSlots = 4;                   // 實際接了幾顆
 int pinKnob = A0;                   // 總車位旋鈕
-int capacity = 8;                   // 預設總車位
-float carCM = 50;                   // 車子到感測器的距離小於這個值算「有車」
-int closedAngle = 0, openAngle = 90;
-bool useExit  = false;              // Step 2 接好後改成 true
-bool useBoard = false;              // Step 3 接好後改成 true
-// ============================
 
+// ----- 參數區 -----
+int capacity = 8;                   // 總車位（有接旋鈕時由旋鈕決定）
+int knobMax  = 20;                  // 旋鈕最大可設幾格
+float carCM  = 50;                  // 小於這個距離算「有車」
+int closedAngle = 0, openAngle = 90;   // 依角度記錄表
+int closeDelay  = 1000;             // 車通過後幾毫秒放下
+int passTimeout = 10000;            // 車停在柵欄下超過幾毫秒就提醒
+int fewLeft = 2;                    // 剩幾格以下算「快滿」
+int colorPlenty[3] = { 0, 1, 0 };   // 充足（R, G, B 開關：1 亮、0 滅）
+int colorFew[3]    = { 1, 1, 0 };   // 快滿
+int colorFull[3]   = { 1, 0, 0 };   // 客滿
+int welcomeTone = 1200, refuseTone = 300;
+String placeName = "Parking";       // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useExit  = false;              // Step 2：出口感測器＋看板燈
+bool useBoard = false;              // Step 3：旋鈕＋剩餘車位燈
+
+// ===== 以下不用改 =====
 Servo barrier;
 int cars = 0;
 bool wasCarIn = false, wasCarOut = false;
@@ -655,559 +979,339 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
-void setColor(int r, int g, int b) {      // 全亮全滅，不需要 ~ 腳
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
+void setColor(int c[]) {
+  if (pinR >= 0) digitalWrite(pinR, c[0] ? HIGH : LOW);
+  if (pinG >= 0) digitalWrite(pinG, c[1] ? HIGH : LOW);
+  if (pinB >= 0) digitalWrite(pinB, c[2] ? HIGH : LOW);
+}
+
+void report(String what) {
+  Serial.print(what);
+  Serial.print("  Parked: ");
+  Serial.print(cars);
+  Serial.print("/");
+  Serial.println(capacity);
 }
 
 void setup() {
   barrier.attach(pinServo);
   barrier.write(closedAngle);
   pinMode(trigIn, OUTPUT);  pinMode(echoIn, INPUT);
-  pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  for (int i = 0; i < 4; i++) pinMode(slotLed[i], OUTPUT);
+  if (trigOut >= 0) { pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT); }
+  if (pinR >= 0) pinMode(pinR, OUTPUT);
+  if (pinG >= 0) pinMode(pinG, OUTPUT);
+  if (pinB >= 0) pinMode(pinB, OUTPUT);
+  for (int i = 0; i < numSlots; i++) if (slotLed[i] >= 0) pinMode(slotLed[i], OUTPUT);
   Serial.begin(9600);
+  Serial.println(placeName + " READY");
 }
 
 void loop() {
-  if (useBoard) capacity = map(analogRead(pinKnob), 0, 1023, 1, 20);
+  if (useBoard && pinKnob >= 0) capacity = map(analogRead(pinKnob), 0, 1023, 1, knobMax);
   if (cars > capacity) cars = capacity;
 
-  // ---- 入口：車剛開到柵欄前 ----
+  // ---- 入口 ----
   bool carIn = readCM(trigIn, echoIn) < carCM;
   if (carIn && !wasCarIn) {
     if (cars >= capacity) {
-      tone(pinBuzzer, 300, 600);
-      Serial.println("FULL - entry refused");
+      tone(pinBuzzer, refuseTone, 600);
+      report("FULL - entry refused");
     } else {
-      tone(pinBuzzer, 1200, 100);
+      tone(pinBuzzer, welcomeTone, 100);
       barrier.write(openAngle);
-      Serial.println("Barrier UP");
-      while (readCM(trigIn, echoIn) < carCM) {   // 等車子通過
+      unsigned long t0 = millis();
+      while (readCM(trigIn, echoIn) < carCM) {             // 車還在柵欄下：絕對不放下
+        if (millis() - t0 > (unsigned long)passTimeout) {
+          tone(pinBuzzer, refuseTone, 300);
+          Serial.println("Car not moving - please check");
+          t0 = millis();
+        }
         delay(100);
       }
-      delay(1000);
+      delay(closeDelay);
       barrier.write(closedAngle);
       cars++;
       carIn = false;
-      Serial.print("Car IN. Parked: ");
-      Serial.print(cars);
-      Serial.print("/");
-      Serial.println(capacity);
+      report("Car IN.");
     }
   }
   wasCarIn = carIn;
-  delay(30);                                     // 輪流量
+  delay(30);                                               // 兩顆輪流量
 
-  // ---- 出口：車剛經過 ----
+  // ---- 出口與看板燈 ----
   if (useExit) {
     bool carOut = readCM(trigOut, echoOut) < carCM;
     if (carOut && !wasCarOut && cars > 0) {
       cars--;
-      Serial.print("Car OUT. Parked: ");
-      Serial.print(cars);
-      Serial.print("/");
-      Serial.println(capacity);
+      report("Car OUT.");
     }
     wasCarOut = carOut;
 
     int left = capacity - cars;
-    if (left <= 0)      setColor(HIGH, LOW, LOW);    // 客滿：紅
-    else if (left <= 2) setColor(HIGH, HIGH, LOW);   // 快滿：黃
-    else                setColor(LOW, HIGH, LOW);    // 充足：綠
+    if (left <= 0)            setColor(colorFull);
+    else if (left <= fewLeft) setColor(colorFew);
+    else                      setColor(colorPlenty);
   }
 
   // ---- 剩餘車位燈：剩越多亮越多 ----
   if (useBoard) {
     int left = capacity - cars;
-    int lit = (left * 4 + capacity - 1) / capacity;  // 剩餘比例換算成 0~4 格（有剩就至少亮 1 格）
-    for (int i = 0; i < 4; i++) {
-      digitalWrite(slotLed[i], (i < lit) ? HIGH : LOW);
+    int lit = (left * numSlots + capacity - 1) / capacity;   // 有剩就至少亮 1 顆
+    for (int i = 0; i < numSlots; i++) {
+      if (slotLed[i] >= 0) digitalWrite(slotLed[i], (i < lit) ? HIGH : LOW);
     }
   }
   delay(70);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 用你的腳位規劃表說明：這個專案共需要幾隻一般腳？你借了哪幾隻 A 腳、接了什麼？
-2. 入口柵欄打開後，程式會「等到車子離開感測器範圍」才放下。如果車子停在柵欄下不走（例如駕駛在找停車票），柵欄會怎樣？這是好的設計嗎？
-3. 💼 如果出口感測器故障、一直沒偵測到車出去，系統會出現什麼問題？管理員要怎麼發現？你會建議加什麼「異常檢查」？
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位預算表填入（借用的 A 腳寫 `A1`、`A2`…）；限制卡 C 的 `numSlots = 2`，`slotLed[]` 後兩格填 `-1` |
+| 參數區 | 角度依角度記錄表；限制卡 C 依決策題 3 改三種顏色 |
+| 功能開關 | Step 2 → `useExit = true`；Step 3 → `useBoard = true` |
 
-### ✅ 專案四驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] 入口有車且未客滿：柵欄升起 → 車通過後放下 → 車數 +1
-- [ ] 客滿時柵欄不開並發出拒絕聲
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「施工隊把入口和出口的感測器裝反了」——車子進場時車數卻減少 | （提示：技巧 2） |
+| 「管理室也要一顆『客滿』紅燈，跟看板的紅色同時亮」 | |
+| 「總車位旋鈕往右轉應該是**變少**」 | |
+
+### 💼 情境思考
+
+1. 用你的腳位預算表說明：你借了哪幾隻 A 腳、接了什麼？為什麼選這些元件去借？
+2. 「車子停在柵欄下就絕對不放下」是安全優先的設計，但如果感測器故障一直量到「有車」，柵欄會永遠開著。管理上要怎麼發現這種故障？
+3. 如果出口感測器故障、一直沒偵測到車出去，系統會出現什麼問題？你會建議加什麼「異常檢查」？
+
+### ✅ 關卡 4 驗收
+
+- [ ] 入口有車且未客滿：柵欄升起 → 車通過後放下 → 車數 +1；客滿時拒絕
+- [ ] 車停在柵欄下時柵欄不放下，超過 10 秒會提醒
 - [ ] 出口有車經過時車數 −1，不會變負數
-- [ ] 看板 RGB 依剩餘車位顯示綠／黃／紅
-- [ ] 旋鈕能改變總車位，4 顆剩餘車位燈正確反映比例
-- [ ] 腳位規劃表正確處理「一般腳不夠、借 A 腳」
+- [ ] 看板燈依剩餘車位顯示（限制卡 C：三顆單色燈正確）；旋鈕與剩餘車位燈正確
+- [ ] 腳位預算表正確處理「一般腳不夠、借 A 腳」與限制卡
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
 ## 練習題大補帖：情境配置挑戰
 
-> 🎯 **本區定位**：四個範例專案是「跟著做」，這一區換你「自己規劃」。每一關都是新情境、新的元件組合，你要先判斷需要什麼元件、接幾顆、接哪隻腳，**還要先畫出感測器裝在哪、朝哪看**，再動手接線。
+> 🎯 **本區定位**：每一關都是**新的客戶情境**，從 T17～T20 挑一個模板，**自己畫感測器安裝示意圖、算元件、規劃腳位、接線**，並填寫**參數修改表**。**不寫新程式**。
 >
-> 📈 **難度安排**：
+> | 關卡 | 情境 | 套用模板 | 元件 | 配線重點 |
+> | --- | --- | --- | --- | --- |
+> | Lv.1 | 圖書館座位使用偵測 | T17 | HC-SR04＋2 LED | 連續偵測才算數、指定 A 腳 |
+> | Lv.2 | 遊樂設施身高檢測 | T18 | HC-SR04＋RGB | 安裝位置換算、逐腳判斷 |
+> | Lv.3 | 社區水塔水位面板 | T18 | HC-SR04＋10 LED＋蜂鳴器 | 換算＋長條燈方向＋兩燈共腳 |
+> | Lv.4 | 診所自動門防夾 | T19 | HC-SR04＋2 伺服＋蜂鳴器 | 只用一顆感測器、雙開門 |
+> | Lv.5 | 展覽館人流管制 | T20 | 2 HC-SR04＋2 伺服＋RGB＋蜂鳴器＋4 LED＋旋鈕 | **一般腳嚴重不夠** |
+> | Lv.6 | 顧問提案 | 自選 | 自訂 | 自己設計情境 |
 >
-> | 關卡 | HC-SR04 | 其他元件 | 配線重點 |
-> | --- | --- | --- | --- |
-> | Lv.1 | 1 | 2 LED | 「持續一段時間才算」的判斷 |
-> | Lv.2 | 1 | RGB＋蜂鳴器 | 裝在天花板，距離要換算成身高 |
-> | Lv.3 | 1 | 5 LED＋蜂鳴器 | 裝在水塔頂端，距離換算成水位 |
-> | Lv.4 | 1 | 伺服＋蜂鳴器＋2 LED | 動作中持續偵測（防夾） |
-> | Lv.5 | 3 | 6 LED＋蜂鳴器＋按鈕 | 一般腳不夠，三顆輪流量 |
-> | Lv.6 | 自訂 | 自訂 | 顧問提案 |
->
-> 📌 **作答規則**：每一關先填腳位規劃表、畫感測器安裝示意圖，再接線；接好後先用測距檢查器確認，最後才上傳程式。程式只需要改「設定區」。
+> 📌 **作答規則**：先畫「感測器安裝示意圖」，再填「腳位規劃表」「參數修改表」，然後接線；接好後先用工具檢查，最後才上傳程式。Lv.3 之後每關要附**配線設計單**。
 
 ---
 
 ### 🟢 Lv.1 圖書館座位使用偵測
 
-**情境**：大學圖書館想知道自習座位的使用率。每張桌子底下裝一顆超音波，朝向椅子方向：有人坐著時距離很近。但經過的人、拉一下椅子也會被偵測到，所以規則是：**連續 3 秒都偵測到才算「有人使用」**。紅燈表示有人、綠燈表示空位。
+**情境**：大學圖書館想知道自習座位的使用率。每張桌子底下裝一顆超音波，朝向椅子方向：有人坐著時距離很近（40 cm 內）。但經過的人、拉一下椅子也會被偵測到，所以規則是：**連續 3 秒都偵測到才算「有人使用」**。紅燈表示有人、綠燈表示空位。**圖書館要安靜，不能有聲音**。
 
 **元件**：1 顆 HC-SR04＋2 顆單色 LED（紅、綠）
 
-**程式**：
+**套用模板**：T17
 
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;   // HC-SR04
-int ledBusy = ?;                // 有人：紅燈
-int ledFree = ?;                // 空位：綠燈
-float seatCM = 60;              // 小於這個距離算「有人在座位上」
-int confirmCount = 15;          // 連續幾次（每次 0.2 秒）才算有人
-// ============================
+**限制條件**：桌下線槽只接到 **A1～A3**，HC-SR04 的 Trig、Echo 必須接在這裡面。
 
-int nearCount = 0;
-bool occupied = false;
+**參數修改表**（請填寫）：
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinTrig`、`pinEcho` | `?` | | |
+| `ledAction` | `?` | | 紅燈還是綠燈？ |
+| `ledIdle` | `-1` | | |
+| `pinBuzzer`、`pinKnob` | `?`、`-1` | | |
+| `triggerCM` | 10 | | |
+| `confirmTime` | 0 | | |
+| `actionTime` | 800 | | （提示：有人坐著就要一直亮） |
+| `eventName` | `"Dispense"` | | |
+| 功能開關 | | | |
 
-void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  pinMode(ledBusy, OUTPUT);
-  pinMode(ledFree, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  float d = readCM(pinTrig, pinEcho);
-  if (d < seatCM) nearCount++;
-  else            nearCount = 0;
-
-  bool nowOccupied = (nearCount >= confirmCount);
-  if (nowOccupied != occupied) {
-    occupied = nowOccupied;
-    Serial.println(occupied ? "Seat TAKEN" : "Seat FREE");
-  }
-  digitalWrite(ledBusy, occupied ? HIGH : LOW);
-  digitalWrite(ledFree, occupied ? LOW : HIGH);
-  delay(200);
-}
-```
-
-**情境思考**：
-
-1. 把 `confirmCount` 改成 1 和 50，分別會發生什麼事？各有什麼缺點？
-2. 💼 有人把書包放在椅子上「佔位」後離開兩小時，這個系統偵測得出來嗎？圖書館管理上可以怎麼搭配？
+**情境思考**：有人放了書包佔位、人卻不在。這套系統會怎麼判斷？要怎麼改善「佔位」問題？
 
 ---
 
 ### 🟢 Lv.2 遊樂設施身高檢測
 
-**情境**：遊樂園雲霄飛車入口要自動檢查身高，身高 **120 cm 以上**才能搭乘。感測器裝在入口上方 **200 cm** 高的橫桿上，往下量到頭頂的距離。有人站進來時量一次：符合亮綠燈、短嗶一聲；不符合亮紅燈、低音提示。
+**情境**：遊樂園雲霄飛車入口要自動檢查身高，**120 cm 以上**才能搭乘。感測器裝在入口上方 **200 cm** 高的橫桿上，往下量到頭頂的距離。身高符合亮綠燈，不符合亮紅燈。
 
-**元件**：1 顆 HC-SR04＋1 顆 RGB LED＋1 顆蜂鳴器
+**元件**：1 顆 HC-SR04＋1 顆 RGB LED（**不需要**蜂鳴器、長條燈）
 
-**你要想的問題**：
-
-- 量到 85 cm，這個人身高幾公分？
-- 有蜂鳴器，RGB 要避開哪兩隻腳？（本關只用紅、綠、藍三色，也可以接一般腳，請說明你的選擇）
-
-**程式**：
-
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;       // HC-SR04（裝在橫桿上往下量）
-int pinR = ?, pinG = ?, pinB = ?;   // 結果 RGB
-int pinBuzzer = ?;                  // 蜂鳴器
-float mountCM  = 200;               // 感測器離地高度
-float minHeight = 120;              // 最低身高
-// ============================
-
-bool wasPerson = false;
-
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
-
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
-}
-
-void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  float d = readCM(pinTrig, pinEcho);
-  float height = mountCM - d;                 // 安裝位置換算
-  bool person = (height > 50);                // 高於 50 cm 才算有人站進來
-
-  if (person && !wasPerson) {                 // 剛站進來，量一次
-    delay(500);                               // 等站穩
-    height = mountCM - readCM(pinTrig, pinEcho);
-    Serial.print("Height: ");
-    Serial.print(height);
-    if (height >= minHeight) {
-      Serial.println(" cm - OK, enjoy the ride!");
-      setColor(LOW, HIGH, LOW);
-      tone(pinBuzzer, 1500, 150);
-    } else {
-      Serial.println(" cm - Sorry, too short");
-      setColor(HIGH, LOW, LOW);
-      tone(pinBuzzer, 300, 500);
-    }
-  }
-  if (!person) setColor(LOW, LOW, HIGH);      // 等待中：藍
-  wasPerson = person;
-  delay(150);
-}
-```
-
-**情境思考**：
-
-1. 小朋友戴了一頂 5 cm 高的帽子、或踮腳尖，系統會怎麼判斷？現場人員應該怎麼配合？
-2. 💼 身高限制是安全規定。如果系統誤判讓不合格的小朋友上去，責任在誰？這告訴你自動化系統在「安全相關決策」上應該扮演什麼角色？
-
----
-
-### 🟡 Lv.3 社區水塔水位監測
-
-**情境**：社區頂樓水塔深 **100 cm**，超音波裝在水塔頂蓋往下量水面。管理室的面板用 5 顆燈顯示水位（每格 20%），水位低於 **20%** 時蜂鳴器每 2 秒提醒一次，請管委會聯絡補水。
-
-**元件**：1 顆 HC-SR04＋5 顆單色 LED＋1 顆蜂鳴器
+**套用模板**：T18
 
 **你要想的問題**：
 
-- 量到 30 cm，代表水位剩幾成？
-- 這一關有需要 `~` 腳的元件嗎？
+- 安裝位置換算：`mountCM` 填多少？Serial Monitor 顯示的數值代表什麼？
+- 只有綠、紅兩種顏色，`slowLine` 要怎麼設，才不會出現黃色？
+- 逐腳判斷：B 腳會用到嗎？可以不接嗎？
 
-**程式**：
+**參數修改表**（請填寫）：
 
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;       // HC-SR04（裝在頂蓋往下量）
-int bar[5] = { ?, ?, ?, ?, ? };     // 水位燈（低 → 高）
-int pinBuzzer = ?;                  // 低水位提醒
-float tankDepth = 100;              // 頂蓋到塔底深度（公分）
-int lowPercent  = 20;               // 低水位警戒（%）
-// ============================
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinB` | `?` | | |
+| `pinBuzzer`、`bar[]` | `?` | | |
+| `mountCM` | 0 | | |
+| `stopLine`、`slowLine` | 20、60 | | |
+| `colorStop[]`、`colorGo[]` | 紅、綠 | | |
+| `valueName` | `"Distance"` | | |
+| 功能開關 | | | |
 
-int tick = 0;
-
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
-
-void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  for (int i = 0; i < 5; i++) pinMode(bar[i], OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  float d = readCM(pinTrig, pinEcho);
-  int level = (int)((tankDepth - d) / tankDepth * 100);   // 安裝位置換算
-  level = constrain(level, 0, 100);
-
-  int lit = (level + 19) / 20;                            // 每 20% 一格
-  for (int i = 0; i < 5; i++) {
-    digitalWrite(bar[i], (i < lit) ? HIGH : LOW);
-  }
-
-  tick++;
-  if (level < lowPercent && tick % 10 == 0) {             // 約每 2 秒
-    tone(pinBuzzer, 900, 200);
-    Serial.println("LOW WATER - please refill");
-  }
-  if (tick % 5 == 0) {
-    Serial.print("Water level: ");
-    Serial.print(level);
-    Serial.println(" %");
-  }
-  delay(200);
-}
-```
-
-**情境思考**：
-
-1. 水塔頂蓋到「水塔滿水時的水面」其實還有 10 cm 空隙。這樣換算會出現什麼誤差？要改設定區的哪個數字、怎麼改？
-2. 💼 管委會想知道「每天用了多少水」。只靠這個系統做得到嗎？還需要記錄什麼？
+**情境思考**：沒有人站在下面時，系統會量到地板（約 200 cm），顯示的身高是多少？燈會亮什麼顏色？這樣合理嗎？現場人員要怎麼使用才不會誤會？
 
 ---
 
-### 🟡 Lv.4 自動門防夾安全
+### 🟡 Lv.3 社區水塔水位面板
 
-**情境**：診所的自動門。有人走近（50 cm 內）時門打開，停 3 秒後慢慢關上。**關門過程中只要偵測到有人在門口（30 cm 內），立刻重新打開**，並發出提醒聲——這就是「防夾」功能。開門燈表示門開著，警示燈在防夾觸發時閃一下。
+**情境**：社區頂樓水塔深 **100 cm**，超音波裝在水塔頂蓋往下量水面。用 5 顆燈顯示水位（**水越多亮越多格**），RGB 不需要。水位低於 **20 cm** 時蜂鳴器開始提醒，越低嗶越急，低於 **10 cm** 長鳴。**管理室和頂樓機房各一組 5 格水位燈**，兩組同步顯示。
 
-**元件**：1 顆 HC-SR04＋1 顆伺服＋1 顆蜂鳴器＋2 顆單色 LED
+**元件**：1 顆 HC-SR04＋10 顆單色 LED＋1 顆蜂鳴器
+
+**套用模板**：T18
+
+**限制條件**：10 顆水位燈最多只能用 **5 隻腳**。
+
+**參數修改表**（請填寫）：
+
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinR`、`pinG`、`pinB` | `?` | | |
+| `bar[]` | `?` | | 兩組燈怎麼接？ |
+| `mountCM` | 0 | | |
+| `stopLine`、`slowLine`、`beepLine` | 20、60、150 | | |
+| `barMax` | 150 | | |
+| `barMoreWhenSmall` | `true` | | |
+| `valueName` | `"Distance"` | | |
+| 功能開關 | | | |
+
+**情境思考**：水位感測器量到 999（沒收到回音）時，系統會判斷水位是多少？會不會誤發「缺水警報」？這種「感測器故障」要怎麼讓管理員知道？
+
+---
+
+### 🟡 Lv.4 診所自動門防夾
+
+**情境**：診所的雙開自動門。有人走近（50 cm 內）時兩扇門同步打開，人離開 3 秒後慢慢關上。**關門過程中只要偵測到有人，立刻重新打開**並發出提醒聲。這扇門**不需要**容量偵測。
+
+**元件**：1 顆 HC-SR04＋2 顆伺服＋1 顆蜂鳴器
+
+**套用模板**：T19
 
 **你要想的問題**：
 
-- 伺服和蜂鳴器同時存在，這關的兩顆 LED 需要 `~` 腳嗎？
-- 感測器要裝在門的哪裡、朝哪個方向，才能偵測到「站在門口」的人？
+- 本關只有一顆感測器，要接在 `trigOut／echoOut` 還是 `trigIn／echoIn`？另一組填什麼？
+- 提醒聲要響，哪一個功能開關要打開？維護鈕沒接，模板會出錯嗎？
+- 門關得太快，防夾來不及反應。要改哪個參數讓門關得慢一點？
 
-**程式**：
+**參數修改表**（請填寫）：
 
-```cpp
-#include <Servo.h>
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| 腳位區（含不用的元件） | | | |
+| `openCM` | 25 | | |
+| `holdTime` | 2000 | | |
+| `closedAngle`、`openAngle` | 0、100 | | 依角度記錄表 |
+| `sweepDelay` | 8 | | |
+| `fullLock` | `true` | | 本關用不到，填什麼都可以嗎？ |
+| `deviceName` | `"Bin"` | | |
+| 功能開關 | | | |
 
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;   // HC-SR04
-int pinServo  = ?;              // 自動門伺服
-int pinBuzzer = ?;              // 蜂鳴器
-int ledOpen   = ?;              // 開門燈
-int ledWarn   = ?;              // 防夾警示燈
-float openCM  = 50;             // 有人靠近就開門
-float safeCM  = 30;             // 關門時，門口有人就重開
-int closedAngle = 0, openAngle = 90;
-// ============================
-
-Servo door;
-
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
-
-void openDoor() {
-  door.write(openAngle);
-  digitalWrite(ledOpen, HIGH);
-}
-
-void setup() {
-  door.attach(pinServo);
-  door.write(closedAngle);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  pinMode(ledOpen, OUTPUT);
-  pinMode(ledWarn, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  if (readCM(pinTrig, pinEcho) < openCM) {
-    openDoor();
-    Serial.println("Door OPEN");
-    delay(3000);
-
-    // 慢慢關門，每一步都檢查門口有沒有人
-    int a = openAngle;
-    while (a > closedAngle) {
-      if (readCM(pinTrig, pinEcho) < safeCM) {
-        Serial.println("ANTI-PINCH: reopening");
-        digitalWrite(ledWarn, HIGH);
-        tone(pinBuzzer, 1200, 200);
-        openDoor();
-        delay(3000);
-        digitalWrite(ledWarn, LOW);
-        a = openAngle;                       // 從全開重新開始關
-        continue;
-      }
-      a = a - 2;
-      door.write(a);
-      delay(40);
-    }
-    door.write(closedAngle);
-    digitalWrite(ledOpen, LOW);
-    Serial.println("Door CLOSED");
-  }
-  delay(100);
-}
-```
-
-**情境思考**：
-
-1. 在關門過程中把小圓點拉近 20 cm，門有沒有重新打開？如果把 `safeCM` 設成 5 cm，防夾還有效嗎？
-2. 💼 防夾功能是法規要求的安全設計。如果你是診所老闆，除了這個自動功能，你還會在管理上做什麼？（提示：定期檢查、標示、員工訓練）
+**情境思考**：超音波看得到「站著的人」，但看得到「輪椅、嬰兒車的輪子」嗎？從感測器的安裝高度思考，真實自動門還需要什麼安全設計？
 
 ---
 
-### 🔴 Lv.5 倉庫貨架缺貨偵測
+### 🔴 Lv.5 展覽館人流管制
 
-**情境**：便利商店的後倉貨架有三格，每格深 **40 cm**，最深處各裝一顆超音波往外量：有貨時距離短，缺貨時會量到貨架外的空間（距離長）。每格有一紅一綠兩顆燈（綠＝有貨、紅＝缺貨）；某一格**剛變成缺貨**時蜂鳴器嗶一聲。店長按「盤點鈕」時，Serial Monitor 印出三格的狀態報表。
+**情境**：展覽館入口和出口各裝一顆超音波（朝向通道，**80 cm 內**算有人）。入口是**雙開閘門**（兩顆伺服同步）：有人且未額滿時開門，人通過後 1.5 秒關上；額滿時不開並發出拒絕聲。看板 RGB 顯示綠（充足）／黃（剩 5 人以下）／紅（額滿）；4 顆燈顯示剩餘名額比例。館方用旋鈕設定上限（1～60 人）。
 
-**元件**：3 顆 HC-SR04＋6 顆單色 LED＋1 顆蜂鳴器＋1 顆按鈕
+**元件**：2 顆 HC-SR04＋2 顆伺服＋1 顆 RGB＋1 顆蜂鳴器＋4 顆單色 LED＋1 顆旋鈕
 
-**Step 0：腳位規劃（本關重點）**
+**套用模板**：T20
 
-| 元件 | 需要幾隻腳 | 腳位 |
+**限制條件**：**Pin 2～4** 已被售票系統佔用。
+
+**Step 0：腳位預算（本關重點）**
+
+| 元件 | 需要幾隻腳 | 需要 `~` 腳嗎？ |
 | --- | --- | --- |
-| 3 顆 HC-SR04（Trig／Echo） | | |
-| 6 顆格位燈 | | |
+| 旋鈕 | 1（A 腳） | — |
+| 2 顆 HC-SR04 | | |
+| 2 顆伺服 | | |
+| RGB（綠、黃、紅） | | |
 | 蜂鳴器 | | |
-| 盤點鈕 | | |
-| **合計** | | |
-| **Pin 2～13 可用數量** | 12 | |
+| 4 顆剩餘名額燈 | | |
+| **一般腳位需求合計** | | |
+| **Pin 5～13 可用** | 9 | |
+| **要借幾隻 A 腳？借哪幾隻？還剩幾隻？** | | |
 
-> 🤔 **規劃提示**：
-> - 一般腳不夠時，A0～A5 都可以借來接 Trig、Echo、燈或按鈕。
-> - 三顆感測器朝同一個方向，聲波會互相干擾。程式已經「輪流量」，但麵包板上的擺放也要清楚標示格位 1、2、3。
+**參數修改表**（請填寫）：
 
-**程式**：
-
-```cpp
-// ===== 設定區：只改這裡 =====
-int trig[3] = { ?, ?, ? };          // 三格的 Trig
-int echo[3] = { ?, ?, ? };          // 三格的 Echo
-int ledOK[3]    = { ?, ?, ? };      // 有貨：綠燈
-int ledEmpty[3] = { ?, ?, ? };      // 缺貨：紅燈
-int pinBuzzer = ?;                  // 蜂鳴器
-int btnReport = ?;                  // 盤點鈕
-float stockCM = 30;                 // 小於這個距離算「有貨」
-// ============================
-
-bool wasEmpty[3] = { false, false, false };
-int lastButton = LOW;
-
-float readCM(int t, int e) {
-  digitalWrite(t, LOW);  delayMicroseconds(2);
-  digitalWrite(t, HIGH); delayMicroseconds(10);
-  digitalWrite(t, LOW);
-  long us = pulseIn(e, HIGH, 30000);
-  if (us == 0) return 999;
-  return us / 58.0;
-}
-
-void setup() {
-  for (int s = 0; s < 3; s++) {
-    pinMode(trig[s], OUTPUT);
-    pinMode(echo[s], INPUT);
-    pinMode(ledOK[s], OUTPUT);
-    pinMode(ledEmpty[s], OUTPUT);
-  }
-  pinMode(btnReport, INPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  bool empty[3];
-  for (int s = 0; s < 3; s++) {
-    float d = readCM(trig[s], echo[s]);
-    empty[s] = (d >= stockCM);
-    digitalWrite(ledOK[s],    empty[s] ? LOW : HIGH);
-    digitalWrite(ledEmpty[s], empty[s] ? HIGH : LOW);
-
-    if (empty[s] && !wasEmpty[s]) {          // 剛變成缺貨
-      tone(pinBuzzer, 1000, 150);
-      Serial.print("Slot ");
-      Serial.print(s + 1);
-      Serial.println(" OUT OF STOCK");
-    }
-    wasEmpty[s] = empty[s];
-    delay(40);                               // 輪流量，避免互相干擾
-  }
-
-  int now = digitalRead(btnReport);
-  if (now == HIGH && lastButton == LOW) {
-    delay(50);
-    Serial.println("===== Stock Report =====");
-    int lack = 0;
-    for (int s = 0; s < 3; s++) {
-      Serial.print("Slot ");
-      Serial.print(s + 1);
-      Serial.println(empty[s] ? ": EMPTY" : ": OK");
-      if (empty[s]) lack++;
-    }
-    Serial.print("Slots to restock: ");
-    Serial.println(lack);
-  }
-  lastButton = now;
-}
-```
+| 參數 | 模板原本的值 | 改成 |
+| --- | --- | --- |
+| `knobMax` | 20 | |
+| `carCM` | 50 | |
+| `closeDelay` | 1000 | |
+| `fewLeft` | 2 | |
+| `closedAngle`、`openAngle` | 0、90 | 依角度記錄表 |
+| `placeName` | `"Parking"` | |
+| 腳位區（含借用的 A 腳） | | |
+| 功能開關 | | |
 
 **情境思考**：
 
-1. 你的腳位規劃表一共用了幾隻腳？借了哪幾隻 A 腳？還能再加第四格嗎？
-2. 某一格只剩最後面一盒貨（離感測器 5 cm），其他都賣光了。系統會顯示有貨還是缺貨？這對補貨有什麼影響？
-3. 💼 「缺貨才補」和「快缺貨就補」哪一種比較好？要做到「快缺貨就補」，這個系統要怎麼改？（提示：第 4 週倉庫看板的「再訂購點」）
+1. 附上你的腳位預算表。如果館方要再加一顆「出口感謝燈」，還放得下嗎？
+2. 一群人一起走過入口，超音波只算一次。這個誤差對人流管制有什麼影響？管理上可以怎麼彌補？
 
 ---
 
-### 🏆 Lv.6 BOSS 關：物聯網顧問提案
+### 🏆 Lv.6 BOSS 關：顧問提案
 
-**情境**：你的顧問公司接到新客戶。從下面三個案例中**任選一個**，自己完成需求分析、元件選擇、腳位規劃與 Tinkercad 實作。
+**情境**：自己找一個生活或職場情境，**從 T17～T20 選一個模板**，設計一套「會量距離」的系統。
 
-> **案例 A：智慧停車格地鎖**
-> 每個車位有一個地鎖（伺服）。車主按按鈕預約後地鎖降下，超音波偵測到車子停入後亮紅燈；車子離開後地鎖自動升起。若預約後 10 秒內沒有車停入，地鎖自動升回並發出提示。
->
-> **案例 B：物流月台貨車對位**
-> 貨車倒車靠月台時，超音波量車尾距離，RGB 與蜂鳴器引導；停妥（10 cm 內）後月台的升降板（伺服）放下。裝卸完成按按鈕，升降板收起、綠燈示意貨車可以離開。
->
-> **案例 C：自訂情境**
-> 自己找一個生活或職場情境（例如：電梯門口人潮偵測、無障礙廁所使用中顯示、超商排隊人數偵測、工地安全距離警示）。
+| 情境靈感 | 可能適合的模板 |
+| --- | --- |
+| 自助加油站「車停到定位」提示 | T18 |
+| 貨架缺貨偵測（貨越少距離越遠） | T17（想想怎麼讓「遠」觸發） |
+| 寵物飼料桶剩量＋自動開蓋 | T19 |
+| 圖書館入口人數管制 | T20 |
 
 **最低規格**：
 
-- 至少 1 顆 HC-SR04、1 顆按鈕、1 顆 RGB LED，以及伺服或蜂鳴器至少一種
-- 總共使用 10 隻以上腳位
-- 必須說明感測器的**安裝位置與方向**，以及量到的距離如何換算成客戶要的數字
-- 程式可以從專案一～四或 Lv.1～Lv.5 改寫，說明你是從哪裡改來的、改了哪些設定
+- 至少 1 顆 HC-SR04，並畫出**感測器安裝示意圖**
+- 至少用到 8 隻腳位
+- 至少修改模板參數區的 **5 個參數**
+- 至少用到一個本週或前幾週的配線技巧（安裝位置換算、角色互換、兩燈共腳、共用訊號線、借 A 腳）
+- 自己設計 1 題「配線變化挑戰」並附解答
 
-**繳交內容**：
+**繳交內容**：情境說明、感測器安裝示意圖、配線設計單、參數修改表、配線變化挑戰與解答、Tinkercad 連結
 
-1. **需求分析**：這個系統解決什麼問題？誰會操作？誰會看燈、聽聲音？（3～5 句）
-2. **感測器安裝示意圖**：畫出感測器在真實場地的位置、朝向，並標示距離換算方式
-3. **腳位規劃表**：標註每隻腳接什麼、是否為 `~` 腳、還剩幾隻可擴充
-4. **Tinkercad 實作**：電路截圖＋測距檢查器的截圖
-5. **誤判分析**：你的系統在什麼情況下可能誤判？你怎麼降低誤判？
+---
 
-**驗收標準**：
+### 📝 配線設計單
 
-- [ ] HC-SR04 四隻腳接對，測距檢查器讀數與 Tinkercad 標示一致
-- [ ] Trig、Echo 沒有佔用需要的 `~` 腳；需要調光的燈避開被借走的腳
-- [ ] 距離換算正確，符合安裝位置
-- [ ] 有多顆超音波時有「輪流量」，且麵包板分區清楚
-- [ ] 功能符合情境需求
+| 項目 | 內容 |
+| --- | --- |
+| 情境名稱 | |
+| 套用模板 | T17／T18／T19／T20 |
+| 感測器安裝示意圖 | 每顆 HC-SR04 裝在哪、朝哪看、量到的距離代表什麼 |
+| 元件清單 | 元件名稱 × 數量（含 220Ω、10kΩ） |
+| 腳位分配表 | 元件 → 腳位（標註 `~` 腳、借用 A 腳） |
+| `~` 腳預算 | 有伺服？有蜂鳴器？哪些燈需要 `~` 腳？ |
+| 距離／角度記錄表 | 每顆感測器、每顆伺服的實測紀錄 |
+| 遇到的問題 | 接線過程中出過什麼錯？怎麼修正的？ |
 
 ---
 
@@ -1215,61 +1319,50 @@ void loop() {
 
 | 現象 | 先檢查這裡 | 修正方式 |
 | --- | --- | --- |
-| 距離一直顯示 999 | Trig、Echo 是否接反；程式腳位是否和實際一致 | 用測距檢查器確認後對調 |
-| 距離一直是 0 或很小的固定值 | VCC、GND 是否接好 | 重新接 5V 與 GND |
-| 拖曳小圓點，距離沒變化 | 是否點對感測器；程式腳位是否對應這一顆 | 逐顆用測距檢查器確認 |
-| 有兩顆感測器，拖 A 卻是 B 的功能在動 | 設定區兩組 Trig／Echo 是否填反 | 對照麵包板重填 |
-| 多顆感測器讀數偶爾亂跳 | 是否同時量（沒有輪流） | 每顆量完加短暫 `delay` |
-| 換算後的身高、水位明顯不對 | 安裝高度、深度的設定值 | 修改設定區的 `mountCM`、`tankDepth`、`binDepth` |
-| 調光燈只有全亮全滅 | 是否接在被伺服或蜂鳴器借走的 `~` 腳 | 查「~ 腳可用表」改接 |
-| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+| 距離一直顯示 999 | Trig、Echo 是否接反；VCC、GND 是否接上 | 用工具 1 逐顆測試 |
+| 距離一直是 0 或亂跳 | 是否選到 3 隻腳的感測器版本 | 換成 4 隻腳的 HC-SR04 |
+| 拖曳 A 感測器，卻是 B 的功能在動 | 兩顆感測器的線是否接反 | 整組對調 Trig、Echo（技巧 2） |
+| 換算後的數字是負的或怪怪的 | `mountCM`、`depthCM` 是否填對 | 重新量安裝高度或深度 |
+| 一靠近就觸發好幾次 | 距離門檻是否剛好卡在讀值附近 | 依距離記錄表調整門檻 |
+| 調光燈只有全亮全滅 | 是否接在 9、10（有伺服）或 3、11（有蜂鳴器） | 查 ~ 腳可用表改接 |
+| 程式無法上傳 | 腳位區是否還有 `?` 沒填 | 用到的填腳位，沒接的填 `-1` |
 
 ---
 
 ## 成果繳交與評分
 
-### 範例專案繳交
+### 繳交清單
 
-每個專案各自建立一個 Tinkercad 檔案，命名格式：`W9-專案編號-學號`（例如 `W9-P3-B12345678`）。
+每個關卡、每個練習題各自建立一個 Tinkercad 檔案，命名格式：`W9-關卡或Lv編號-限制卡-學號`。
 
-| 繳交項目 | 專案一 | 專案二 | 專案三 | 專案四 |
-| --- | --- | --- | --- | --- |
-| Tinkercad 分享連結 | ✅ | ✅ | ✅ | ✅ |
-| 腳位規劃表 | ✅ | ✅ | ✅ | ✅ |
-| 感測器安裝示意圖 | — | ✅ | ✅ | ✅ |
-| 完成 Step 3 的電路截圖 | ✅ | ✅ | ✅ | ✅ |
-| 情境思考題作答 | ✅ | ✅ | ✅ | ✅ |
-
-> 🎯 **最低完成標準**：專案一、二完成 Step 3，專案三、四至少完成 Step 2。
-
-### 練習題繳交
-
-| 關卡 | 繳交內容 | 建議定位 |
-| --- | --- | --- |
-| Lv.1～Lv.2 | Tinkercad 連結＋情境思考題 | 課堂暖身，全班必做 |
-| Lv.3～Lv.4 | ＋腳位規劃表＋安裝示意圖 | 課後作業，必做 |
-| Lv.5 | ＋腳位規劃表＋麵包板擺放截圖 | 選做加分 |
-| Lv.6 BOSS | 完整顧問提案（需求分析、安裝示意圖、腳位規劃、實作、誤判分析） | 可分組 |
+| 項目 | 繳交內容 |
+| --- | --- |
+| 關卡 1～4 | Tinkercad 連結＋決策題答案＋安裝示意圖＋腳位規劃表＋距離／角度記錄表＋配線變化挑戰說明＋同學驗收簽名 |
+| Lv.1～Lv.2 | Tinkercad 連結＋參數修改表＋情境思考 |
+| Lv.3～Lv.5 | ＋配線設計單 |
+| Lv.6 | 完整顧問提案 |
 
 ### 評分比重建議
 
 | 項目 | 比重 | 說明 |
 | --- | --- | --- |
-| 電路正確性 | 30% | 每個 Step 的功能都能正常運作 |
-| 腳位規劃 | 20% | 規劃表完整，正確處理多顆感測器與 `~` 腳限制 |
-| 感測器安裝與換算 | 20% | 安裝示意圖清楚，距離換算正確 |
-| 情境思考題 | 20% | 尤其是誤判分析與 💼 管理面向論述 |
-| 麵包板擺放 | 10% | 多顆感測器分區清楚、標示明確 |
+| 腳位規劃與 A 腳借用 | 25% | 符合限制卡；Trig、Echo 不佔 `~` 腳；一般腳不夠時借用合理 |
+| 電路正確性 | 25% | 每個 Step 通過工具檢查，兩顆感測器分區清楚 |
+| 配線變化挑戰 | 20% | 正確運用角色互換、兩燈共腳、共用訊號線等技巧 |
+| 參數修改表與安裝換算 | 15% | 換算參數正確並說明理由 |
+| 情境思考 | 15% | 💼 管理面向論述 |
+
+> 🎯 **最低完成標準**：關卡 1～4 全部完成（含配線變化挑戰）、Lv.1～Lv.3 完成。
 
 ### 課堂時間建議（3 節課）
 
 | 時段 | 內容 |
 | --- | --- |
-| 第 1 節前 30 分鐘 | 認識 HC-SR04、安裝位置換算、測距檢查器示範 |
-| 第 1 節後段 | 專案一（全班一起） |
-| 第 2 節 | 專案二、專案三（分組進行） |
-| 第 3 節前段 | 專案四 |
-| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，Lv.3 之後帶回家 |
+| 第 1 節前 30 分鐘 | 認識 HC-SR04、三個新技巧、測距檢查器 |
+| 第 1 節後段 | 關卡 1 |
+| 第 2 節 | 關卡 2、關卡 3 |
+| 第 3 節前段 | 關卡 4 |
+| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，其餘帶回家 |
 
 ---
 
@@ -1277,42 +1370,39 @@ void loop() {
 
 | 名稱 | 白話解釋 |
 | --- | --- |
-| 超音波感測器 HC-SR04 | 發出聲波、聽回音，算出前方物體距離的四腳元件 |
-| Trig／Echo | Trig 負責「發出」聲波，Echo 負責「聽」回音 |
-| `readCM()` 距離翻譯機 | 已寫好的函式，回傳物體到感測器的公分數 |
-| 安裝位置換算 | 把「到感測器的距離」換成客戶真正想知道的數字（身高、水位、滿度） |
-| 輪流量測 | 多顆超音波一顆一顆量，避免聲波互相干擾 |
-| 持續確認 | 連續一段時間都偵測到才算數，降低誤判 |
-| 防夾（Anti-pinch） | 門或柵欄關閉時偵測到障礙物就立刻停止或重開 |
-| 誤判（False Alarm） | 系統判斷和實際狀況不一致 |
+| 超音波感測器（HC-SR04） | 發出聲波、聽回音來量距離，4 隻腳、不用電阻 |
+| Trig／Echo | 發射腳／接收腳，各佔一隻數位腳 |
+| 安裝位置換算 | 把「到感測器的距離」換成客戶想知道的數字（身高、水位、容量） |
+| 角色互換 | 兩顆感測器裝反時，整組對調 Trig、Echo 線 |
+| 輪流量 | 多顆超音波一顆一顆量，避免互相干擾 |
+| 防夾 | 關閉途中偵測到人就重新打開 |
+| 距離記錄表 | 用測距檢查器實測每顆感測器的紀錄 |
 
 ---
 
 ## 反思與延伸討論
 
-1. 本週的超音波在不同情境中，量到的距離有時「直接就是答案」（倒車雷達），有時要「換算」（身高、水位、垃圾滿度）。遇到新情境時，你會先問自己哪些問題，來決定怎麼安裝、怎麼換算？
-2. Lv.1 的「連續 3 秒才算」、專案一的「手不拿開就不再給」、Lv.5 的「剛變成缺貨才嗶」，都是為了減少誤判或重複觸發。請說明這三種做法各自解決了什麼問題。
-3. 本週好幾個情境（垃圾桶、停車場、貨架、座位）都能產生「使用數據」。如果把這些數據集中起來，管理者可以做出哪些過去做不到的決策？這就是物聯網（IoT）真正的價值所在。
+1. 本週每個情境都要先想「感測器站在哪、看向哪」。換算錯一個數字，整個系統的判斷都會錯。這和工廠的「量具校正」有什麼關係？
+2. 本週的兩顆感測器裝反，只要對調兩組線就好；伺服的方向卻只能改參數。請整理目前學過的元件：哪些問題靠改線解決、哪些靠改參數？
+3. 超音波看不到軟的東西（布料、毛絨玩具）、斜面也會量不準。如果你是顧問，要怎麼在提案裡誠實說明這些限制，又不讓客戶失去信心？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 能正確接上 HC-SR04（VCC 5V、Trig、Echo、GND），並用測距檢查器確認
-- [ ] 能在 Tinkercad 拖曳小圓點模擬距離變化
-- [ ] 能依安裝位置把距離換算成身高、水位、滿度等數字
-- [ ] 能安排兩顆以上超音波的腳位與擺放，並理解為什麼要輪流量
-- [ ] 能在一般腳位不足時借用 A 腳接 Trig、Echo
-- [ ] 能說明本週情境中的誤判來源與降低方法
-- [ ] 完成 4 個獨立專案，並各自繳交 Tinkercad 檔案
-- [ ] 完成練習題 Lv.1～Lv.4，挑戰 Lv.5 與 Lv.6
+- [ ] 能正確接上 HC-SR04（VCC、Trig、Echo、GND），並用測距檢查器填好距離記錄表
+- [ ] 能畫出感測器安裝示意圖，並用參數完成安裝位置換算
+- [ ] 能用「整組對調」修正兩顆感測器角色裝反的問題
+- [ ] 能在一般腳不夠時合理借用 A 腳
+- [ ] 完成關卡 1～4，並取得同學驗收簽名
+- [ ] 完成練習題 Lv.1～Lv.3，挑戰 Lv.4～Lv.6
 
 ---
 
 ## 下週預告
 
-第 10 週我們要加入**直流馬達與 L293D 馬達驅動晶片**，打造「智慧輸送帶」。伺服馬達只能轉到某個角度停住，直流馬達則可以**一直轉**，而且能控制轉速和方向。這是本學期最後一個新的動力元件，搭配這週的超音波，就能做出「前方有東西就停下」的自動輸送系統。
+第 10 週我們要讓系統**持續運轉**——加入**直流馬達與 L293D 驅動晶片**。馬達要不要調速、要不要反轉，會決定 L293D 要佔 Arduino 幾隻腳：需求越簡單，接法越省腳。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 8 週](week-08.md) | [下一週：第 10 週 — 智慧輸送帶 ➡](week-10.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 8 週](week-08.md) | [下一週：第 10 週 — 會持續運轉的智慧場域 ➡](week-10.md)

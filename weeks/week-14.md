@@ -1,4 +1,4 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 13 週](week-13.md) | [下一週：第 15 週 — 終極整合大專題（上）➡](week-15.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 13 週](week-13.md) | [下一週：第 15 週 — 期末整合大專題（上）➡](week-15.md)
 
 ---
 
@@ -12,17 +12,11 @@
 > - **PIR 人體感測器**：直接偵測「有沒有人在動」
 > - **類比搖桿（Joystick）**：讓操作員用手推動，同時控制兩個方向
 >
-> 但本週真正的主角是一個**管理概念**：系統什麼時候自動運作？什麼時候交給人手動操作？兩者衝突時**誰說了算**？工業現場用一個三段選擇開關解決這件事——**手動／停止／自動（HOA）**。
+> 本週最重要的配線決策：**繼電器的負載接 NO 還是 NC？**——這決定了「系統壞掉時，設備停在什麼狀態」。同一個情境，抽到不同限制卡就會做出不同的失效安全選擇。另一個主角是管理概念：**手動／停止／自動（HOA）**三段模式與優先權。
 >
-> 和前幾週一樣，本週**重點不在寫程式**，而在於：
+> 每一個關卡照「五個固定環節」進行：抽**客戶限制卡** → 回答**接線前決策題** → 照**接線任務**一步步接 → 套用**程式模板**（只改腳位區、參數區） → 完成**配線變化挑戰**（程式一個字都不改，只改線）。
 >
-> 1. 判斷每個情境該用繼電器的**常開（NO）**還是**常閉（NC）**接點
-> 2. 設計自動、手動、停止三種模式，以及**優先權順序**
-> 3. 規劃腳位，在 Tinkercad 把電路一步步接起來
->
-> 程式都已經準備好，你只需要填腳位、修改設定、把功能開關從 `false` 改成 `true`。
->
-> 🏁 **本週成果**：完成 **4 個獨立專案**，每個專案存成一個獨立的 Tinkercad 檔案繳交。
+> 🏁 **本週成果**：完成 **4 個關卡** ＋ **練習題 Lv.1～Lv.6**（套用本週的程式模板 T37～T40）。
 
 ---
 
@@ -34,19 +28,22 @@
 - [認識新元件 ②：PIR 人體感測器](#認識新元件-pir-人體感測器)
 - [認識新元件 ③：類比搖桿](#認識新元件-類比搖桿)
 - [本週核心觀念：HOA 三段模式與優先權](#本週核心觀念hoa-三段模式與優先權)
+- [本週配線新技巧](#本週配線新技巧)
 - [配線口訣卡](#配線口訣卡)
 - [共用工具](#共用工具)
-- [專案一：樓梯間感應燈](#專案一樓梯間感應燈)
-- [專案二：會議室空調節能控制](#專案二會議室空調節能控制)
-- [專案三：倉庫天車操作台](#專案三倉庫天車操作台)
-- [專案四：輸送線控制盤](#專案四輸送線控制盤)
+- [關卡怎麼玩：五個固定環節](#關卡怎麼玩五個固定環節)
+- [關卡 1：樓梯間感應燈（模板 T37）](#關卡-1樓梯間感應燈模板-t37)
+- [關卡 2：會議室空調節能（模板 T38）](#關卡-2會議室空調節能模板-t38)
+- [關卡 3：倉庫天車操作台（模板 T39）](#關卡-3倉庫天車操作台模板-t39)
+- [關卡 4：輸送線控制盤（模板 T40）](#關卡-4輸送線控制盤模板-t40)
 - [練習題大補帖：情境配置挑戰](#練習題大補帖情境配置挑戰)
-  - [Lv.1 便利商店來客鈴](#-lv1-便利商店來客鈴)
+  - [Lv.1 倉庫走道感應燈](#-lv1-倉庫走道感應燈)
   - [Lv.2 咖啡機保溫電源](#-lv2-咖啡機保溫電源)
-  - [Lv.3 監視器雲台](#-lv3-監視器雲台)
-  - [Lv.4 地下室抽水井](#-lv4-地下室抽水井)
-  - [Lv.5 住家保全系統](#-lv5-住家保全系統)
+  - [Lv.3 停車場監視器雲台](#-lv3-停車場監視器雲台)
+  - [Lv.4 自助洗車輸送線](#-lv4-自助洗車輸送線)
+  - [Lv.5 機場行李輸送控制盤](#-lv5-機場行李輸送控制盤)
   - [🏆 Lv.6 BOSS 關：期末專題預演提案](#-lv6-boss-關期末專題預演提案)
+  - [📝 配線設計單](#-配線設計單)
 - [配線除錯站](#配線除錯站)
 - [成果繳交與評分](#成果繳交與評分)
 - [📖 本週詞彙表](#-本週詞彙表)
@@ -60,7 +57,7 @@
 ### 你已經會的（第 1～13 週）
 
 - ✅ 15 種元件的接線（含 74HC595、七段顯示器）
-- ✅ 省腳位技巧：借 A 腳、L293D 省腳接法、I2C LCD、鍵盤 3 行、74HC595 串接
+- ✅ 「改線就能解決」的技巧：共腳、反相、共用訊號線、整組對調、馬達並聯、按鈕並聯……
 - ✅ 安全連鎖、急停、鎖定與復歸、優先權順序（期中專題）
 
 ### 這週要新學的
@@ -72,8 +69,7 @@
 | PIR 人體感測器 | 偵測到有人移動就輸出 HIGH | 按鈕（第 2 週）：都是數位輸入 |
 | 類比搖桿 | 兩顆旋鈕合體，一顆管左右、一顆管上下 | 旋鈕（第 4 週） |
 | HOA 三段模式 | 手動（Hand）／停止（Off）／自動（Auto） | 全新管理觀念 |
-
-> 💡 **這學期沒有任何元件是憑空冒出來的**——每個新元件都能在學過的東西裡找到「本質上相似」的對應。
+| 程式模板 T37～T40 | 本週四個新模板 | 公司的標準表單 |
 
 ### 本週可用元件（只限這些）
 
@@ -85,14 +81,12 @@
 
 > 📖 **情境**：顧問公司的客戶開始要求「真正能上線」的系統：要能控制真實的電器、要能自動偵測有人，也要能讓現場人員隨時接手操作。這週的四個委託案，都在處理「自動」和「手動」怎麼共存。
 >
-> | 客戶 | 委託內容 | 新元件 | 難度 |
-> | --- | --- | --- | --- |
-> | 社區大樓 | 樓梯間感應燈 | PIR＋繼電器 | ⭐ |
-> | 共享辦公室 | 會議室空調節能 | 繼電器＋PIR＋HOA | ⭐⭐ |
-> | 物流倉庫 | 天車操作台 | 搖桿＋繼電器＋PIR | ⭐⭐⭐ |
-> | 食品工廠 | 輸送線控制盤 | 全部整合＋優先權 | ⭐⭐⭐⭐ |
->
-> 每個專案都分成 3 個步驟，從最簡單的版本開始，每一步多接幾個元件、多一項功能。
+> | 關卡 | 客戶 | 委託內容 | 套用模板 | 難度 |
+> | --- | --- | --- | --- | --- |
+> | 1 | 社區大樓 | 樓梯間感應燈 | T37 感應照明 | ⭐ |
+> | 2 | 共享辦公室 | 會議室空調節能 | T38 HOA 節能控制 | ⭐⭐ |
+> | 3 | 物流倉庫 | 天車操作台 | T39 搖桿操作台 | ⭐⭐⭐ |
+> | 4 | 食品工廠 | 輸送線控制盤 | T40 輸送線控制盤 | ⭐⭐⭐⭐ |
 
 ---
 
@@ -111,8 +105,8 @@
        小訊號                           另一條獨立的電路
 ```
 
-- **控制端**和**負載端**是兩條完全分開的電路（電氣隔離）。真實世界中，負載端可以是 110V 的電燈、冷氣——Arduino 完全碰不到高壓電，所以安全。
-- 在 Tinkercad 本課程用 **LED＋220Ω** 模擬負載（例如電燈、冷氣），負載端的電源取自麵包板 5V。
+- **控制端**和**負載端**是兩條完全分開的電路（電氣隔離）。真實世界中，負載端可以是 110V 的電燈、冷氣——Arduino 完全碰不到高壓電。
+- 在 Tinkercad 本課程用 **LED＋220Ω** 模擬負載，負載端的電源取自麵包板 5V。
 
 ### 接法
 
@@ -125,7 +119,7 @@
 
 > ⚠️ **真實硬體**上，Arduino 腳位的力氣不足以直接推動繼電器線圈，通常會使用內建驅動電路的「繼電器模組」（VCC、GND、IN 三腳）。Tinkercad 模擬可以直接接。
 
-### ⭐ 本週最重要的配線決策：NO 還是 NC？
+### NO 還是 NC？
 
 | 程式送出 | 接在 NO 的負載 | 接在 NC 的負載 |
 | --- | --- | --- |
@@ -148,18 +142,13 @@
 
 ## 認識新元件 ②：PIR 人體感測器
 
-### 它在做什麼？
-
 PIR 偵測人體發出的**紅外線變化**：有人在範圍內移動 → 輸出 HIGH；沒人或人靜止不動 → 輸出 LOW。
 
 | 比較 | 光敏電阻（第 5 週） | 超音波（第 9 週） | PIR（本週） |
 | --- | --- | --- | --- |
 | 偵測什麼 | 光線被擋住 | 前方物體的距離 | **人或動物在移動** |
 | 讀到什麼 | 0～1023 | 公分數 | HIGH／LOW |
-| 優點 | 便宜 | 知道距離 | 範圍廣、只對溫熱的生物有反應 |
 | 缺點 | 受環境光影響 | 只看正前方一條線 | **人不動就偵測不到** |
-
-### 接法：3 隻腳，不用電阻
 
 | PIR 的腳 | 接到哪裡 |
 | --- | --- |
@@ -167,26 +156,14 @@ PIR 偵測人體發出的**紅外線變化**：有人在範圍內移動 → 輸�
 | 訊號（OUT） | 任何數位腳 |
 | 接地（−） | GND |
 
-- 讀法和按鈕一樣：`digitalRead()`，但**不需要 10kΩ**。
+- 讀法和按鈕一樣，但**不需要 10kΩ**。
 - 在 Tinkercad 開始模擬後，**點一下 PIR**，前方會出現可以拖曳的物體，在偵測範圍內移動它就會觸發。
 
 ---
 
 ## 認識新元件 ③：類比搖桿
 
-### 它在做什麼？
-
 搖桿就是**兩顆旋鈕合體**：往左右推是 X 軸、往前後推是 Y 軸，各自輸出 0～1023，**放開時回到中間（約 512）**。
-
-```
-            Y 大（約 1023）
-                 ↑
-X 小（約 0）←   中間 512   → X 大（約 1023）
-                 ↓
-            Y 小（約 0）
-```
-
-### 接法
 
 | 搖桿的腳 | 接到哪裡 |
 | --- | --- |
@@ -195,11 +172,9 @@ X 小（約 0）←   中間 512   → X 大（約 1023）
 | X 軸（VRx） | A 腳 |
 | Y 軸（VRy） | 另一隻 A 腳 |
 
-> 💡 **Tinkercad 若找不到搖桿元件**，用**兩顆旋鈕**代替：一顆接 X 軸的 A 腳、一顆接 Y 軸的 A 腳，接法和程式**完全相同**。只是放開時不會自動回中，要記得手動轉回中間。
+> 💡 **Tinkercad 若找不到搖桿元件**，用**兩顆旋鈕**代替：一顆接 X 軸的 A 腳、一顆接 Y 軸的 A 腳，接法和程式**完全相同**，只是放開時不會自動回中，要記得手動轉回中間。
 
-### 死區（Deadband）
-
-搖桿放開時很少剛好是 512，常常是 505、518 之類。如果程式把「不是 512」都當成有人在推，馬達會一直微微動。所以本週程式都設定一個**死區**：在中間 ±150 以內都當作「沒推」。
+**死區（Deadband）**：搖桿放開時很少剛好是 512。本週模板設定一個死區參數：在中間 ±150 以內都當作「沒推」。
 
 ---
 
@@ -213,13 +188,7 @@ X 小（約 0）←   中間 512   → X 大（約 1023）
 | **手動** | Hand | 現場人員（按鈕、搖桿） | 維修、測試、感測器故障時 |
 | **停止** | Off | 沒有人能啟動 | 保養、清潔、停機檢查 |
 
-本週專案用一顆「模式鈕」循環切換：**AUTO → HAND → OFF → AUTO**，並用 RGB 顯示目前模式：
-
-| 模式 | RGB |
-| --- | --- |
-| AUTO | 綠 |
-| HAND | 黃 |
-| OFF | 紅 |
+本週模板用一顆「模式鈕」循環切換：**AUTO → HAND → OFF → AUTO**，並用燈號顯示目前模式。
 
 ### 優先權：不管哪個模式，安全永遠第一
 
@@ -232,7 +201,37 @@ X 小（約 0）←   中間 512   → X 大（約 1023）
   ⑤ 目前模式是 AUTO？      → 聽感測器的
 ```
 
-> 🏭 這和期中專題的「急停 → 溫度 → 照明 → 出入」是同一個思考方式，下週的期末專題也會用到。
+---
+
+## 本週配線新技巧
+
+### 技巧 1：負載換到 NC，要同步改一個參數
+
+本週模板都有 `loadOnNC`（或類似名稱）參數。**負載接 NO 時填 `false`、接 NC 時填 `true`**，程式會自動把開／關訊號反過來，讓「正常運作時」的行為一樣，只有「系統壞掉時」的狀態不同。
+
+> ⚠️ 這是少數「改線之後也要改參數」的情況（和第 12 週的鍵盤 C4 一樣）。只改線、不改參數，設備會「該開的時候關、該關的時候開」。
+
+### 技巧 2：一顆繼電器同時帶兩個相反的負載
+
+繼電器的 NO、NC **可以同時接負載**：
+
+```
+5V ── COM ──┬── NO ── 220Ω ── 運轉燈 ── GND   （通電時亮）
+            └── NC ── 220Ω ── 停止燈 ── GND   （不通電時亮）
+```
+
+「運轉中」和「停止中」兩顆燈永遠一亮一滅——**不用改程式、不多佔 Arduino 的腳**。
+
+### 技巧 3：同一個接點帶多個負載
+
+NO（或 NC）可以並聯好幾個負載（各自串 220Ω），例如「走道兩端的燈一起亮」——一顆繼電器、一隻腳。
+
+### 技巧 4：搖桿方向反了 → 改線
+
+| 現象 | 修正（不改程式） |
+| --- | --- |
+| 往右推卻往左轉 | 對調那一軸的 5V、GND（用旋鈕代替時：對調旋鈕兩側腳） |
+| 推左右卻是上下在動 | 對調 X、Y 兩條 A 腳線 |
 
 ---
 
@@ -241,12 +240,12 @@ X 小（約 0）←   中間 512   → X 大（約 1023）
 | 口訣 | 說明 |
 | --- | --- |
 | ① **繼電器：線圈一腳接 Arduino、一腳接 GND；COM 接負載電源** | 控制端和負載端是兩條電路 |
-| ② **先問「壞掉時要停在哪裡」，再決定接 NO 或 NC** | 失效安全 |
-| ③ **PIR：+ 接 5V、OUT 接數位腳、− 接 GND，不用電阻** | 讀法和按鈕一樣 |
-| ④ **搖桿＝兩顆旋鈕：X、Y 各接一隻 A 腳** | 程式要設死區 |
-| ⑤ 有伺服，9、10 不能調；有蜂鳴器，3、11 不能調 | 兩者都有時只剩 5、6 |
+| ② **先問「壞掉時要停在哪裡」，再決定接 NO 或 NC** | 接 NC 時，`loadOnNC` 改成 `true` |
+| ③ NO、NC 可以同時接負載；同一接點可以並聯多個負載 | 不多佔腳 |
+| ④ **PIR：+ 接 5V、OUT 接數位腳、− 接 GND，不用電阻** | 讀法和按鈕一樣 |
+| ⑤ **搖桿＝兩顆旋鈕：X、Y 各接一隻 A 腳** | 方向反了改線 |
 | ⑥ 每條燈線一顆 220Ω（負載 LED 也要） | 繼電器、PIR、搖桿不用電阻 |
-| ⑦ 腳位不夠時：借 A 腳、I2C LCD、74HC595 | 參考第 12 週「十二週省腳位技巧總整理」 |
+| ⑦ 腳位不夠時：借 A 腳、I2C LCD、74HC595、鍵盤 3 行 | 參考第 12 週總整理 |
 
 ---
 
@@ -254,7 +253,7 @@ X 小（約 0）←   中間 512   → X 大（約 1023）
 
 ### 🔧 工具 1：繼電器＋PIR＋搖桿綜合測試器
 
-一次測三個新元件：繼電器每 2 秒切換一次（聽得到「喀」聲、負載 LED 亮滅交替）；Serial Monitor 同時顯示 PIR 狀態和搖桿 X、Y 數值。
+一次測三個新元件：繼電器每 2 秒切換一次（負載 LED 亮滅交替）；Serial Monitor 同時顯示 PIR 狀態和搖桿 X、Y 數值。
 
 ```cpp
 // ===== 改成你的腳位 =====
@@ -298,179 +297,301 @@ void loop() {
 | PIR | 拖曳物體在範圍內移動時顯示 MOTION |
 | 搖桿 | 推到底約 0 或 1023，放開回到約 512 |
 
-> 📌 **每個專案的固定流程**
-> 1. **Step 0**：決定繼電器接 NO 或 NC（寫下理由）、畫出優先權順序、填腳位規劃表
-> 2. 用綜合測試器確認新元件
-> 3. 照 Step 1 → 2 → 3 逐步接線，每完成一步就把對應的功能開關改成 `true`
+**失效安全表**（每個繼電器都要填）：
+
+| 繼電器 | 負載 | 接 NO 或 NC | 系統壞掉時負載會…… | 為什麼這樣比較安全 |
+| --- | --- | --- | --- | --- |
+| 第 1 顆 | | | | |
+
+### 🔧 其他工具（沿用前幾週）
+
+LCD 測試器、馬達測試器、超音波測距檢查器、溫度讀值檢查器、伺服測試器、蜂鳴器測試器、接線驗證器。
 
 ---
 
-## 專案一：樓梯間感應燈
+## 關卡怎麼玩：五個固定環節
 
-⭐ **難度**：PIR ＋ LED，再改用繼電器控制，最後加光敏電阻
+| 環節 | 你要做什麼 | 產出 |
+| --- | --- | --- |
+| 🃏 **① 抽客戶限制卡** | 依座號尾數找到你的限制卡 | 圈出你的限制卡 |
+| ✏️ **② 接線前決策題** | **先填失效安全表（NO／NC）**、畫優先權順序，填好**腳位規劃表** | 決策題答案＋兩張表 |
+| 🔌 **③ 接線任務** | 照 Step 1 → 2 → 3 接線，每一步都用工具檢查 | 每一步的檢查截圖 |
+| 💻 **④ 套用程式模板** | 只改「腳位區」和「參數區」，再把功能開關逐一打開 | 可運作的 Tinkercad 檔案 |
+| 🔄 **⑤ 配線變化挑戰** | **程式一個字都不能改**，只靠改線完成客戶的臨時需求 | 修改後的截圖＋說明 |
 
-**客戶需求**：社區大樓的樓梯間，有人走過燈就亮，**最後一次偵測到人之後 10 秒**才熄滅（避免人走到一半燈就暗了）。燈泡是 110V 的，所以 Arduino 不能直接控制，要透過繼電器。白天光線充足時不需要開燈。
-
-### Step 0：配線決策與腳位規劃
-
-| 問題 | 你的答案 |
+| 座號尾數 | 抽到 |
 | --- | --- |
-| 樓梯燈的繼電器要接 NO 還是 NC？如果 Arduino 壞了，燈應該亮還是滅？為什麼？ | |
-| 光敏電阻要裝在哪裡？如果裝在樓梯燈正下方會怎樣？ | |
+| 1、4、7 | 限制卡 A |
+| 2、5、8 | 限制卡 B |
+| 3、6、9、0 | 限制卡 C |
+
+---
+
+## 關卡 1：樓梯間感應燈（模板 T37）
+
+⭐ **難度**：PIR ＋ 繼電器，再加光敏電阻與第二顆 PIR
+
+### 📖 情境
+
+社區大樓的樓梯間，有人走過燈就亮，**最後一次偵測到人之後 10 秒**才熄滅（避免人走到一半燈就暗了）。燈泡是 110V 的，所以 Arduino 不能直接控制，要透過繼電器。白天光線充足時不需要開燈。第三版：樓梯**上下兩端各一顆 PIR**。
+
+### 🎯 本關配線學習目標
+
+- 第一次接繼電器：控制端、負載端兩條電路
+- 依失效安全原則選 NO 或 NC
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 一般樓梯燈：系統壞掉時**關燈省電** |
+| **B** | 這是**逃生樓梯**，消防規定：系統壞掉時燈**必須亮著** |
+| **C** | 一般樓梯燈；**每層樓兩盞燈**一起亮；樓梯口還要一顆「**節電中**」指示燈（燈沒開時亮） |
+
+### ✏️ ② 接線前決策題
+
+1. 填失效安全表：依你的限制卡，燈接 NO 還是 NC？`loadOnNC` 填什麼？
+2. 光敏電阻要裝在哪裡？如果裝在樓梯燈正下方會怎樣？
+3. 限制卡 C：兩盞燈和「節電中」指示燈，一共要幾顆繼電器？幾隻 Arduino 腳？（提示：技巧 2、3）
+4. 兩顆 PIR 要佔幾隻腳？能不能像第 13 週的按鈕一樣並聯？（提示：PIR 的輸出是「主動送出 HIGH 或 LOW」，按鈕是「接通或斷開」——兩顆 PIR 一顆送 HIGH、一顆送 LOW 時會怎樣？）
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
-| PIR 訊號 | |
-| Step 1 直接控制的 LED | |
+| PIR ①（樓下） | |
+| PIR ②（樓上） | |
 | 繼電器線圈 | |
-| 光敏電阻 | A0 |
+| 光敏電阻 | |
 
-### 逐步接線
+### 🔌 ③ 接線任務
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | PIR＋LED（直接接 Arduino） | 有人移動燈亮，最後一次偵測後 10 秒熄滅 | （不用改） |
-| Step 2 | **改接**：LED 移到繼電器負載端（COM 接 5V、NO → 220Ω → LED → GND），線圈接 Arduino | 功能一樣，但改由繼電器切換（聽得到喀聲） | `useRelay = true` |
-| Step 3 | ＋光敏電阻（含 10kΩ） | 白天不開燈 | `useDaylight = true` |
+**Step 1：PIR ①＋繼電器＋負載燈**
 
-### 程式（只改設定區）
+1. 繼電器線圈接 Arduino 腳與 GND；COM 接 5V；燈（串 220Ω）接在 NO 或 NC（依失效安全表）。限制卡 C：兩盞燈並聯在同一個接點，指示燈接在另一個接點。
+2. ✅ 檢查：**工具 1**。
+
+**Step 2：光敏電阻**
+
+1. 光敏電阻配 10kΩ，接 A 腳。
+2. ✅ 檢查：類比讀值檢查器，記錄白天、晚上的讀值。
+
+**Step 3：PIR ②**
+
+1. 接好第二顆 PIR。
+
+### 💻 ④ 套用程式模板 T37
 
 ```cpp
-// ===== 設定區：只改這裡 =====
-int pinPIR   = ?;       // PIR 訊號
-int ledLamp  = ?;       // Step 1：直接接 Arduino 的燈
-int pinRelay = ?;       // Step 2：繼電器線圈
-int pinLDR   = A0;      // Step 3：光敏電阻
-int holdTime = 10000;   // 最後一次偵測後維持幾毫秒
-int darkLine = 300;     // 光線低於這個數字才需要開燈
-bool useRelay    = false;   // Step 2 改接繼電器後改成 true
-bool useDaylight = false;   // Step 3 接好後改成 true
-// ============================
+// ===== 程式模板 T37：感應照明 =====
 
-bool everMotion = false;
+// ----- 腳位區（沒接的填 -1）-----
+int pinPIR   = ?;                   // PIR ①
+int pinPIR2  = -1;                  // PIR ②（第二個偵測點）
+int pinRelay = ?;                   // 照明繼電器線圈
+int pinLDR   = -1;                  // 光敏電阻
+
+// ----- 參數區 -----
+int holdTime = 10000;               // 最後一次偵測後維持幾毫秒
+int darkLine = 300;                 // 光線低於這個數字才需要開燈
+bool loadOnNC = false;              // 燈接在 NC 時改成 true
+String areaName = "Stairs";         // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useDaylight = false;           // Step 2：白天不開燈
+bool useSecond   = false;           // Step 3：第二顆 PIR
+
+// ===== 以下不用改 =====
+bool everMotion = false, lampOn = false;
 unsigned long lastMotion = 0;
-bool lampOn = false;
+
+void relay(bool on) {
+  bool coil = loadOnNC ? !on : on;                         // 接 NC 時，訊號反過來
+  digitalWrite(pinRelay, coil ? HIGH : LOW);
+}
 
 void setup() {
   pinMode(pinPIR, INPUT);
-  pinMode(ledLamp, OUTPUT);
+  if (pinPIR2 >= 0) pinMode(pinPIR2, INPUT);
   pinMode(pinRelay, OUTPUT);
+  relay(false);
   Serial.begin(9600);
 }
 
 void loop() {
-  if (digitalRead(pinPIR) == HIGH) {
-    everMotion = true;
-    lastMotion = millis();
-  }
+  int who = 0;
+  if (digitalRead(pinPIR) == HIGH) who = 1;
+  if (useSecond && pinPIR2 >= 0 && digitalRead(pinPIR2) == HIGH) who = 2;
+  if (who > 0) { everMotion = true; lastMotion = millis(); }
 
-  bool want = everMotion && (millis() - lastMotion < holdTime);
-  if (useDaylight && analogRead(pinLDR) >= darkLine) want = false;   // 白天不開
+  bool want = everMotion && (millis() - lastMotion < (unsigned long)holdTime);
+  if (useDaylight && pinLDR >= 0 && analogRead(pinLDR) >= darkLine) want = false;   // 白天不開
 
   if (want != lampOn) {
     lampOn = want;
-    Serial.println(lampOn ? "Lamp ON" : "Lamp OFF");
+    Serial.print(areaName + (lampOn ? " lamp ON" : " lamp OFF"));
+    if (lampOn && who > 0) { Serial.print("  (sensor "); Serial.print(who); Serial.print(")"); }
+    Serial.println();
   }
-
-  if (useRelay) digitalWrite(pinRelay, lampOn ? HIGH : LOW);
-  else          digitalWrite(ledLamp,  lampOn ? HIGH : LOW);
+  relay(lampOn);
   delay(50);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. Step 1 和 Step 2 的功能一模一樣，為什麼還要改用繼電器？在 Tinkercad 裡看不出差別，真實世界差在哪裡？
-2. 有人在樓梯間停下來講電話 2 分鐘，燈會怎樣？這是 PIR 的什麼特性造成的？你會怎麼改善？
-3. 💼 管委會想知道「改成感應燈一年可以省多少電費」。你需要收集哪些資料才能估算？
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表 |
+| 參數區 | `darkLine` 依記錄表；`loadOnNC` 依失效安全表（限制卡 B 是 `true`） |
+| 功能開關 | Step 2 → `useDaylight = true`；Step 3 → `useSecond = true` |
 
-### ✅ 專案一驗收
+### 🔄 ⑤ 配線變化挑戰
 
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「樓梯口加一顆『節電中』指示燈，燈沒開時亮」（限制卡 C 的同學：改成「再加一盞燈」） | （提示：技巧 2） |
+| 「這座樓梯被改成逃生梯了，系統壞掉時燈要亮」（限制卡 B 的同學：改成一般樓梯） | （提示：技巧 1——這題要改線**也要**改一個參數） |
+| 「燈一直亮著不會熄」——老師會動手腳 | |
+
+### 💼 情境思考
+
+1. 有人在樓梯間停下來講電話 2 分鐘，燈會怎樣？這是 PIR 的什麼特性造成的？你會怎麼改善？
+2. 管委會想知道「改成感應燈一年可以省多少電費」。你需要收集哪些資料才能估算？
+
+### ✅ 關卡 1 驗收
+
+- [ ] 失效安全表已填，燈接在正確的接點、`loadOnNC` 正確
 - [ ] 有人移動時燈亮，最後一次偵測後約 10 秒熄滅
-- [ ] Step 2 改由繼電器控制，負載接在 NO
 - [ ] 白天（光線充足）時即使有人也不開燈
-- [ ] 腳位規劃表寫出 NO／NC 的選擇理由
+- [ ] 兩顆 PIR 都能觸發（Serial Monitor 顯示是哪一顆）
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案二：會議室空調節能控制
+## 關卡 2：會議室空調節能（模板 T38）
 
-⭐⭐ **難度**：繼電器 ＋ HOA 模式鈕 ＋ PIR ＋ TMP36 ＋ RGB ＋ 蜂鳴器
+⭐⭐ **難度**：繼電器 ＋ HOA 模式鈕 ＋ PIR ＋ TMP36 ＋ 模式燈 ＋ 蜂鳴器
 
-**客戶需求**：共享辦公室的會議室冷氣常常「開會結束沒人關」。客戶希望：
+### 📖 情境
 
-- **AUTO**：有人在（PIR）**而且**溫度高於 26°C 才開冷氣；降到 24°C 以下關掉（第 6 週的「兩條線」）；**沒人超過 15 秒**自動關閉
+共享辦公室的會議室冷氣常常「開會結束沒人關」。客戶希望：
+
+- **AUTO**：有人在（PIR）**而且**溫度高於 26°C 才開冷氣；降到 24°C 以下關掉；**沒人超過 15 秒**自動關閉
 - **HAND**：不管感測器，冷氣一直開（例如 PIR 偵測不到坐著不動的人時）
 - **OFF**：冷氣關閉，誰也開不了（例如冷氣保養中）
-- RGB 顯示目前模式，切換模式時嗶一聲
+- 模式燈顯示目前模式（AUTO 綠、HAND 黃、OFF 紅），切換模式時嗶一聲
 
-### Step 0：配線決策與腳位規劃
+### 🎯 本關配線學習目標
 
-| 問題 | 你的答案 |
+- 用一顆模式鈕做 HOA 三段切換
+- 一顆繼電器同時帶多個負載
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
 | --- | --- |
-| 冷氣的繼電器接 NO 還是 NC？ | |
-| RGB 只需要綠、黃、紅，需要 `~` 腳嗎？ | |
+| **A** | 標準款：冷氣 |
+| **B** | 這是**冬天用的暖氣**：低於 **18°C** 開、高於 **20°C** 關 |
+| **C** | 冷氣和**新風機**一起開關；模式燈改用**綠、黃、紅三顆單色燈**；**Pin 2～7** 被門禁系統佔用 |
+
+### ✏️ ② 接線前決策題
+
+1. 填失效安全表：冷氣（或暖氣）接 NO 還是 NC？
+2. 模式燈只需要綠、黃、紅（全亮全滅），需要 `~` 腳嗎？
+3. 限制卡 B：暖氣要改哪幾個參數？
+4. 限制卡 C：冷氣、新風機要幾顆繼電器？三顆單色燈怎麼對應 `pinR`、`pinG`、`pinB`？顏色參數怎麼改？
+5. 畫出 HOA 的切換順序和每個模式下冷氣的行為。
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
-| 繼電器線圈（冷氣） | |
+| 繼電器線圈 | |
 | 模式鈕 | |
 | PIR | |
-| TMP36 | A0 |
-| 模式 RGB | |
+| TMP36 | |
+| 模式燈 R／G／B（C：綠、黃、紅三顆） | |
 | 蜂鳴器 | |
 
-### 逐步接線
+### 🔌 ③ 接線任務
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 繼電器（負載 LED 接 NO）＋模式鈕 | 按鈕循環 AUTO／HAND／OFF；HAND 時冷氣開、其他關 | （不用改） |
-| Step 2 | ＋PIR＋TMP36 | AUTO 模式依「有人＋溫度」自動開關 | `useAuto = true` |
-| Step 3 | ＋RGB＋蜂鳴器 | 綠／黃／紅顯示模式，切換時嗶一聲 | `useIndicator = true` |
+**Step 1：繼電器＋負載＋模式鈕**
 
-### 程式（只改設定區）
+1. 負載燈接在你選的接點（限制卡 C：新風機的燈並聯在同一個接點）；模式鈕配 10kΩ。
+2. ✅ 檢查：工具 1。
+
+**Step 2：PIR＋TMP36**
+
+1. 接好 PIR、TMP36。
+2. ✅ 檢查：工具 1、溫度讀值檢查器。
+
+**Step 3：模式燈＋蜂鳴器**
+
+1. 燈各串 220Ω；接好蜂鳴器。
+2. ✅ 檢查：接線驗證器、蜂鳴器測試器。
+
+### 💻 ④ 套用程式模板 T38
 
 ```cpp
-// ===== 設定區：只改這裡 =====
-int pinRelay = ?;                   // 冷氣繼電器線圈
+// ===== 程式模板 T38：HOA 節能控制 =====
+
+// ----- 腳位區（沒接的填 -1）-----
+int pinRelay = ?;                   // 設備繼電器線圈
 int btnMode  = ?;                   // 模式鈕（AUTO → HAND → OFF）
 int pinPIR   = ?;                   // PIR
 int pinTemp  = A0;                  // TMP36
-int pinR = ?, pinG = ?, pinB = ?;   // 模式 RGB（全亮全滅）
+int pinR = ?, pinG = ?, pinB = ?;   // 模式燈（只用全亮全滅顏色）
 int pinBuzzer = ?;                  // 蜂鳴器
-float onTemp  = 26.0;               // 高於這個溫度開冷氣
-float offTemp = 24.0;               // 低於這個溫度關冷氣
-unsigned long emptyDelay = 15000;   // 沒人多久自動關（毫秒）
-bool useAuto      = false;          // Step 2 接好後改成 true
-bool useIndicator = false;          // Step 3 接好後改成 true
-// ============================
 
+// ----- 參數區 -----
+bool heatMode = false;              // false：冷氣（太熱才開）；true：暖氣（太冷才開）
+float onLine  = 26.0;               // 冷氣：高於這個溫度開；暖氣：低於這個溫度開
+float offLine = 24.0;               // 冷氣：低於這個溫度關；暖氣：高於這個溫度關
+unsigned long emptyDelay = 15000;   // 沒人多久自動關（毫秒）
+bool loadOnNC = false;              // 負載接在 NC 時改成 true
+int colorAuto[3] = { 0, 1, 0 };     // AUTO（R, G, B 開關：1 亮、0 滅）
+int colorHand[3] = { 1, 1, 0 };     // HAND
+int colorOff[3]  = { 1, 0, 0 };     // OFF
+int modeTone = 1200;
+String deviceName = "AC";           // 顯示名稱（英文）
+
+// ----- 功能開關 -----
+bool useAuto      = false;          // Step 2：AUTO 依感測器
+bool useIndicator = false;          // Step 3：模式燈＋蜂鳴器
+
+// ===== 以下不用改 =====
 int mode = 0;                       // 0=AUTO, 1=HAND, 2=OFF
 String modeName[3] = { "AUTO", "HAND", "OFF" };
 int lastButton = LOW;
-unsigned long lastMotion = 0;
-bool cooling = false;
-bool acOn = false;
-unsigned long lastReport = 0;
+unsigned long lastMotion = 0, lastReport = 0;
+bool active = false, devOn = false;
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  return (analogRead(pin) * 5.0 / 1023.0 - 0.5) * 100.0;
 }
 
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
+void relay(bool on) {
+  bool coil = loadOnNC ? !on : on;
+  digitalWrite(pinRelay, coil ? HIGH : LOW);
+}
+
+void setColor(int c[]) {
+  if (pinR >= 0) digitalWrite(pinR, c[0] ? HIGH : LOW);
+  if (pinG >= 0) digitalWrite(pinG, c[1] ? HIGH : LOW);
+  if (pinB >= 0) digitalWrite(pinB, c[2] ? HIGH : LOW);
 }
 
 void setup() {
   pinMode(pinRelay, OUTPUT);
+  relay(false);
   pinMode(btnMode, INPUT);
-  pinMode(pinPIR, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
+  if (pinPIR >= 0) pinMode(pinPIR, INPUT);
+  if (pinR >= 0) pinMode(pinR, OUTPUT);
+  if (pinG >= 0) pinMode(pinG, OUTPUT);
+  if (pinB >= 0) pinMode(pinB, OUTPUT);
   Serial.begin(9600);
 }
 
@@ -482,32 +603,31 @@ void loop() {
     mode = (mode + 1) % 3;
     Serial.print("MODE -> ");
     Serial.println(modeName[mode]);
-    if (useIndicator) tone(pinBuzzer, 1200, 100);
+    if (useIndicator && pinBuzzer >= 0) tone(pinBuzzer, modeTone, 100);
   }
   lastButton = now;
 
-  // ---- 依模式決定冷氣開關 ----
+  // ---- 依模式決定設備開關 ----
   float t = readC(pinTemp);
   if (mode == 1) {
-    acOn = true;                                     // HAND：一直開
+    devOn = true;                                          // HAND：一直開
   } else if (mode == 2) {
-    acOn = false;                                    // OFF：一律關
-  } else if (useAuto) {                              // AUTO：有人＋溫度
-    if (digitalRead(pinPIR) == HIGH) lastMotion = millis();
+    devOn = false;                                         // OFF：一律關
+  } else if (useAuto) {                                    // AUTO：有人＋溫度
+    if (pinPIR >= 0 && digitalRead(pinPIR) == HIGH) lastMotion = millis();
     bool occupied = (lastMotion > 0) && (millis() - lastMotion < emptyDelay);
-    if (t > onTemp)  cooling = true;
-    if (t < offTemp) cooling = false;
-    acOn = occupied && cooling;
+    if (heatMode) { if (t < onLine) active = true; if (t > offLine) active = false; }
+    else          { if (t > onLine) active = true; if (t < offLine) active = false; }
+    devOn = occupied && active;
   } else {
-    acOn = false;                                    // Step 1：AUTO 尚無感測器
+    devOn = false;                                         // Step 1：AUTO 尚無感測器
   }
-  digitalWrite(pinRelay, acOn ? HIGH : LOW);
+  relay(devOn);
 
-  // ---- 模式指示 ----
   if (useIndicator) {
-    if (mode == 0)      setColor(LOW, HIGH, LOW);    // AUTO：綠
-    else if (mode == 1) setColor(HIGH, HIGH, LOW);   // HAND：黃
-    else                setColor(HIGH, LOW, LOW);    // OFF：紅
+    if (mode == 0)      setColor(colorAuto);
+    else if (mode == 1) setColor(colorHand);
+    else                setColor(colorOff);
   }
 
   if (millis() - lastReport > 1000) {
@@ -515,94 +635,152 @@ void loop() {
     Serial.print(modeName[mode]);
     Serial.print("  Temp ");
     Serial.print(t);
-    Serial.print(" C  AC ");
-    Serial.println(acOn ? "ON" : "OFF");
+    Serial.println(" C  " + deviceName + (devOn ? " ON" : " OFF"));
   }
   delay(50);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 為什麼 AUTO 模式要等「沒人 15 秒」才關，而不是 PIR 一變 LOW 就關？
-2. 有人覺得 AUTO 太麻煩，把模式永遠切在 HAND。這對節能有什麼影響？管理上怎麼避免？
-3. 💼 OFF 模式「誰也開不了」，是為了保護誰？在真實工廠中，OFF 模式通常會搭配什麼制度？（提示：上鎖掛牌 LOTO）
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表 |
+| 參數區 | `loadOnNC` 依失效安全表；限制卡 B 的 `heatMode = true`、`onLine = 18`、`offLine = 20`、`deviceName = "HEATER"`；限制卡 C 依決策題 4 改三種顏色 |
+| 功能開關 | Step 2 → `useAuto = true`；Step 3 → `useIndicator = true` |
 
-### ✅ 專案二驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] 模式鈕能循環 AUTO → HAND → OFF
-- [ ] HAND 冷氣一直開、OFF 一律關
-- [ ] AUTO：有人且高於 26°C 才開，降到 24°C 以下關，沒人 15 秒後關
-- [ ] RGB 正確顯示模式，切換時嗶一聲
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「冷氣開的時候，新風機也要一起開」（限制卡 C 的同學：改成「新風機拆掉」） | （提示：技巧 3） |
+| 「會議室門口要一顆『空調運轉中』燈、一顆『空調關閉』燈」 | （提示：技巧 2） |
+| 「OFF 模式時冷氣反而一直開」——老師會動手腳 | （提示：哪個接點？） |
+
+### 💼 情境思考
+
+1. 有人覺得 AUTO 太麻煩，把模式永遠切在 HAND。這對節能有什麼影響？管理上怎麼避免？
+2. OFF 模式「誰也開不了」，是為了保護誰？在真實工廠中，OFF 模式通常會搭配什麼制度？（提示：上鎖掛牌 LOTO）
+
+### ✅ 關卡 2 驗收
+
+- [ ] 模式鈕能循環 AUTO → HAND → OFF，模式燈正確（限制卡 C：三顆單色燈）
+- [ ] HAND 一直開、OFF 一律關
+- [ ] AUTO：有人且溫度條件成立才開，回到另一條線時關，沒人 15 秒後關（限制卡 B：暖氣方向正確）
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案三：倉庫天車操作台
+## 關卡 3：倉庫天車操作台（模板 T39）
 
-⭐⭐⭐ **難度**：搖桿 ＋ 2 顆伺服 ＋ 繼電器（電磁鐵）＋ PIR 安全連鎖 ＋ RGB
+⭐⭐⭐ **難度**：搖桿 ＋ 2 顆伺服 ＋ 繼電器（電磁鐵）＋ PIR 安全連鎖 ＋ 狀態燈
 
-**客戶需求**：倉庫的小型天車（吊車），操作員用搖桿控制：**左右推 → 吊臂旋轉、前後推 → 吊鉤升降**（兩顆伺服）。按「吸附鈕」切換吊鉤上的**電磁鐵**（繼電器控制，負載用 LED 模擬），吸起或放下鐵製貨物。
+### 📖 情境
 
-**安全規定**：作業區內有人走動（PIR）時，**天車立刻停止所有動作**，RGB 轉紅；但**電磁鐵不能放開**——放開的話，吊在半空中的貨物會砸下來。人離開 3 秒後才恢復操作。
+倉庫的小型天車（吊車），操作員用搖桿控制：**左右推 → 吊臂旋轉、前後推 → 吊鉤升降**（兩顆伺服）。按「吸附鈕」切換吊鉤上的**電磁鐵**（繼電器控制，負載用 LED 模擬），吸起或放下鐵製貨物。
 
-### Step 0：配線決策與腳位規劃
+**安全規定**：作業區內有人走動（PIR）時，**天車立刻停止所有動作**，狀態燈轉紅；但**電磁鐵不能放開**——放開的話，吊在半空中的貨物會砸下來。人離開 3 秒後才恢復操作。
 
-| 問題 | 你的答案 |
+### 🎯 本關配線學習目標
+
+- 搖桿兩軸接 A 腳，方向靠接線調整
+- 電磁鐵的失效安全：NO 還是 NC 都有風險，怎麼取捨
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
 | --- | --- |
-| 電磁鐵的繼電器接 NO 還是 NC？如果 Arduino 突然斷電，貨物會怎樣？這安全嗎？ | |
-| 系統有伺服，哪些 `~` 腳不能調光？RGB 需要調光嗎？ | |
+| **A** | 標準款：搖桿；一般電磁鐵（通電吸住） |
+| **B** | 庫存沒有搖桿，用**兩顆旋鈕**代替；操作員習慣「旋鈕往右轉＝吊臂往**左**轉」 |
+| **C** | 作業區有**兩個入口**，各裝一顆 PIR；客戶採用「**斷電吸住型**」電磁鐵（不通電時吸住，通電才放開） |
+
+### ✏️ ② 接線前決策題
+
+1. 填失效安全表：一般電磁鐵接 NO 時，Arduino 斷電，貨物會怎樣？限制卡 C 的「斷電吸住型」要怎麼接、`magnetOnNC` 填什麼？
+2. 系統有伺服，哪些 `~` 腳不能調光？狀態燈需要調光嗎？
+3. 限制卡 B：「往右轉＝往左轉」要改參數還是改線？
+4. 限制卡 C：兩顆 PIR 各接哪裡？
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
-| 搖桿 X、Y（或兩顆旋鈕） | A0、A1 |
+| 搖桿 X、Y（B：兩顆旋鈕） | |
 | 旋轉伺服、升降伺服 | |
 | 吸附鈕 | |
 | 電磁鐵繼電器線圈 | |
-| PIR（作業區） | |
-| 狀態 RGB | |
+| PIR ①、PIR ② | |
+| 狀態燈 R／G／B | |
 
-### 逐步接線
+### 🔌 ③ 接線任務
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 搖桿＋2 顆伺服 | 推搖桿，吊臂旋轉、吊鉤升降；放開就停在原位 | （不用改） |
-| Step 2 | ＋吸附鈕＋繼電器（電磁鐵） | 按一下吸附、再按一下放開 | `useMagnet = true` |
-| Step 3 | ＋PIR＋RGB | 有人進入作業區立刻停止動作（電磁鐵保持），人離開 3 秒後恢復 | `useSafety = true` |
+**Step 1：搖桿＋2 顆伺服**
 
-### 程式（只改設定區）
+1. 搖桿 X、Y 接兩隻 A 腳（限制卡 B：兩顆旋鈕；X 那顆的兩側腳依決策題 3 決定）；兩顆伺服接好。
+2. ✅ 檢查：工具 1（搖桿數值）、伺服測試器。
+
+**Step 2：吸附鈕＋繼電器（電磁鐵）**
+
+1. 吸附鈕配 10kΩ；繼電器負載燈接在你選的接點。
+2. ✅ 檢查：工具 1。
+
+**Step 3：PIR＋狀態燈**
+
+1. 接好 PIR（限制卡 C：兩顆）；狀態燈各串 220Ω。
+2. ✅ 檢查：工具 1、接線驗證器。
+
+### 💻 ④ 套用程式模板 T39
 
 ```cpp
+// ===== 程式模板 T39：搖桿操作台 =====
 #include <Servo.h>
 
-// ===== 設定區：只改這裡 =====
+// ----- 腳位區（沒接的填 -1）-----
 int joyX = A0, joyY = A1;           // 搖桿 X、Y（或兩顆旋鈕）
-int pinRotate = ?;                  // 旋轉伺服
-int pinLift   = ?;                  // 升降伺服
+int pinRotate = ?;                  // 旋轉伺服（X 軸控制）
+int pinLift   = ?;                  // 升降伺服（Y 軸控制）
 int btnGrab   = ?;                  // 吸附鈕
 int pinRelay  = ?;                  // 電磁鐵繼電器線圈
-int pinPIR    = ?;                  // 作業區 PIR
-int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（全亮全滅）
-int deadband = 150;                 // 搖桿死區
-int resumeDelay = 3000;             // 人離開後幾毫秒恢復
-bool useMagnet = false;             // Step 2 接好後改成 true
-bool useSafety = false;             // Step 3 接好後改成 true
-// ============================
+int pinPIR    = ?;                  // 作業區 PIR ①
+int pinPIR2   = -1;                 // 作業區 PIR ②
+int pinR = ?, pinG = ?, pinB = ?;   // 狀態燈（只用全亮全滅顏色）
 
+// ----- 參數區 -----
+int deadband = 150;                 // 搖桿死區
+int stepDeg  = 1;                   // 推一下每輪轉幾度（越大越快）
+int rotMin = 0,   rotMax = 180;     // 旋轉範圍
+int liftMin = 20, liftMax = 160;    // 升降範圍
+int resumeDelay = 3000;             // 人離開後幾毫秒恢復
+bool magnetOnNC = false;            // 電磁鐵負載接在 NC 時改成 true
+int colorEmpty[3]  = { 0, 1, 0 };   // 空鉤（綠）
+int colorLoaded[3] = { 0, 0, 1 };   // 吊著貨（藍）
+int colorStop[3]   = { 1, 0, 0 };   // 有人停止（紅）
+
+// ----- 功能開關 -----
+bool useMagnet = false;             // Step 2：電磁鐵
+bool useSafety = false;             // Step 3：PIR 安全連鎖＋狀態燈
+
+// ===== 以下不用改 =====
 Servo rotateArm, liftHook;
 int angleR = 90, angleL = 90;
-bool magnetOn = false;
+bool magnetOn = false, stopped = false;
 int lastGrab = LOW;
 unsigned long lastPerson = 0;
-bool stopped = false;
 
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
+void setColor(int c[]) {
+  if (pinR >= 0) digitalWrite(pinR, c[0] ? HIGH : LOW);
+  if (pinG >= 0) digitalWrite(pinG, c[1] ? HIGH : LOW);
+  if (pinB >= 0) digitalWrite(pinB, c[2] ? HIGH : LOW);
 }
 
-// 搖桿推到哪一邊：-1、0、+1
-int direction(int value) {
+void magnet(bool on) {
+  bool coil = magnetOnNC ? !on : on;
+  digitalWrite(pinRelay, coil ? HIGH : LOW);
+}
+
+int direction(int value) {                                 // 搖桿推到哪一邊：-1、0、+1
   if (value > 512 + deadband) return 1;
   if (value < 512 - deadband) return -1;
   return 0;
@@ -615,34 +793,37 @@ void setup() {
   liftHook.write(angleL);
   pinMode(btnGrab, INPUT);
   pinMode(pinRelay, OUTPUT);
+  magnet(false);
   pinMode(pinPIR, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
+  if (pinPIR2 >= 0) pinMode(pinPIR2, INPUT);
+  if (pinR >= 0) pinMode(pinR, OUTPUT);
+  if (pinG >= 0) pinMode(pinG, OUTPUT);
+  if (pinB >= 0) pinMode(pinB, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
   // ---- 安全連鎖：作業區有人 ----
   if (useSafety) {
-    if (digitalRead(pinPIR) == HIGH) lastPerson = millis();
-    bool personNear = (lastPerson > 0) && (millis() - lastPerson < resumeDelay);
+    bool seen = digitalRead(pinPIR) == HIGH || (pinPIR2 >= 0 && digitalRead(pinPIR2) == HIGH);
+    if (seen) lastPerson = millis();
+    bool personNear = (lastPerson > 0) && (millis() - lastPerson < (unsigned long)resumeDelay);
     if (personNear != stopped) {
       stopped = personNear;
       Serial.println(stopped ? "PERSON IN ZONE - CRANE STOPPED" : "Zone clear - resumed");
     }
     if (stopped) {
-      setColor(HIGH, LOW, LOW);       // 紅：停止中
-      digitalWrite(pinRelay, magnetOn ? HIGH : LOW);   // 電磁鐵維持原狀，不放開貨物
+      setColor(colorStop);
+      magnet(magnetOn);                                    // 電磁鐵維持原狀，不放開貨物
       delay(50);
       return;
     }
-    setColor(LOW, magnetOn ? LOW : HIGH, magnetOn ? HIGH : LOW);   // 綠：空鉤；藍：吊著貨
+    setColor(magnetOn ? colorLoaded : colorEmpty);
   }
 
   // ---- 搖桿控制：推多久就轉多少，放開就停 ----
-  angleR = constrain(angleR + direction(analogRead(joyX)), 0, 180);
-  angleL = constrain(angleL + direction(analogRead(joyY)), 20, 160);
+  angleR = constrain(angleR + direction(analogRead(joyX)) * stepDeg, rotMin, rotMax);
+  angleL = constrain(angleL + direction(analogRead(joyY)) * stepDeg, liftMin, liftMax);
   rotateArm.write(angleR);
   liftHook.write(angleL);
 
@@ -655,47 +836,80 @@ void loop() {
       Serial.println(magnetOn ? "MAGNET ON - load lifted" : "MAGNET OFF - load released");
     }
     lastGrab = now;
-    digitalWrite(pinRelay, magnetOn ? HIGH : LOW);
+    magnet(magnetOn);
   }
   delay(15);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
+
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表；限制卡 C 的 `pinPIR2` |
+| 參數區 | `magnetOnNC` 依失效安全表 |
+| 功能開關 | Step 2 → `useMagnet = true`；Step 3 → `useSafety = true` |
+
+> 💡 限制卡 C 的「斷電吸住型」：不通電時吸住，所以「吸住」要接在**不通電時接通**的那個接點——這就是 NC 的意思。`magnetOnNC = true` 後，程式送出的訊號會反過來，操作方式和 A、B 完全一樣。
+
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
+
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「搖桿往前推，吊鉤卻往下」 | （提示：技巧 4） |
+| 「操作員說左右、前後控制的東西反了」 | （提示：技巧 4） |
+| 「作業區入口要一顆『天車吊貨中』警示燈，電磁鐵吸住時亮」 | （提示：電磁鐵的負載接在哪個接點？警示燈可以並聯嗎？） |
+
+### 💼 情境思考
 
 1. 為什麼有人進入作業區時，天車「停止動作」但電磁鐵「保持吸住」？如果反過來（一律全部關掉）會發生什麼事？
-2. 電磁鐵接 NO：Arduino 斷電時貨物會掉下來。真實天車怎麼解決這個問題？（提示：機械式的安全掛鉤、不斷電電源）
-3. 💼 天車操作員需要證照。除了技術上的安全連鎖，企業在「人」的管理上還要做哪些事？
+2. 限制卡 A 的一般電磁鐵接 NO：Arduino 斷電時貨物會掉下來；限制卡 C 的斷電吸住型就不會。為什麼不是每台天車都用斷電吸住型？（提示：成本、維修時怎麼放下貨物）
 
-### ✅ 專案三驗收
+### ✅ 關卡 3 驗收
 
-- [ ] 搖桿左右推，吊臂旋轉；前後推，吊鉤升降；放開停在原位
-- [ ] 吸附鈕能切換電磁鐵（負載 LED 亮滅）
-- [ ] PIR 偵測到人時所有動作停止、RGB 轉紅，電磁鐵維持原狀
-- [ ] 人離開 3 秒後恢復操作
-- [ ] 腳位規劃表說明電磁鐵 NO／NC 的取捨
+- [ ] 搖桿左右推，吊臂旋轉；前後推，吊鉤升降；放開停在原位（限制卡 B：方向符合操作員習慣）
+- [ ] 吸附鈕能切換電磁鐵，失效安全表與接點一致
+- [ ] PIR 偵測到人時所有動作停止、狀態燈轉紅，電磁鐵維持原狀；人離開 3 秒後恢復（限制卡 C：兩顆 PIR 都有效）
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案四：輸送線控制盤
+## 關卡 4：輸送線控制盤（模板 T40）
 
-⭐⭐⭐⭐ **難度**：HOA ＋ 急停 ＋ PIR 安全區 ＋ 搖桿手動 ＋ L293D 馬達 ＋ 繼電器警示燈 ＋ I2C LCD → **期末專題的預演**
+⭐⭐⭐⭐ **難度**：HOA ＋ 急停 ＋ PIR 安全區 ＋ 搖桿手動 ＋ L293D 馬達 ＋ 繼電器警示燈 ＋ LCD → **期末專題的預演**
 
-**客戶需求**：食品工廠的輸送線控制盤，整合本週所有觀念：
+### 📖 情境
+
+食品工廠的輸送線控制盤，整合本週所有觀念：
 
 | 模式／狀況 | 輸送帶行為 |
 | --- | --- |
 | **AUTO** | 入口超音波偵測到產品 → 輸送帶前進；最後一次偵測後 3 秒停止 |
 | **HAND** | 操作員推搖桿 Y 軸：往前推前進、往後推倒退，推越多越快（排除卡料用） |
 | **OFF** | 停止，任何操作無效 |
-| **安全區有人**（PIR） | AUTO：立刻停止；HAND：限速 30%（操作員可能正在旁邊排除卡料） |
+| **安全區有人**（PIR） | AUTO：立刻停止；HAND：限速 30% |
 | **急停** | 最高優先：立刻停止，**再按一次急停才解除** |
 
 - 輸送帶運轉時，**警示旋轉燈**（繼電器控制，負載 LED 模擬）亮起
 - 有人進入安全區、或按下急停時，蜂鳴器提醒
-- I2C LCD 第 0 行顯示模式，第 1 行顯示速度與方向或警告訊息
+- LCD 第 0 行顯示模式，第 1 行顯示速度與方向或警告訊息
 
-### Step 0：優先權流程圖與腳位規劃（本專案的重頭戲）
+### 🎯 本關配線學習目標
+
+- 優先權流程圖與 L293D 接法選擇
+- 平行版 LCD 與 I2C 版的取捨（期末專題預演）
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：要倒退、要調速；I2C 版 LCD |
+| **B** | 這條輸送帶**不需要倒退**（往後推搖桿＝停止）；I2C 版 LCD |
+| **C** | 要倒退、要調速；工廠只有**平行版 LCD**；客戶要求「**控制盤故障時，警示燈一定要亮**」 |
+
+### ✏️ ② 接線前決策題
 
 **先畫優先權流程圖**（請補完）：
 
@@ -713,11 +927,12 @@ void loop() {
  └─ 模式是 AUTO → 依超音波 ________________
 ```
 
-| 問題 | 你的答案 |
-| --- | --- |
-| 輸送帶要正反轉又要調速，L293D 用哪種接法？佔幾隻腳？ | |
-| 有蜂鳴器，EN 要避開哪兩隻腳？ | |
-| 警示旋轉燈的繼電器接 NO 還是 NC？ | |
+1. 依你的限制卡，L293D 用哪種接法？佔幾隻腳？（第 10 週）
+2. 有蜂鳴器，EN 要避開哪兩隻腳？
+3. 填失效安全表：警示燈接 NO 還是 NC？`beaconOnNC` 填什麼？
+4. 限制卡 C：平行版 LCD＋其他元件，一共幾隻？放得下嗎？
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
@@ -727,49 +942,78 @@ void loop() {
 | PIR（安全區） | |
 | 模式鈕、急停鈕 | |
 | 蜂鳴器 | |
-| 搖桿 Y 軸 | A0 |
-| I2C LCD | A4、A5 |
+| 搖桿 Y 軸 | |
+| LCD | |
 | **合計／還剩幾隻** | |
 
-### 逐步接線
+### 🔌 ③ 接線任務
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | L293D（接法 D）＋馬達＋HC-SR04＋模式鈕＋I2C LCD | AUTO：偵測到產品就前進；OFF：停止 | （不用改） |
-| Step 2 | ＋搖桿＋繼電器（警示燈） | 模式多了 HAND，搖桿控制前進倒退與速度；運轉時警示燈亮 | `useHand = true` |
-| Step 3 | ＋PIR＋急停鈕＋蜂鳴器 | 安全區有人：AUTO 停止、HAND 限速；急停最優先 | `useSafety = true` |
+**Step 1：L293D＋馬達＋HC-SR04＋模式鈕＋LCD**
 
-### 程式（只改設定區）
+1. 依接法接 L293D；HC-SR04 裝在入口；模式鈕配 10kΩ；接好 LCD。
+2. ✅ 檢查：馬達測試器、超音波測距檢查器、LCD 測試器。
+
+**Step 2：搖桿＋繼電器（警示燈）**
+
+1. 搖桿 Y 軸接 A 腳；警示燈接在你選的接點。
+2. ✅ 檢查：工具 1。
+
+**Step 3：PIR＋急停鈕＋蜂鳴器**
+
+1. 接好 PIR、急停鈕（配 10kΩ）、蜂鳴器。
+
+### 💻 ④ 套用程式模板 T40
 
 ```cpp
+// ===== 程式模板 T40：輸送線控制盤 =====
+#include <LiquidCrystal.h>
 #include <Adafruit_LiquidCrystal.h>
 
-// ===== 設定區：只改這裡 =====
-int pinEN = ?, pinIN1 = ?, pinIN2 = ?;   // L293D（接法 D；EN 為 ~ 腳，避開 3、11）
+// ----- 腳位區（沒接的填 -1；L293D 固定接 5V／GND 的腳也填 -1）-----
+int pinEN = ?, pinIN1 = ?, pinIN2 = ?;   // L293D
 int pinTrig = ?, pinEcho = ?;            // 入口 HC-SR04
-int pinRelay = ?;                        // 警示旋轉燈繼電器線圈
-int pinPIR   = ?;                        // 安全區 PIR
-int btnMode  = ?;                        // 模式鈕（AUTO → HAND → OFF）
-int btnEStop = ?;                        // 急停鈕
+int pinRelay  = ?;                       // 警示燈繼電器線圈
+int pinPIR    = ?;                       // 安全區 PIR
+int btnMode   = ?;                       // 模式鈕（AUTO → HAND → OFF）
+int btnEStop  = ?;                       // 急停鈕
 int pinBuzzer = ?;                       // 蜂鳴器
 int joyY = A0;                           // 搖桿 Y 軸（或旋鈕）
+bool useI2C = true;                      // 用平行版改成 false
+int lcdRS = -1, lcdE = -1, lcdD4 = -1, lcdD5 = -1, lcdD6 = -1, lcdD7 = -1;   // 平行版才填
+
+// ----- 參數區 -----
 float productCM = 20;                    // 入口偵測距離
 int autoSpeed = 180;                     // AUTO 速度
 int runAfter  = 3000;                    // AUTO：最後一次偵測後再跑幾毫秒
 int deadband  = 150;                     // 搖桿死區
 int handLimitPct = 30;                   // HAND 時安全區有人的限速 %
-bool useHand   = false;                  // Step 2 接好後改成 true
-bool useSafety = false;                  // Step 3 接好後改成 true
-// ============================
-// I2C LCD：SDA 接 A4、SCL 接 A5
+bool beaconOnNC = false;                 // 警示燈接在 NC 時改成 true
+String lineName = "LINE 1";              // LCD 名稱
 
-Adafruit_LiquidCrystal lcd(0);
+// ----- 功能開關 -----
+bool useHand   = false;                  // Step 2：HAND 模式＋警示燈
+bool useSafety = false;                  // Step 3：PIR、急停、蜂鳴器
+
+// ===== 以下不用改 =====
+LiquidCrystal* lcdP = 0;
+Adafruit_LiquidCrystal* lcdI = 0;
 int mode = 0;                            // 0=AUTO, 1=HAND, 2=OFF
 String modeName[3] = { "AUTO", "HAND", "OFF" };
 bool eStopped = false;
-int lastMode = LOW, lastEStop = LOW;
+int lastMode = LOW, lastEStop = LOW, tick = 0;
 unsigned long lastProduct = 0;
-int tick = 0;
+
+void lcdStart() {
+  if (useI2C) { lcdI = new Adafruit_LiquidCrystal(0); lcdI->begin(16, 2); lcdI->setBacklight(1); }
+  else        { lcdP = new LiquidCrystal(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7); lcdP->begin(16, 2); }
+}
+
+void showLine(int row, String text) {
+  while (text.length() < 16) text += " ";
+  text = text.substring(0, 16);
+  if (useI2C) { lcdI->setCursor(0, row); lcdI->print(text); }
+  else        { lcdP->setCursor(0, row); lcdP->print(text); }
+}
 
 float readCM(int trig, int echo) {
   digitalWrite(trig, LOW);  delayMicroseconds(2);
@@ -780,20 +1024,8 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void belt(int speed) {                   // 正數前進、負數倒退、0 停止
-  digitalWrite(pinIN1, speed > 0 ? HIGH : LOW);
-  digitalWrite(pinIN2, speed < 0 ? HIGH : LOW);
-  analogWrite(pinEN, abs(speed));
-  if (useHand) digitalWrite(pinRelay, speed != 0 ? HIGH : LOW);   // 運轉時警示燈亮
-}
-
 bool pressed(int pin, int &last) {
+  if (pin < 0) return false;
   int now = digitalRead(pin);
   bool edge = (now == HIGH && last == LOW);
   last = now;
@@ -801,27 +1033,44 @@ bool pressed(int pin, int &last) {
   return edge;
 }
 
+void motor(int dir, int speed) {                         // dir：1 前進、-1 倒退、0 停止
+  if (dir == -1 && pinIN2 < 0) dir = 0;                  // 不能倒退的接法：倒退指令一律停止
+  if (pinIN1 >= 0) digitalWrite(pinIN1, dir == 1  ? HIGH : LOW);
+  if (pinIN2 >= 0) digitalWrite(pinIN2, dir == -1 ? HIGH : LOW);
+  if (pinEN  >= 0) analogWrite(pinEN, dir == 0 ? 0 : speed);
+}
+
+void belt(int speed) {                                   // 正數前進、負數倒退、0 停止
+  int dir = (speed > 0) ? 1 : (speed < 0 ? -1 : 0);
+  if (dir == -1 && pinIN2 < 0) speed = 0;
+  motor(dir, abs(speed));
+  if (useHand) {
+    bool on = speed != 0;
+    bool coil = beaconOnNC ? !on : on;
+    digitalWrite(pinRelay, coil ? HIGH : LOW);           // 運轉時警示燈亮
+  }
+}
+
 void setup() {
-  lcd.begin(16, 2);
-  lcd.setBacklight(1);
-  pinMode(pinEN, OUTPUT);
-  pinMode(pinIN1, OUTPUT);
-  pinMode(pinIN2, OUTPUT);
+  lcdStart();
+  if (pinEN >= 0)  pinMode(pinEN, OUTPUT);
+  if (pinIN1 >= 0) pinMode(pinIN1, OUTPUT);
+  if (pinIN2 >= 0) pinMode(pinIN2, OUTPUT);
   pinMode(pinTrig, OUTPUT);
   pinMode(pinEcho, INPUT);
   pinMode(pinRelay, OUTPUT);
   pinMode(pinPIR, INPUT);
   pinMode(btnMode, INPUT);
   pinMode(btnEStop, INPUT);
+  belt(0);
 }
 
 void loop() {
   tick++;
 
-  // ---- 按鈕 ----
   if (pressed(btnMode, lastMode)) {
     mode = (mode + 1) % 3;
-    if (mode == 1 && !useHand) mode = 2;          // Step 1 沒有 HAND
+    if (mode == 1 && !useHand) mode = 2;                 // Step 1 沒有 HAND
   }
   if (useSafety && pressed(btnEStop, lastEStop)) {
     eStopped = !eStopped;
@@ -840,7 +1089,7 @@ void loop() {
   // ===== ② OFF =====
   if (mode == 2) {
     belt(0);
-    showLine(0, "MODE OFF");
+    showLine(0, lineName + " OFF");
     showLine(1, "BELT STOPPED");
     delay(50);
     return;
@@ -851,533 +1100,253 @@ void loop() {
 
   int speed = 0;
   String info = "";
-
   if (mode == 1) {
     // ===== ④ HAND：依搖桿 =====
     int y = analogRead(joyY);
     if (y > 512 + deadband)      speed = map(y, 512 + deadband, 1023, 80, 255);
     else if (y < 512 - deadband) speed = -map(y, 512 - deadband, 0, 80, 255);
-    if (person) speed = speed * handLimitPct / 100;          // ③ 安全區有人：限速
+    if (person) speed = speed * handLimitPct / 100;      // ③ 安全區有人：限速
     info = person ? "PERSON! LIMITED" : "";
   } else {
     // ===== ⑤ AUTO：依超音波 =====
     if (readCM(pinTrig, pinEcho) < productCM) lastProduct = millis();
-    bool hasWork = (lastProduct > 0) && (millis() - lastProduct < runAfter);
+    bool hasWork = (lastProduct > 0) && (millis() - lastProduct < (unsigned long)runAfter);
     speed = hasWork ? autoSpeed : 0;
-    if (person) speed = 0;                                   // ③ 安全區有人：停止
+    if (person) speed = 0;                               // ③ 安全區有人：停止
     info = person ? "PERSON! STOPPED" : (hasWork ? "" : "WAITING PRODUCT");
   }
+  if (speed < 0 && pinIN2 < 0) speed = 0;                // 不能倒退的接法
 
   belt(speed);
-  showLine(0, "MODE " + modeName[mode]);
+  showLine(0, lineName + " " + modeName[mode]);
   if (info.length() > 0) showLine(1, info);
   else showLine(1, "SPD " + String(abs(speed)) + (speed > 0 ? " FWD" : speed < 0 ? " REV" : " STOP"));
   delay(50);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 用你的優先權流程圖說明：安全區有人時，為什麼 AUTO 要「停止」，HAND 卻只「限速」？反過來設計會有什麼問題？
-2. 急停設計成「再按一次才解除」，而不是「放開就恢復」。為什麼？
-3. 💼 這個控制盤的所有判斷順序，就是一份「現場作業規則」。如果要把它寫成給操作員看的 SOP（標準作業程序），你會怎麼寫？請寫出 3～5 條。
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依接法與腳位規劃表；限制卡 B 的 L293D 固定腳填 `-1`；限制卡 C 的 `useI2C = false`，填 6 隻平行腳 |
+| 參數區 | `beaconOnNC` 依失效安全表（限制卡 C：依客戶要求） |
+| 功能開關 | Step 2 → `useHand = true`；Step 3 → `useSafety = true` |
 
-### ✅ 專案四驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] AUTO：產品到入口時輸送帶前進，最後一次偵測後 3 秒停止
-- [ ] HAND：搖桿前推前進、後推倒退，推越多越快；放開停止
-- [ ] OFF：任何操作都無法啟動
-- [ ] 安全區有人：AUTO 停止、HAND 限速 30%，蜂鳴器提醒
-- [ ] 急停最優先，再按一次才解除
-- [ ] 輸送帶運轉時警示燈（繼電器負載）亮起
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「控制盤上要一顆『停止中』綠燈，輸送帶停的時候亮」 | （提示：技巧 2） |
+| 「輸送帶裝反了，AUTO 時往入口方向跑」 | （提示：第 10 週） |
+| 「搖桿往前推卻倒退」 | （提示：技巧 4） |
+
+### 💼 情境思考
+
+1. 安全區有人時，為什麼 AUTO 要「停止」，HAND 卻只「限速」？反過來設計會有什麼問題？
+2. 這個控制盤的判斷順序，就是一份「現場作業規則」。如果要把它寫成給操作員看的 SOP，你會怎麼寫？請寫出 3～5 條。
+
+### ✅ 關卡 4 驗收
+
 - [ ] 優先權流程圖完整，與程式行為一致
+- [ ] AUTO：產品到入口時前進，最後一次偵測後 3 秒停止
+- [ ] HAND：搖桿前推前進、後推倒退（限制卡 B：後推停止），推越多越快
+- [ ] OFF：任何操作都無法啟動；安全區有人：AUTO 停止、HAND 限速
+- [ ] 急停最優先，再按一次才解除；警示燈與失效安全表一致
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
 ## 練習題大補帖：情境配置挑戰
 
-> 🎯 **本區定位**：四個範例專案是「跟著做」，這一區換你「自己規劃」。每一關先回答「**繼電器接 NO 還是 NC**」「**有哪些模式、誰優先**」，再規劃腳位、動手接線。
+> 🎯 **本區定位**：每一關都是**新的客戶情境**，從 T37～T40 挑一個模板，**先填失效安全表、畫優先權**，再規劃腳位、接線，並填寫**參數修改表**。**不寫新程式**。
 >
-> 📈 **難度安排**：
->
-> | 關卡 | 新元件 | 其他元件 | 配線重點 |
+> | 關卡 | 情境 | 套用模板 | 配線重點 |
 > | --- | --- | --- | --- |
-> | Lv.1 | PIR | 蜂鳴器＋LED | PIR 當數位輸入 |
-> | Lv.2 | 繼電器 | TMP36＋LED | 繼電器控制加熱器（兩條線） |
-> | Lv.3 | 搖桿 | 2 伺服＋按鈕＋LED | 搖桿直接對應角度 |
-> | Lv.4 | 繼電器 | HC-SR04＋按鈕＋RGB＋蜂鳴器 | HOA＋不受模式影響的安全警報 |
-> | Lv.5 | PIR×2＋繼電器 | 鍵盤＋I2C LCD＋RGB＋蜂鳴器 | 布防／撤防與延遲 |
-> | Lv.6 | 自訂 | 自訂 | 期末專題預演提案 |
+> | Lv.1 | 倉庫走道感應燈 | T37 | 兩顆 PIR、一個接點帶多盞燈 |
+> | Lv.2 | 咖啡機保溫電源 | T38 | 加熱器的失效安全、反向溫控 |
+> | Lv.3 | 停車場監視器雲台 | T39 | 不用電磁鐵、方向改線 |
+> | Lv.4 | 自助洗車輸送線 | T40 | 不倒退接法、NO＋NC 雙燈 |
+> | Lv.5 | 機場行李輸送控制盤 | T40 | **平行版放不下** |
+> | Lv.6 | 期末專題預演提案 | 自選 | 自己設計情境 |
 >
-> 📌 **作答規則**：每一關先填配線決策與腳位規劃表，再接線；接好後先用綜合測試器確認，最後才上傳程式。程式只需要改「設定區」。
+> 📌 **作答規則**：先填「失效安全表」「腳位規劃表」「參數修改表」，再接線；接好後先用工具檢查，最後才上傳程式。Lv.3 之後每關要附**配線設計單**。
 
 ---
 
-### 🟢 Lv.1 便利商店來客鈴
+### 🟢 Lv.1 倉庫走道感應燈
 
-**情境**：便利商店門口裝 PIR，有客人進門時播放「叮咚」並亮起歡迎燈 2 秒，Serial Monitor 記錄今日來客數。為了避免同一位客人在門口走來走去被重複計算，**兩次叮咚之間至少隔 3 秒**。
+**情境**：倉庫長走道兩端各一顆 PIR，任一端有人就開燈，最後一次偵測後 **20 秒**熄滅。走道有 **3 盞燈**一起亮。倉庫沒有窗戶，**不需要光敏電阻**。系統壞掉時燈要關（省電）。
 
-**元件**：PIR＋蜂鳴器＋1 顆 LED
+**元件**：2 顆 PIR＋1 顆繼電器＋3 顆單色 LED（模擬燈）
 
-**程式**：
+**套用模板**：T37
 
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinPIR    = ?;     // PIR
-int pinBuzzer = ?;     // 蜂鳴器
-int ledWelcome = ?;    // 歡迎燈
-int coolDown  = 3000;  // 兩次之間至少隔幾毫秒
-// ============================
+**參數修改表**（請填寫）：
 
-int visitors = 0;
-unsigned long lastChime = 0;
-bool wasMotion = false;
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinPIR2` | `-1` | | |
+| `pinLDR` | `-1` | | |
+| `holdTime` | 10000 | | |
+| `loadOnNC` | `false` | | |
+| `areaName` | `"Stairs"` | | |
+| 功能開關 | | | |
 
-void setup() {
-  pinMode(pinPIR, INPUT);
-  pinMode(ledWelcome, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  bool motion = digitalRead(pinPIR) == HIGH;
-  if (motion && !wasMotion && millis() - lastChime > coolDown) {
-    visitors++;
-    lastChime = millis();
-    Serial.print("Visitor #");
-    Serial.println(visitors);
-    digitalWrite(ledWelcome, HIGH);
-    tone(pinBuzzer, 880, 300); delay(350);
-    tone(pinBuzzer, 700, 500); delay(1650);
-    digitalWrite(ledWelcome, LOW);
-  }
-  wasMotion = motion;
-  delay(50);
-}
-```
-
-**情境思考**：
-
-1. PIR 和第 9 週的超音波都能偵測「有人來」。這個情境用哪一個比較好？為什麼？
-2. 💼 店員進出倉庫也會被算成來客。來客數失真會影響哪些經營決策？你會怎麼改善？
+**情境思考**：堆高機在走道上移動，PIR 偵測得到嗎？（提示：PIR 偵測的是什麼？）
 
 ---
 
 ### 🟢 Lv.2 咖啡機保溫電源
 
-**情境**：咖啡機的保溫盤是 110V 的加熱器，用繼電器控制。保溫盤溫度低於 80°C 開始加熱，高於 85°C 停止（第 6 週的「兩條線」）。加熱中指示燈亮。
+**情境**：辦公室咖啡機的保溫盤，**低於 70°C 開始加熱、高於 80°C 停止**；茶水間有人（PIR）才保溫，**沒人 30 秒**後關掉。HAND 模式強制加熱（清洗除垢時）、OFF 模式完全斷電。模式燈綠／黃／紅。
 
-**元件**：繼電器（負載 LED 代表加熱器）＋TMP36＋1 顆 LED（加熱中指示）
+**元件**：繼電器＋按鈕＋PIR＋TMP36＋RGB＋蜂鳴器
 
-**你要想的問題**：
-
-- 加熱器的繼電器接 NO 還是 NC？如果 Arduino 當機時繼電器停在「加熱」狀態，會發生什麼事？
-
-**程式**：
-
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinRelay = ?;      // 加熱器繼電器線圈
-int pinTemp  = A0;     // TMP36（保溫盤）
-int ledHeat  = ?;      // 加熱中指示燈
-float heatOn  = 80.0;  // 低於這個溫度開始加熱
-float heatOff = 85.0;  // 高於這個溫度停止加熱
-// ============================
-
-bool heating = false;
-
-float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
-}
-
-void setup() {
-  pinMode(pinRelay, OUTPUT);
-  pinMode(ledHeat, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  float t = readC(pinTemp);
-  if (t < heatOn)  heating = true;
-  if (t > heatOff) heating = false;
-  digitalWrite(pinRelay, heating ? HIGH : LOW);
-  digitalWrite(ledHeat,  heating ? HIGH : LOW);
-
-  Serial.print("Plate: ");
-  Serial.print(t);
-  Serial.println(heating ? " C  HEATING" : " C  idle");
-  delay(500);
-}
-```
-
-**情境思考**：
-
-1. 繼電器每切換一次都會「喀」一聲，而且機械開關有使用次數上限。如果把兩條線改成同一條（例如 82°C），繼電器會怎樣？
-2. 💼 咖啡店打烊後常忘記關保溫盤。你會建議加什麼元件、什麼規則，讓它「沒人時自動關」？
-
----
-
-### 🟡 Lv.3 監視器雲台
-
-**情境**：大樓保全室的監視器裝在可轉動的雲台上。保全用搖桿控制：左右推 → 水平轉動、前後推 → 上下俯仰，**搖桿推到哪、鏡頭就轉到哪**（放開回到正中間）。按「錄影鈕」切換錄影，錄影中紅燈閃爍。
-
-**元件**：搖桿（或兩顆旋鈕）＋2 顆伺服＋1 顆按鈕＋1 顆 LED
+**套用模板**：T38
 
 **你要想的問題**：
 
-- 專案三的天車是「推多久轉多少，放開停在原位」；這一關是「推到哪轉到哪，放開回中間」。哪一種適合天車？哪一種適合監視器？為什麼？
+- 加熱器的失效安全：系統壞掉時應該停在哪裡？接 NO 還是 NC？
+- 這是「太冷才開」，要改哪個參數？`onLine`、`offLine` 各填多少？
 
-**程式**：
+**參數修改表**（請填寫）：
 
-```cpp
-#include <Servo.h>
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `heatMode` | `false` | | |
+| `onLine`、`offLine` | 26.0、24.0 | | |
+| `emptyDelay` | 15000 | | |
+| `loadOnNC` | `false` | | |
+| `deviceName` | `"AC"` | | |
+| 功能開關 | | | |
 
-// ===== 設定區：只改這裡 =====
-int joyX = A0, joyY = A1;   // 搖桿 X、Y
-int pinPan  = ?;            // 水平伺服
-int pinTilt = ?;            // 俯仰伺服
-int btnRec  = ?;            // 錄影鈕
-int ledRec  = ?;            // 錄影燈
-// ============================
-
-Servo pan, tilt;
-bool recording = false;
-int lastButton = LOW;
-
-void setup() {
-  pan.attach(pinPan);
-  tilt.attach(pinTilt);
-  pinMode(btnRec, INPUT);
-  pinMode(ledRec, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  pan.write(map(analogRead(joyX), 0, 1023, 0, 180));    // 推到哪，轉到哪
-  tilt.write(map(analogRead(joyY), 0, 1023, 45, 135));  // 俯仰範圍較小
-
-  int now = digitalRead(btnRec);
-  if (now == HIGH && lastButton == LOW) {
-    delay(50);
-    recording = !recording;
-    Serial.println(recording ? "REC START" : "REC STOP");
-  }
-  lastButton = now;
-
-  digitalWrite(ledRec, (recording && (millis() / 500) % 2) ? HIGH : LOW);
-  delay(15);
-}
-```
-
-**情境思考**：
-
-1. 俯仰範圍設成 45～135 度而不是 0～180 度，是為了避免什麼？
-2. 💼 保全室有一位保全要同時看 20 支監視器。你會建議怎麼結合 PIR，讓保全只需要關注「有人移動」的畫面？
+**情境思考**：有人把模式切到 HAND 去清洗，洗完忘了切回 AUTO，保溫盤整晚加熱。你會建議加什麼「防呆」？
 
 ---
 
-### 🟡 Lv.4 地下室抽水井
+### 🟡 Lv.3 停車場監視器雲台
 
-**情境**：大樓地下室的集水井（深 100 cm），超音波裝在井口往下量水位，繼電器控制抽水馬達（負載 LED 模擬）。
+**情境**：停車場警衛室用搖桿控制監視器雲台：左右推轉動水平角度（**0～180°**）、前後推調整俯仰角度（**30～120°**）。不需要電磁鐵。有人靠近警衛室（PIR）時雲台停止，狀態燈紅，3 秒後恢復。
 
-| 模式 | 抽水馬達 |
-| --- | --- |
-| AUTO | 水位高於 70% 開始抽，低於 20% 停止 |
-| HAND | 一直抽（測試或緊急排水用） |
-| OFF | 停止（維修馬達時） |
+**元件**：搖桿（或兩顆旋鈕）＋2 顆伺服＋PIR＋RGB
 
-**不管哪個模式**，水位超過 **90%** 都要觸發**淹水警報**（蜂鳴器＋RGB 紅閃）——就算在 OFF 模式也一樣，因為淹水不等人。
+**套用模板**：T39
 
-**元件**：HC-SR04＋繼電器＋1 顆按鈕（模式）＋RGB＋蜂鳴器
+**限制條件**：雲台裝在天花板上（**倒吊**），所以搖桿往上推時鏡頭會往下轉——**不改程式**要怎麼修？
 
-**Step 0：優先權**
+**參數修改表**（請填寫）：
 
-| 優先 | 狀況 | 動作 |
-| --- | --- | --- |
-| 1 | 水位 > 90% | ____________（任何模式都會發生） |
-| 2 | OFF | ____________ |
-| 3 | HAND | ____________ |
-| 4 | AUTO | ____________ |
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `btnGrab`、`pinRelay` | `?` | | |
+| `rotMin`、`rotMax` | 0、180 | | |
+| `liftMin`、`liftMax` | 20、160 | | |
+| `stepDeg` | 1 | | 監視器要轉快一點還是慢一點？ |
+| `useMagnet` | `false` | | |
+| 功能開關 | | | |
 
-**程式**：
-
-```cpp
-// ===== 設定區：只改這裡 =====
-int pinTrig = ?, pinEcho = ?;       // HC-SR04（井口往下量）
-int pinRelay = ?;                   // 抽水馬達繼電器線圈
-int btnMode  = ?;                   // 模式鈕
-int pinR = ?, pinG = ?, pinB = ?;   // 模式／警報 RGB（全亮全滅）
-int pinBuzzer = ?;                  // 蜂鳴器
-float wellDepth = 100;              // 井口到井底深度（公分）
-int startPct = 70, stopPct = 20, floodPct = 90;
-// ============================
-
-int mode = 0;                       // 0=AUTO, 1=HAND, 2=OFF
-String modeName[3] = { "AUTO", "HAND", "OFF" };
-bool pumping = false;
-int lastButton = LOW;
-int tick = 0;
-
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
-
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
-}
-
-void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  pinMode(pinRelay, OUTPUT);
-  pinMode(btnMode, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  tick++;
-  int now = digitalRead(btnMode);
-  if (now == HIGH && lastButton == LOW) {
-    delay(50);
-    mode = (mode + 1) % 3;
-  }
-  lastButton = now;
-
-  int level = constrain((int)((wellDepth - readCM(pinTrig, pinEcho)) / wellDepth * 100), 0, 100);
-
-  if (mode == 2)      pumping = false;             // OFF
-  else if (mode == 1) pumping = true;              // HAND
-  else {                                           // AUTO（兩條線）
-    if (level > startPct) pumping = true;
-    if (level < stopPct)  pumping = false;
-  }
-  digitalWrite(pinRelay, pumping ? HIGH : LOW);
-
-  bool flood = level > floodPct;                   // 不受模式影響
-  if (flood) {
-    setColor((tick / 5) % 2 ? HIGH : LOW, LOW, LOW);
-    if (tick % 10 == 0) tone(pinBuzzer, 2000, 200);
-  } else if (mode == 0) setColor(LOW, HIGH, LOW);
-  else if (mode == 1)   setColor(HIGH, HIGH, LOW);
-  else                  setColor(HIGH, LOW, LOW);
-
-  if (tick % 10 == 0) {
-    Serial.print(modeName[mode]);
-    Serial.print("  Level ");
-    Serial.print(level);
-    Serial.print("%  Pump ");
-    Serial.print(pumping ? "ON" : "OFF");
-    Serial.println(flood ? "  !! FLOOD ALARM !!" : "");
-  }
-  delay(100);
-}
-```
-
-**情境思考**：
-
-1. 為什麼淹水警報「不受模式影響」，連 OFF 模式也會響？如果 OFF 模式下也不警報，會發生什麼事？
-2. 維修人員把模式切到 OFF 修馬達，修完忘記切回 AUTO。這個系統有辦法提醒他嗎？你會怎麼加？
-3. 💼 颱風夜抽水馬達故障，地下室淹水，損失數百萬。事後檢討時，除了技術，還要檢討哪些管理面向？
+**情境思考**：「有人靠近警衛室時雲台停止」這個需求合理嗎？從保全的角度，你會建議客戶改成什麼？
 
 ---
 
-### 🔴 Lv.5 住家保全系統
+### 🟡 Lv.4 自助洗車輸送線
 
-**情境**：住家的保全系統，兩顆 PIR 分別裝在**大門口**和**客廳**：
+**情境**：自助洗車場的車輛輸送帶，**只會往前**（不需要倒退）。AUTO：入口超音波偵測到車（**50 cm** 內）就前進，最後一次偵測後 **5 秒**停止。HAND：推搖桿前進（往後推＝停止）。急停、安全區 PIR 同關卡 4。控制盤上「**運轉中**」黃燈和「**可進車**」綠燈永遠一亮一滅。
 
-- **撤防**（在家）：PIR 不觸發警報，RGB 綠燈
-- 輸入密碼按 `A` → **布防倒數 10 秒**（讓屋主出門），RGB 黃燈閃，LCD 倒數
-- **布防**：RGB 紅燈恆亮
-  - 大門口偵測到人 → **進門延遲 10 秒**，LCD 倒數，屋主要在時間內輸入密碼按 `#` 撤防，否則觸發警報
-  - 客廳偵測到人（沒經過大門，可能是翻窗）→ **立刻警報**
-- **警報**：繼電器啟動警報燈／警笛（負載 LED），蜂鳴器響，RGB 紅閃；輸入密碼按 `#` 解除
+**元件**：L293D＋馬達＋HC-SR04＋繼電器＋2 顆單色 LED＋PIR＋2 顆按鈕＋蜂鳴器＋搖桿＋I2C LCD
 
-**元件**：鍵盤（4 行）＋I2C LCD＋2 顆 PIR＋繼電器＋RGB＋蜂鳴器
+**套用模板**：T40
 
-**Step 0：腳位規劃（本關重點）**
+**你要想的問題**：
 
-| 元件 | 需要幾隻腳 | 腳位 |
+- 不需要倒退，L293D 用哪種接法？哪幾個腳位填 `-1`？
+- 「運轉中」「可進車」兩顆燈要怎麼接，才不多佔腳？
+
+**參數修改表**（請填寫）：
+
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinEN`、`pinIN1`、`pinIN2` | `?` | | |
+| `productCM` | 20 | | |
+| `runAfter` | 3000 | | |
+| `beaconOnNC` | `false` | | |
+| `lineName` | `"LINE 1"` | | |
+| 功能開關 | | | |
+
+**情境思考**：車子停在輸送帶上、駕駛還沒下車。洗車場要怎麼確保「人一定在安全的位置」？只靠 PIR 夠嗎？
+
+---
+
+### 🔴 Lv.5 機場行李輸送控制盤
+
+**情境**：機場行李輸送帶控制盤，功能和關卡 4 相同（要倒退、要調速）。客戶要求「控制盤故障時，警示燈一定要亮」。
+
+**元件**：L293D＋馬達＋HC-SR04＋繼電器＋PIR＋2 顆按鈕＋蜂鳴器＋搖桿＋LCD
+
+**套用模板**：T40
+
+**限制條件**：**Pin 12、13** 已被行李掃描器佔用；客戶的倉庫裡只有**平行版 LCD**，希望優先使用。
+
+**Step 0：腳位預算（本關重點）**
+
+| 項目 | 平行版 | I2C 版 |
 | --- | --- | --- |
-| 鍵盤（要用 A 鍵 → 4 行） | 8 | |
-| I2C LCD | 2 | A4、A5 |
-| 大門 PIR、客廳 PIR | 2 | |
-| 警報繼電器線圈 | 1 | |
-| RGB | 3 | |
-| 蜂鳴器 | 1 | |
-| **合計／Arduino 可用 18** | | |
+| L293D（接法 D） | 3 | 3 |
+| HC-SR04 | 2 | 2 |
+| 繼電器、PIR、2 顆按鈕、蜂鳴器 | 5 | 5 |
+| LCD | 6 | 2（A4、A5） |
+| 搖桿 | 1（A 腳） | 1（A 腳） |
+| **合計** | | |
+| **可用腳位（扣掉 Pin 12、13）** | | |
+| **放得下嗎？** | | |
 
-> 🤔 警報燈的繼電器接 NO 還是 NC？如果小偷剪斷電源，你希望警報燈怎樣？（提示：本關沒有標準答案，請說明你的取捨）
+**參數修改表**（請填寫）：
 
-**程式**：
-
-```cpp
-#include <Keypad.h>
-#include <Adafruit_LiquidCrystal.h>
-
-// ===== 設定區：只改這裡 =====
-byte rowPins[4] = { ?, ?, ?, ? };   // 鍵盤 R1~R4
-byte colPins[4] = { ?, ?, ?, ? };   // 鍵盤 C1~C4
-int pirDoor = ?;                    // 大門口 PIR
-int pirLiving = ?;                  // 客廳 PIR
-int pinRelay  = ?;                  // 警報燈／警笛繼電器線圈
-int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（全亮全滅）
-int pinBuzzer = ?;                  // 蜂鳴器
-String password = "1357";
-int exitDelay  = 10;                // 布防倒數秒數
-int entryDelay = 10;                // 進門延遲秒數
-// ============================
-// I2C LCD：SDA 接 A4、SCL 接 A5
-
-char keys[4][4] = {
-  { '1', '2', '3', 'A' },
-  { '4', '5', '6', 'B' },
-  { '7', '8', '9', 'C' },
-  { '*', '0', '#', 'D' }
-};
-Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, 4, 4);
-Adafruit_LiquidCrystal lcd(0);
-
-int state = 0;                      // 0=撤防, 1=布防倒數, 2=布防, 3=進門延遲, 4=警報
-unsigned long stateStart = 0;
-String input = "";
-
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
-}
-
-void go(int s) {
-  state = s;
-  stateStart = millis();
-  input = "";
-}
-
-int secondsLeft(int total) {
-  return total - (int)((millis() - stateStart) / 1000);
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  lcd.setBacklight(1);
-  pinMode(pirDoor, INPUT);
-  pinMode(pirLiving, INPUT);
-  pinMode(pinRelay, OUTPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-}
-
-void loop() {
-  bool blink = (millis() / 300) % 2;
-  String stars = "";
-  for (int i = 0; i < input.length(); i++) stars += "*";
-
-  // ---- 鍵盤 ----
-  char k = keypad.getKey();
-  if (k >= '0' && k <= '9' && input.length() < 4) input += k;
-  else if (k == '*') input = "";
-  else if (k == 'A' && state == 0) {
-    if (input == password) go(1); else input = "";
-  } else if (k == '#' && state >= 1) {
-    if (input == password) go(0); else input = "";
-  }
-
-  // ---- 狀態機 ----
-  if (state == 0) {                               // 撤防
-    setColor(LOW, HIGH, LOW);
-    digitalWrite(pinRelay, LOW);
-    showLine(0, "DISARMED");
-    showLine(1, "PIN+A TO ARM " + stars);
-  } else if (state == 1) {                        // 布防倒數
-    setColor(blink ? HIGH : LOW, blink ? HIGH : LOW, LOW);
-    showLine(0, "LEAVE NOW " + String(secondsLeft(exitDelay)) + "s");
-    showLine(1, "PIN+# CANCEL " + stars);
-    if (secondsLeft(exitDelay) <= 0) go(2);
-  } else if (state == 2) {                        // 布防
-    setColor(HIGH, LOW, LOW);
-    showLine(0, "ARMED");
-    showLine(1, "PIN+# DISARM " + stars);
-    if (digitalRead(pirLiving) == HIGH) go(4);    // 客廳：立刻警報
-    else if (digitalRead(pirDoor) == HIGH) go(3); // 大門：進門延遲
-  } else if (state == 3) {                        // 進門延遲
-    setColor(blink ? HIGH : LOW, LOW, LOW);
-    if (blink) tone(pinBuzzer, 1000, 50);
-    showLine(0, "ENTER PIN " + String(secondsLeft(entryDelay)) + "s");
-    showLine(1, "PIN+# " + stars);
-    if (secondsLeft(entryDelay) <= 0) go(4);
-  } else {                                        // 警報
-    setColor(blink ? HIGH : LOW, LOW, LOW);
-    digitalWrite(pinRelay, HIGH);
-    tone(pinBuzzer, 2000, 100);
-    showLine(0, "!!! ALARM !!!");
-    showLine(1, "PIN+# STOP " + stars);
-  }
-  delay(30);
-}
-```
+| 參數 | 模板原本的值 | 改成 |
+| --- | --- | --- |
+| `useI2C` | `true` | |
+| `beaconOnNC` | `false` | |
+| `lineName` | `"LINE 1"` | |
+| 腳位區 | | |
+| 功能開關 | | |
 
 **情境思考**：
 
-1. 附上你的腳位規劃表：一共用了幾隻？如果要再加「窗戶感測」（第三顆 PIR），還放得下嗎？
-2. 大門用「進門延遲」、客廳用「立刻警報」。為什麼兩個位置的反應不一樣？
-3. 💼 保全公司接到警報後要派人到場，但 90% 的警報都是屋主忘記撤防造成的「誤報」。保全公司該怎麼降低誤報的成本？
+1. 附上你的腳位預算表。平行版放不下時，你要怎麼向客戶說明「為什麼不能用庫存的 LCD」？
+2. 行李輸送帶旁常有地勤人員。急停按鈕應該裝幾顆、裝在哪裡？多顆急停按鈕要怎麼接？（提示：第 13 週技巧 3）
 
 ---
 
 ### 🏆 Lv.6 BOSS 關：期末專題預演提案
 
-**情境**：下週開始期末整合大專題。這一關是**預演**：用本週學到的 HOA 模式與優先權觀念，提出一個完整的控制系統提案。
-
-> **案例 A：智慧溫室控制盤**
-> AUTO：依溫度控制天窗（伺服）、依光線控制補光燈（繼電器）、依土壤濕度（旋鈕模擬）控制澆水馬達；HAND：搖桿控制天窗；有人進入溫室（PIR）時暫停澆水。
->
-> **案例 B：停車場出入口控制盤**
-> AUTO：超音波偵測車輛自動開柵欄；HAND：保全按鈕開柵欄；OFF：柵欄鎖住；柵欄下方有人（PIR）時不准放下；夜間（光敏電阻）自動開啟照明（繼電器）。
->
-> **案例 C：自訂情境**
-> 自己找一個需要「自動＋手動」的控制系統（例如：自動門、捲門、抽風機、魚塭打水車、電梯）。
+**情境**：下週就要開始期末專題。請用本週的模板，為你們小組預計的期末場域，先做一個「自動／手動」子系統的預演。
 
 **最低規格**：
 
-- 至少使用本週三個新元件中的兩個
-- 必須有 HOA 三種模式，以及至少一個「不受模式影響」的安全機制
-- 至少 1 個繼電器負載，並說明 NO／NC 的選擇
-- 總共使用 12 隻以上腳位
+- 至少 1 顆繼電器，附**失效安全表**
+- 至少 2 種運作模式（HOA、營業／打烊、布防／撤防……）與**優先權流程圖**
+- 至少修改模板參數區的 **5 個參數**
+- 至少用到一個本週配線技巧（NO＋NC 雙負載、一個接點多負載、方向改線）
+- 自己設計 1 題「配線變化挑戰」並附解答
 
-**繳交內容**：
+**繳交內容**：情境說明、失效安全表、優先權流程圖、配線設計單、參數修改表、配線變化挑戰與解答、Tinkercad 連結
 
-1. **需求分析**：這個系統解決什麼問題？誰會操作？誰會被影響？（3～5 句）
-2. **模式表**：AUTO、HAND、OFF 三種模式下，每個輸出的行為
-3. **優先權流程圖**：從急停（或最高安全條件）到 AUTO 的完整判斷順序
-4. **失效安全分析**：每個繼電器負載接 NO 或 NC 的理由
-5. **腳位規劃表**與 **Tinkercad 實作**
-6. **作業規則**：給現場人員看的 3～5 條 SOP
+---
 
-**驗收標準**：
+### 📝 配線設計單
 
-- [ ] 三種模式都正確運作，切換時有明確指示
-- [ ] 安全機制在任何模式下都有效
-- [ ] 優先權流程圖與實際行為一致
-- [ ] 每個繼電器負載的 NO／NC 選擇有合理說明
-- [ ] 麵包板依功能分區
+| 項目 | 內容 |
+| --- | --- |
+| 情境名稱 | |
+| 套用模板 | T37／T38／T39／T40 |
+| 失效安全表 | 每個繼電器的負載、NO／NC、壞掉時的狀態、理由 |
+| 優先權流程圖 | 從最高安全條件到一般功能 |
+| 元件清單 | 元件名稱 × 數量（含 220Ω、10kΩ） |
+| 腳位分配表 | 元件 → 腳位（標註 `~` 腳、借用 A 腳、LCD 版本） |
+| 遇到的問題 | 接線過程中出過什麼錯？怎麼修正的？ |
 
 ---
 
@@ -1385,65 +1354,51 @@ void loop() {
 
 | 現象 | 先檢查這裡 | 修正方式 |
 | --- | --- | --- |
-| 繼電器有「喀」聲但負載 LED 不亮 | 負載端：COM 是否接 5V；LED 是否接在 NO（或 NC）；有沒有 220Ω、有沒有接回 GND | 照負載端接法重接 |
-| 繼電器完全沒反應 | 線圈兩腳：一腳接 Arduino 腳位、一腳接 GND | 用綜合測試器確認 |
-| 負載的亮滅和預期相反 | 接到 NO 還是 NC | NO 和 NC 對調 |
-| PIR 一直是 HIGH 或一直是 LOW | 電源、GND、OUT 三隻腳是否接對；模擬時物體有沒有在範圍內**移動** | PIR 只偵測「移動」，物體要動 |
-| PIR 偵測到後隔很久才變回 LOW | PIR 本身有維持時間 | 正常現象，程式的延遲時間要考慮這段 |
-| 搖桿放開後馬達或伺服還在動 | 死區是否太小；用旋鈕代替時是否轉回中間 | 加大 `deadband`，或把旋鈕轉回中間 |
-| 搖桿左右和上下顛倒 | X、Y 接的 A 腳 | 對調 X、Y 兩條線 |
-| 調速無效 | EN 是否接在被蜂鳴器（3、11）或伺服（9、10）借走的 `~` 腳 | 查「~ 腳可用表」改接 |
-| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+| 繼電器有切換，但負載燈不亮 | COM 是否接 5V；燈是否接在 NO／NC 再經 220Ω 到 GND | 對照接法表 |
+| 負載「該開的時候關、該關的時候開」 | 負載接的接點和 `loadOnNC` 是否一致 | 改線或改參數，讓兩者一致 |
+| PIR 一直顯示 MOTION | 模擬中物體是否一直在範圍內移動 | 把物體拖出範圍 |
+| 搖桿放開時伺服還在慢慢動 | 死區太小 | 加大 `deadband` |
+| 搖桿方向相反 | 該軸的 5V、GND（或旋鈕兩側腳） | 對調（技巧 4） |
+| 不能倒退 | L293D 是否用了接法 A 或 B | 需要倒退改接法 C 或 D |
+| 平行版 LCD 沒字 | RS、E、DB4～DB7；RW 是否接 GND | 對照第 11 週 |
+| 程式無法上傳 | 腳位區是否還有 `?` 沒填 | 用到的填腳位，沒接的填 `-1` |
 
 ---
 
 ## 成果繳交與評分
 
-### 範例專案繳交
+### 繳交清單
 
-每個專案各自建立一個 Tinkercad 檔案，命名格式：`W14-專案編號-學號`（例如 `W14-P3-B12345678`）。
+每個關卡、每個練習題各自建立一個 Tinkercad 檔案，命名格式：`W14-關卡或Lv編號-限制卡-學號`。
 
-| 繳交項目 | 專案一 | 專案二 | 專案三 | 專案四 |
-| --- | --- | --- | --- | --- |
-| Tinkercad 分享連結 | ✅ | ✅ | ✅ | ✅ |
-| NO／NC 選擇與理由 | ✅ | ✅ | ✅ | ✅ |
-| 腳位規劃表 | ✅ | ✅ | ✅ | ✅ |
-| 優先權流程圖 | — | — | ✅ | ✅ |
-| 完成 Step 3 的電路截圖 | ✅ | ✅ | ✅ | ✅ |
-| 情境思考題作答 | ✅ | ✅ | ✅ | ✅ |
-
-> 🎯 **最低完成標準**：專案一、二完成 Step 3，專案三、四至少完成 Step 2。
-
-### 練習題繳交
-
-| 關卡 | 繳交內容 | 建議定位 |
-| --- | --- | --- |
-| Lv.1～Lv.2 | Tinkercad 連結＋情境思考題 | 課堂暖身，全班必做 |
-| Lv.3～Lv.4 | ＋腳位規劃表＋優先權表 | 課後作業，必做 |
-| Lv.5 | ＋腳位規劃表＋麵包板擺放截圖 | 選做加分 |
-| Lv.6 BOSS | 完整提案（模式表、優先權流程圖、失效安全分析、SOP） | 期末專題預演，可分組 |
+| 項目 | 繳交內容 |
+| --- | --- |
+| 關卡 1～4 | Tinkercad 連結＋決策題答案＋失效安全表＋腳位規劃表＋配線變化挑戰說明＋同學驗收簽名 |
+| Lv.1～Lv.2 | Tinkercad 連結＋參數修改表＋情境思考 |
+| Lv.3～Lv.5 | ＋配線設計單 |
+| Lv.6 | 期末專題預演提案 |
 
 ### 評分比重建議
 
 | 項目 | 比重 | 說明 |
 | --- | --- | --- |
-| 電路正確性 | 30% | 繼電器負載端、PIR、搖桿接線正確，每個 Step 功能正常 |
-| 模式與優先權設計 | 25% | HOA 模式完整，優先權流程圖合理且與行為一致 |
-| 失效安全分析 | 15% | NO／NC 選擇有合理理由 |
-| 情境思考題 | 20% | 尤其是安全、SOP 與 💼 管理面向論述 |
-| 麵包板擺放 | 10% | 控制端與負載端分區清楚 |
+| 失效安全與腳位規劃 | 25% | NO／NC 選擇有理由、與參數一致；符合限制卡 |
+| 電路正確性 | 25% | 繼電器兩端電路、PIR、搖桿正確；每個 Step 通過工具檢查 |
+| 配線變化挑戰 | 20% | 正確運用 NO＋NC 雙負載、多負載、方向改線 |
+| 優先權與參數修改表 | 15% | 流程圖與程式行為一致，參數正確 |
+| 情境思考 | 15% | 💼 管理面向論述 |
+
+> 🎯 **最低完成標準**：關卡 1～4 全部完成（含配線變化挑戰）、Lv.1～Lv.3 完成。
 
 ### 課堂時間建議（3 節課）
 
 | 時段 | 內容 |
 | --- | --- |
-| 第 1 節前 40 分鐘 | 認識三個新元件、NO／NC 與失效安全、HOA 與優先權；綜合測試器示範 |
-| 第 1 節後段 | 專案一（Step 2「改接繼電器」是重點） |
-| 第 2 節 | 專案二、專案三（分組進行） |
-| 第 3 節前段 | 專案四（先畫優先權流程圖再接線） |
-| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，其餘帶回家；預告期末專題 |
-
-> 💡 **教學建議**：繼電器最容易卡在「負載端沒接成迴路」。建議在黑板上畫出「控制端」和「負載端」兩個框，強調它們是兩條完全分開的電路，學生接線時麵包板也分成兩區。
+| 第 1 節前 40 分鐘 | 認識繼電器（NO／NC）、PIR、搖桿、HOA、四個新技巧、綜合測試器 |
+| 第 1 節後段 | 關卡 1 |
+| 第 2 節 | 關卡 2、關卡 3 |
+| 第 3 節前段 | 關卡 4 |
+| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，其餘帶回家；分組討論期末專題方向 |
 
 ---
 
@@ -1451,45 +1406,42 @@ void loop() {
 
 | 名稱 | 白話解釋 |
 | --- | --- |
-| 繼電器（Relay） | 用電控制的開關，讓 Arduino 切換另一條電路 |
-| 線圈（Coil） | 繼電器內的電磁鐵，Arduino 控制這一端 |
-| COM／NO／NC | 共同點／常開接點（平常斷開）／常閉接點（平常接通） |
-| 電氣隔離 | 控制端和負載端是兩條分開的電路 |
+| 繼電器（Relay） | 用電控制的開關，控制端與負載端電氣隔離 |
+| COM／NO／NC | 共同點／常開（通電才接通）／常閉（不通電時接通） |
 | 失效安全（Fail-safe） | 系統故障時自動回到最安全的狀態 |
+| 失效安全表 | 逐一記錄每個負載接 NO 或 NC、壞掉時的狀態與理由 |
 | PIR 人體感測器 | 偵測人體紅外線變化，有人移動輸出 HIGH |
-| 類比搖桿 | 兩顆旋鈕合體，X、Y 兩軸各輸出 0～1023 |
-| 死區（Deadband） | 搖桿中間一段範圍視為「沒推」，避免誤動作 |
+| 類比搖桿 | 兩顆旋鈕合體，X、Y 兩軸各 0～1023 |
+| 死區（Deadband） | 搖桿中間一段範圍當作「沒推」 |
 | HOA | 手動（Hand）／停止（Off）／自動（Auto）三段模式 |
-| 優先權 | 多個條件衝突時，誰先被判斷、誰說了算 |
-| 上鎖掛牌（LOTO） | 設備維修時上鎖並掛牌，防止他人誤啟動的安全制度 |
+| 上鎖掛牌（LOTO） | 設備保養時鎖住電源開關並掛牌，避免被誤啟動 |
 
 ---
 
 ## 反思與延伸討論
 
-1. 本週的 NO／NC 選擇，本質上是在問：「**系統失敗時，我們寧可犯哪一種錯？**」（燈不亮 vs. 燈一直亮、門打不開 vs. 門關不上）。在管理決策中，你遇過哪些「兩種錯誤都有代價，只能選一種」的情況？
-2. HOA 三種模式中，HAND 讓人可以「繞過自動化」。這是必要的彈性，也是風險的來源。企業應該如何管理「誰有權限切到手動」、「手動期間發生事故誰負責」？
-3. 專案四的優先權流程圖，其實就是一份**決策規則**。下週的期末專題會整合更多元件、更多規則。你會用什麼方法確保團隊每個人對「誰優先」的理解一致？（提示：流程圖、規格書、測試案例）
+1. 本週同一個樓梯燈，限制卡 A 接 NO、限制卡 B 接 NC。這說明「安全」的定義會隨情境改變。請舉一個生活中的例子，說明同一個設備在不同場合的失效安全選擇不同。
+2. 技巧 1 提到「負載換到 NC，要同步改參數」。如果現場人員只改線、忘了改參數，會發生什麼事？在真實工廠，硬體變更和軟體設定要怎麼一起管理？
+3. HOA 的 HAND 模式讓人可以「蓋過」自動控制。人什麼時候比感測器可靠？什麼時候反而比較危險？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 能正確接上繼電器的控制端（線圈）與負載端（COM、NO、NC）
-- [ ] 能依「失效安全」原則選擇 NO 或 NC，並說明理由
-- [ ] 能正確接上 PIR，並理解它只偵測「移動」的特性
-- [ ] 能正確接上搖桿（或用兩顆旋鈕代替），並理解死區的作用
-- [ ] 能設計 HOA 三段模式，並說明各模式的使用時機
-- [ ] 能畫出優先權流程圖，並讓系統行為與流程圖一致
-- [ ] 完成 4 個獨立專案，並各自繳交 Tinkercad 檔案
-- [ ] 完成練習題 Lv.1～Lv.4，挑戰 Lv.5 與 Lv.6
+- [ ] 能正確接上繼電器（控制端、負載端），並用測試器確認 NO、NC
+- [ ] 能填失效安全表，並讓接點與 `loadOnNC` 一致
+- [ ] 能用一顆繼電器同時帶 NO、NC 兩個相反負載
+- [ ] 能接上 PIR、搖桿，並用改線修正搖桿方向
+- [ ] 能畫出 HOA 與安全條件的優先權流程圖
+- [ ] 完成關卡 1～4，並取得同學驗收簽名
+- [ ] 完成練習題 Lv.1～Lv.3，挑戰 Lv.4～Lv.6
 
 ---
 
 ## 下週預告
 
-從下週開始是為期兩週的**期末整合大專題**——不再學新元件，而是把這 14 週學過的**所有**元件與觀念，整合成一套完整的智慧場域系統。第 15 週是需求分析、系統設計與子系統開發；第 16 週是整合驗收與期末成果展演。本週 Lv.6 的提案格式，就是期末專題的起點。
+第 15～16 週是**期末整合大專題**，不再學新元件。各組會抽到**小組客戶限制卡**，用整學期的 40 個模板與配線技巧，為客戶建置一套完整的智慧場域系統——第 16 週還有老師現場出題的配線變化挑戰。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 13 週](week-13.md) | [下一週：第 15 週 — 終極整合大專題（上）➡](week-15.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 13 週](week-13.md) | [下一週：第 15 週 — 期末整合大專題（上）➡](week-15.md)

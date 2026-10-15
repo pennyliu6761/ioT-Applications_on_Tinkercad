@@ -1,4 +1,4 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 10 週](week-10.md) | [下一週：第 12 週 — 期末統整與電子密碼鎖 ➡](week-12.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 10 週](week-10.md) | [下一週：第 12 週 — 會輸入的智慧場域 ➡](week-12.md)
 
 ---
 
@@ -6,19 +6,13 @@
 
 ## 主題專案：把數據變成現場看得懂的看板
 
-> 🎯 **本週定位**：十週以來，系統只能用燈號和聲音跟人溝通，詳細數字要打開電腦看 Serial Monitor——現場人員根本看不到。這一週加入 **LCD 16×2 顯示器**，系統第一次可以直接在現場「顯示文字和數字」。
+> 🎯 **本週定位**：前十週的系統用燈號、聲音和 Serial Monitor 回報狀態，但現場人員看不到電腦螢幕。這一週加入 **LCD 16×2 顯示器**——系統第一次可以直接「說」出數字和文字：溫度幾度、產量多少、會議室還要用多久。
 >
-> 對工管人來說，這週特別重要：**看板管理**是精實生產與現場管理的核心工具。數據要被看見，才能被管理。
+> LCD 有兩種版本：**平行版佔 6 隻腳**、**I2C 版只佔 2 隻（固定 A4、A5）**。**先算腳位再選版本**是本週最重要的配線決策——同一個情境，抽到不同限制卡就會選出不同版本。另外，**看板要顯示什麼、怎麼排版**，是本週最重要的情境思考。
 >
-> 和前幾週一樣，本週**重點不在寫程式**，而在於：
+> 每一個關卡照「五個固定環節」進行：抽**客戶限制卡** → 回答**接線前決策題** → 照**接線任務**一步步接 → 套用**程式模板**（只改腳位區、參數區） → 完成**配線變化挑戰**（程式一個字都不改，只改線）。
 >
-> 1. 讀懂情境需求，決定看板上**要顯示什麼、不顯示什麼**（只有 2 行 × 16 格！）
-> 2. 規劃腳位——LCD 一次要佔 6 隻腳，是全學期最「吃腳位」的元件
-> 3. 選擇 LCD 的版本：**平行版**（6 隻腳）還是 **I2C 版**（2 隻腳）
->
-> 顯示文字的程式都已經準備好，你只需要填腳位、修改要顯示的文字、把功能開關從 `false` 改成 `true`。
->
-> 🏁 **本週成果**：完成 **4 個獨立專案**，每個專案存成一個獨立的 Tinkercad 檔案繳交。
+> 🏁 **本週成果**：完成 **4 個關卡** ＋ **練習題 Lv.1～Lv.6**（套用本週的程式模板 T25～T28）。
 
 ---
 
@@ -27,20 +21,23 @@
 - [學習地圖](#學習地圖)
 - [開場任務簡報](#開場任務簡報)
 - [認識新元件：LCD 16×2 顯示器](#認識新元件lcd-162-顯示器)
+- [本週配線新技巧](#本週配線新技巧)
 - [看板設計原則](#看板設計原則)
 - [配線口訣卡](#配線口訣卡)
 - [共用工具](#共用工具)
-- [專案一：會議室門口狀態牌](#專案一會議室門口狀態牌)
-- [專案二：藥品冷藏櫃溫度看板](#專案二藥品冷藏櫃溫度看板)
-- [專案三：產線績效看板](#專案三產線績效看板)
-- [專案四：冷鏈倉儲戰情中心](#專案四冷鏈倉儲戰情中心)
+- [關卡怎麼玩：五個固定環節](#關卡怎麼玩五個固定環節)
+- [關卡 1：會議室門口狀態牌（模板 T25）](#關卡-1會議室門口狀態牌模板-t25)
+- [關卡 2：藥品冷藏櫃溫度看板（模板 T26）](#關卡-2藥品冷藏櫃溫度看板模板-t26)
+- [關卡 3：產線績效看板（模板 T27）](#關卡-3產線績效看板模板-t27)
+- [關卡 4：冷鏈倉儲戰情中心（模板 T28）](#關卡-4冷鏈倉儲戰情中心模板-t28)
 - [練習題大補帖：情境配置挑戰](#練習題大補帖情境配置挑戰)
-  - [Lv.1 店門口跑馬燈招牌](#-lv1-店門口跑馬燈招牌)
-  - [Lv.2 診所排隊叫號機](#-lv2-診所排隊叫號機)
-  - [Lv.3 健身房跑步機面板](#-lv3-健身房跑步機面板)
-  - [Lv.4 停車場剩餘車位看板](#-lv4-停車場剩餘車位看板)
-  - [Lv.5 病房護理站呼叫看板](#-lv5-病房護理站呼叫看板)
-  - [🏆 Lv.6 BOSS 關：物聯網顧問提案](#-lv6-boss-關物聯網顧問提案)
+  - [Lv.1 百貨公司哺乳室看板](#-lv1-百貨公司哺乳室看板)
+  - [Lv.2 溫室育苗溫度看板](#-lv2-溫室育苗溫度看板)
+  - [Lv.3 手工皂包裝線看板](#-lv3-手工皂包裝線看板)
+  - [Lv.4 物流揀貨區績效看板](#-lv4-物流揀貨區績效看板)
+  - [Lv.5 生鮮超市冷藏戰情看板](#-lv5-生鮮超市冷藏戰情看板)
+  - [🏆 Lv.6 BOSS 關：顧問提案](#-lv6-boss-關顧問提案)
+  - [📝 配線設計單](#-配線設計單)
 - [配線除錯站](#配線除錯站)
 - [成果繳交與評分](#成果繳交與評分)
 - [📖 本週詞彙表](#-本週詞彙表)
@@ -53,20 +50,18 @@
 
 ### 你已經會的（第 1～10 週）
 
-- ✅ 輸出：LED、RGB、蜂鳴器、伺服、直流馬達（L293D）
-- ✅ 輸入：按鈕、旋鈕、光敏電阻、TMP36、HC-SR04
-- ✅ 「~ 腳可用表」、借用 A 腳、L293D 四種接法
-- ✅ 狀態改變偵測、鎖定與復歸、安全連鎖、安裝位置換算
+- ✅ LED、RGB、蜂鳴器、伺服、直流馬達五種輸出元件
+- ✅ 按鈕、旋鈕、光敏電阻、TMP36、HC-SR04 五種輸入元件
+- ✅ 配線技巧：兩燈共腳、光敏電阻反相、全亮全滅顏色接一般腳、逐腳判斷 `~` 腳、伺服共用訊號線、感測器整組對調、L293D 接法 A～D、馬達並聯、借 A 腳
 
 ### 這週要新學的
 
 | 新東西 | 白話說明 | 在職場上像什麼 |
 | --- | --- | --- |
-| LCD 16×2 | 2 行、每行 16 個字的小螢幕 | 產線看板、叫號螢幕、設備面板 |
-| 平行版 LCD | 用 6 條訊號線控制，接法較多 | 傳統設備面板 |
-| I2C 版 LCD | 只用 2 條訊號線（A4、A5），接法很簡單 | 現代模組化設備 |
-| `showLine()` 顯示函式 | 已寫好的函式：指定第幾行、要顯示什麼字 | 在看板上貼一行字 |
-| 分頁顯示 | 螢幕太小，用按鈕切換不同頁面 | 手機上滑切換頁面 |
+| LCD 16×2 顯示器 | 2 行、每行 16 格的文字螢幕 | 工廠看板、電梯樓層顯示、收銀機螢幕 |
+| 平行版 vs I2C 版 | 同樣的螢幕，佔 6 隻腳或 2 隻腳 | 同功能設備，選「接線多但便宜」或「接線少但佔固定介面」 |
+| 看板設計 | 32 格要放什麼、怎麼排 | 目視管理（Visual Management） |
+| 程式模板 T25～T28 | 本週四個新模板 | 公司的標準表單 |
 
 ### 本週可用元件（只限這些）
 
@@ -78,7 +73,7 @@
 | 蜂鳴器、光敏電阻 | 第 5 週 |
 | TMP36 | 第 6 週 |
 | 伺服馬達 | 第 7 週 |
-| 超音波 HC-SR04 | 第 9 週 |
+| HC-SR04 | 第 9 週 |
 | 直流馬達、L293D | 第 10 週 |
 | LCD 16×2（平行版、I2C 版） | **本週新增** |
 
@@ -86,16 +81,14 @@
 
 ## 開場任務簡報
 
-> 📖 **情境**：前十週的客戶紛紛回頭反映同一件事：「系統很好用，但現場人員看不懂燈號代表什麼，詳細數字又要開電腦才看得到。」這週的四個委託案，都要加上一塊**現場看板**。
+> 📖 **情境**：客戶說：「你們的系統很聰明，可是我們的員工看不懂燈號的意思，也不會開 Serial Monitor。能不能直接用文字告訴他們？」這週的四個委託，都要做一塊現場看板。
 >
-> | 客戶 | 委託內容 | 難度 |
-> | --- | --- | --- |
-> | 共享辦公室 | 會議室門口狀態牌 | ⭐ |
-> | 社區藥局 | 藥品冷藏櫃溫度看板 | ⭐⭐ |
-> | 食品工廠 | 產線績效看板 | ⭐⭐⭐ |
-> | 冷鏈物流 | 倉儲戰情中心 | ⭐⭐⭐⭐ |
->
-> 每個專案都分成 3 個步驟，從最簡單的版本開始，每一步多接幾個元件、多一項功能。
+> | 關卡 | 客戶 | 委託內容 | 套用模板 | 難度 |
+> | --- | --- | --- | --- | --- |
+> | 1 | 共享辦公室 | 會議室門口狀態牌 | T25 狀態牌 | ⭐ |
+> | 2 | 社區藥局 | 藥品冷藏櫃溫度看板 | T26 溫度看板 | ⭐⭐ |
+> | 3 | 食品工廠 | 產線績效看板 | T27 產線績效看板 | ⭐⭐⭐ |
+> | 4 | 冷鏈物流 | 倉儲戰情中心 | T28 多頁戰情看板 | ⭐⭐⭐⭐ |
 
 ---
 
@@ -116,7 +109,7 @@
 - **只能顯示英文、數字和符號**，不能顯示中文。
 - 位置從 **0** 開始數：第 0 行是上面那行，第 1 行是下面那行。
 
-### 兩種版本，該選哪一種？
+### 兩種版本
 
 Tinkercad 元件庫裡有兩種 LCD：**「LCD 16 x 2」**（平行版）和 **「LCD 16 x 2 (I2C)」**（I2C 版）。
 
@@ -124,27 +117,22 @@ Tinkercad 元件庫裡有兩種 LCD：**「LCD 16 x 2」**（平行版）和 **�
 | --- | --- | --- |
 | 佔用 Arduino 腳位 | **6 隻**（任何數位腳或 A 腳） | **2 隻**（固定是 A4、A5） |
 | 接線難度 | 16 隻腳，要接 12 條線 | 4 隻腳，只接 4 條線 |
-| 程式寫法 | `LiquidCrystal` | `Adafruit_LiquidCrystal` |
-| 適合 | 元件少、腳位很夠用 | 元件多、腳位吃緊 |
+| 可調字的深淺、背光 | 可以（V0、LED 腳） | 不行 |
 | 限制 | 吃掉一半的數位腳 | A4、A5 被佔用後，**不能再借來接其他東西** |
 
-> 💡 **選擇原則**：先算出系統其他元件要用幾隻腳。如果加上平行版 LCD 的 6 隻腳後還有剩，用平行版；如果不夠，改用 I2C 版。
-
 ### 平行版接法（12 條線）
-
-LCD 上每隻腳都有標示名稱，照下表接：
 
 | LCD 腳位 | 白話說明 | 接到哪裡 |
 | --- | --- | --- |
 | GND（VSS） | 螢幕接地 | GND |
 | VCC（VDD） | 螢幕電源 | 5V |
-| V0 | 對比度（字的深淺） | 旋鈕中間腳（旋鈕兩側接 5V、GND）；Tinkercad 也可直接接 GND |
+| V0 | 對比度（字的深淺） | GND（最深）；或接旋鈕中間腳（技巧 2） |
 | RS | 訊號線 ① | 數位腳 |
 | RW | 讀寫切換 | **GND**（我們只寫不讀） |
 | E | 訊號線 ② | 數位腳 |
 | DB0～DB3 | 不使用 | **不接** |
 | DB4、DB5、DB6、DB7 | 訊號線 ③～⑥ | 數位腳 |
-| LED+（A） | 背光正極 | 5V（真實硬體建議串 220Ω） |
+| LED+（A） | 背光正極 | 5V（或接燈的腳位，技巧 3） |
 | LED−（K） | 背光負極 | GND |
 
 > ⚠️ **6 條訊號線（RS、E、DB4～DB7）接一般腳就可以**，不需要 `~` 腳；不夠的話也可以借 A 腳。
@@ -160,14 +148,43 @@ LCD 上每隻腳都有標示名稱，照下表接：
 
 ### 程式裡的「顯示函式」
 
-本週所有程式都附上 `showLine()`，你**不需要修改它**，只要知道怎麼用：
+本週所有模板都附上 `showLine()`，你**不需要修改它**，只要知道它會在指定的那一行顯示文字，並自動補空白、蓋掉舊字、切掉超過 16 格的部分：
 
 ```cpp
-showLine(0, "TEMP: 4.2 C");     // 在第 0 行（上面）顯示這段字
-showLine(1, "STATUS: OK");      // 在第 1 行（下面）顯示這段字
+showLine(0, "TEMP: 4.2 C");     // 在第 0 行（上面）顯示
+showLine(1, "STATUS: OK");      // 在第 1 行（下面）顯示
 ```
 
-它會自動在後面補空白，把舊的字蓋掉，避免畫面殘留。超過 16 個字的部分會被切掉。
+本週模板的**腳位區**都有同一段 LCD 設定：
+
+```cpp
+bool useI2C = false;                // 用 I2C 版改成 true（自動使用 A4、A5）
+int lcdRS = ?, lcdE = ?, lcdD4 = ?, lcdD5 = ?, lcdD6 = ?, lcdD7 = ?;   // 平行版 6 隻腳；I2C 版全部填 -1
+```
+
+---
+
+## 本週配線新技巧
+
+### 技巧 1：先算腳位，再選 LCD 版本
+
+```
+其他元件要用的一般腳 ＋ 6（平行版）≤ 可用腳位？
+   ├─ 是 → 平行版（還保留 A4、A5 可以借）
+   └─ 否 → I2C 版（只佔 A4、A5）
+```
+
+> 💡 Arduino Uno 可用腳位：Pin 2～13（12 隻）＋ A0～A5（6 隻）＝ 18 隻。平行版的 6 條訊號線也可以借 A 腳。
+
+### 技巧 2：字太淡或太深 → V0 接旋鈕（平行版）
+
+把 V0 從 GND 改接到一顆旋鈕的中間腳（旋鈕兩側接 5V、GND），轉旋鈕就能調字的深淺。**程式一個字都不用改**——這顆旋鈕不接 Arduino。
+
+### 技巧 3：背光跟著燈走（平行版）
+
+LCD 的 LED+ 平常接 5V（背光一直亮）。如果客戶要「營業中燈亮時背光才亮」，把 LED+ 改接到**那顆燈的腳位**（串一顆 220Ω），背光就會和那顆燈同步亮滅——**不用改程式**。
+
+> ⚠️ 這是 Tinkercad 模擬可以做的技巧；真實硬體的背光比較耗電，腳位可能推不動，要加電晶體。
 
 ---
 
@@ -179,11 +196,20 @@ LCD 只有 32 格，比一則簡訊還短。**看板設計的關鍵不是「能�
 | --- | --- | --- |
 | ① 最重要的放第 0 行 | 現場人員第一眼看上面 | 溫度、目前號碼、異常訊息 |
 | ② 用縮寫，但要一致 | 16 格很擠，要省字 | `TEMP`、`QTY`、`AVL`（Available） |
-| ③ 異常要搶眼 | 異常時整行換成大寫警示 | `!! ALARM !!` |
+| ③ 異常要搶眼 | 異常時整行換成大寫警示 | `!! TOO HOT !!` |
 | ④ 單位要寫 | 數字沒有單位等於沒說 | `4.2 C`、`35 cm`、`12 pcs` |
 | ⑤ 太多就分頁 | 用按鈕切換，每頁一個主題 | 第 1 頁產量、第 2 頁稼動率 |
 
-> 🏭 **看板管理（Visual Management）**：豐田生產系統中，看板讓「異常一眼可見」。好的看板讓現場人員**不用問、不用算**，就知道現在該做什麼。
+> 🏭 **目視管理（Visual Management）**：豐田生產系統中，看板讓「異常一眼可見」。好的看板讓現場人員**不用問、不用算**，就知道現在該做什麼。
+
+每個關卡都要畫**看板草圖**（2 行 × 16 格），填好再接線：
+
+```
+┌────────────────┐
+│                │  ← 第 0 行：最重要的資訊
+│                │  ← 第 1 行：補充或異常訊息
+└────────────────┘
+```
 
 ---
 
@@ -194,10 +220,10 @@ LCD 只有 32 格，比一則簡訊還短。**看板設計的關鍵不是「能�
 | ① **先算腳位，再選 LCD 版本** | 平行版 6 隻、I2C 版 2 隻（A4、A5） |
 | ② **平行版：RW 接 GND、DB0～DB3 不接** | 只有 RS、E、DB4～DB7 接 Arduino |
 | ③ LCD 訊號線接一般腳就好 | 不要佔 `~` 腳 |
-| ④ 用 I2C 版時，A4、A5 不能再借來接其他元件 | |
-| ⑤ 有伺服，9、10 不能調速調光；有蜂鳴器，3、11 不能 | 兩者都有時只剩 5、6 |
-| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | |
-| ⑦ Pin 0、1 先不要用；腳位不夠時借 A 腳 | |
+| ④ 用 I2C 版時，A4、A5 不能再借來接其他元件 | 旋鈕、TMP36、光敏電阻只剩 A0～A3 |
+| ⑤ 字太淡 → V0 接旋鈕；背光跟燈 → LED+ 接燈的腳位 | 平行版限定，不用改程式 |
+| ⑥ 有伺服，9、10 不能調；有蜂鳴器，3、11 不能調 | 兩者都有時只剩 5、6 |
+| ⑦ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | LCD、HC-SR04、蜂鳴器、旋鈕、TMP36 不用 |
 
 ---
 
@@ -249,7 +275,7 @@ void loop() {
 }
 ```
 
-**檢查標準**：第 0 行出現文字、第 1 行數字持續增加。如果畫面全黑或全白方塊，先檢查電源、V0、RW（平行版）。
+**檢查標準**：第 0 行出現文字、第 1 行數字持續增加。如果畫面全黑或全白方塊，先檢查電源、V0、RW（平行版）；出現亂碼，檢查 DB4～DB7 有沒有接錯順序。
 
 ### 🔧 其他工具（沿用前幾週）
 
@@ -261,308 +287,499 @@ void loop() {
 | 超音波測距檢查器 | 檢查 HC-SR04 | 第 9 週 |
 | 馬達測試器 | 檢查 L293D 與馬達 | 第 10 週 |
 
-> 📌 **每個專案的固定流程**
-> 1. **Step 0**：讀完情境，先算腳位、選 LCD 版本，再畫出**看板版面草圖**（2 行 × 16 格）
-> 2. 先只接 LCD，用 LCD 測試器確認有字
-> 3. 照 Step 1 → 2 → 3 逐步接線，每完成一步就把對應的功能開關改成 `true`
+---
+
+## 關卡怎麼玩：五個固定環節
+
+| 環節 | 你要做什麼 | 產出 |
+| --- | --- | --- |
+| 🃏 **① 抽客戶限制卡** | 依座號尾數找到你的限制卡 | 圈出你的限制卡 |
+| ✏️ **② 接線前決策題** | **先算腳位、選 LCD 版本**，畫出**看板草圖**，填好**腳位規劃表** | 決策題答案＋草圖＋規劃表 |
+| 🔌 **③ 接線任務** | 照 Step 1 → 2 → 3 接線，每一步都用工具檢查 | 每一步的檢查截圖 |
+| 💻 **④ 套用程式模板** | 只改「腳位區」和「參數區」，再把功能開關逐一打開 | 可運作的 Tinkercad 檔案 |
+| 🔄 **⑤ 配線變化挑戰** | **程式一個字都不能改**，只靠改線完成客戶的臨時需求 | 修改後的截圖＋說明 |
+
+| 座號尾數 | 抽到 |
+| --- | --- |
+| 1、4、7 | 限制卡 A |
+| 2、5、8 | 限制卡 B |
+| 3、6、9、0 | 限制卡 C |
 
 ---
 
-## 專案一：會議室門口狀態牌
+## 關卡 1：會議室門口狀態牌（模板 T25）
 
-⭐ **難度**：第一次接 LCD，再逐步加按鈕與燈號
+⭐ **難度**：LCD ＋ 按鈕，再逐步加紅綠燈與超時提醒
 
-**客戶需求**：共享辦公室每間會議室門口放一塊狀態牌。平常顯示會議室名稱和「可預約」；有人開會時，按一下按鈕切換成「使用中」，並顯示**已經使用了多久**；會議結束再按一下恢復。門口另有紅綠燈，讓走廊上的人遠遠就看得到。
+### 📖 情境
 
-### Step 0：腳位規劃與看板草圖
+共享辦公室每間會議室門口放一塊狀態牌。平常顯示會議室名稱和「可預約」；有人開會時，按一下按鈕切換成「使用中」，並顯示**已經使用了多久**；會議結束再按一下恢復。門口有紅綠燈讓走廊上的人遠遠就看得到。會議超過預約時間（模擬用 **60 秒**）時，看板顯示 `TIME UP`，蜂鳴器每 5 秒提醒一次。
+
+### 🎯 本關配線學習目標
+
+- 第一次接 LCD：平行版 12 條線或 I2C 版 4 條線
+- 依限制卡判斷版本與腳位
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：平行版 LCD；會議室名稱 `ROOM A` |
+| **B** | 客戶指定 **I2C 版** LCD；**會議室裡面、走廊外面各一組紅綠燈**，只能用 2 隻腳；名稱 `ROOM B` |
+| **C** | 平行版 LCD；**Pin 2～5** 已被門禁系統佔用；名稱 `BOARD RM` |
+
+### ✏️ ② 接線前決策題
+
+1. 平行版 LCD 的 16 隻腳中，哪幾隻接 Arduino？哪幾隻接 5V、GND？哪幾隻不接？
+2. 本關一共要幾隻 Arduino 腳位？（LCD、按鈕、紅燈、綠燈、蜂鳴器）
+3. 限制卡 B：用 I2C 版時，腳位區的 6 隻平行腳要填什麼？4 顆燈怎麼接？
+4. 限制卡 C：扣掉 Pin 2～5，一般腳還剩幾隻？平行版放得下嗎？不夠要怎麼辦？
+5. 畫出「可預約」「使用中」「超時」三種畫面的看板草圖。
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
-| LCD RS、E、DB4、DB5、DB6、DB7 | |
-| 使用中切換鈕 | |
-| 紅燈（使用中）、綠燈（可預約） | |
-| **合計用了幾隻？還剩幾隻？** | |
+| LCD（平行版 RS、E、D4～D7／I2C 版 A4、A5） | |
+| 切換鈕 | |
+| 綠燈（可預約）／紅燈（使用中） | |
+| 蜂鳴器 | |
 
-**看板草圖**（填入你預期的畫面）：
+### 🔌 ③ 接線任務
 
-```
-可預約時：            使用中時：
-┌────────────────┐   ┌────────────────┐
-│                │   │                │
-│                │   │                │
-└────────────────┘   └────────────────┘
-```
+**Step 1：LCD＋切換鈕**
 
-### 逐步接線
+1. 平行版：照接法表接 12 條線（V0 先接 GND）；I2C 版：接 4 條線。
+2. 切換鈕配 10kΩ。
+3. ✅ 檢查：**工具 1 或工具 2**，確認有字。
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 平行版 LCD | 顯示會議室名稱與 `Available` | （不用改） |
-| Step 2 | ＋1 顆按鈕 | 按一下變 `IN USE` 並計時，再按恢復 | `useButton = true` |
-| Step 3 | ＋紅燈＋綠燈 | 可預約亮綠、使用中亮紅 | `useLights = true` |
+**Step 2：紅綠燈**
 
-### 程式（只改設定區）
+1. 綠燈、紅燈各串 220Ω（限制卡 B：另一組接在同樣的兩隻腳，每顆各串 220Ω）。
+2. ✅ 檢查：接線驗證器。
+
+**Step 3：蜂鳴器**
+
+1. 接好蜂鳴器。
+2. ✅ 檢查：蜂鳴器測試器。
+
+### 💻 ④ 套用程式模板 T25
 
 ```cpp
+// ===== 程式模板 T25：狀態牌 =====
 #include <LiquidCrystal.h>
+#include <Adafruit_LiquidCrystal.h>
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int btnToggle = ?;                  // 使用中切換鈕
-int ledRed = ?, ledGreen = ?;       // 紅燈、綠燈
-String roomName = "Room A-301";     // 會議室名稱（英文，16 字以內）
-bool useButton = false;             // Step 2 接好後改成 true
-bool useLights = false;             // Step 3 接好後改成 true
-// ============================
+// ----- 腳位區（沒接的填 -1）-----
+bool useI2C = false;                // 用 I2C 版改成 true（自動使用 A4、A5）
+int lcdRS = ?, lcdE = ?, lcdD4 = ?, lcdD5 = ?, lcdD6 = ?, lcdD7 = ?;   // 平行版；I2C 版全部填 -1
+int btnToggle = ?;                  // 切換鈕
+int ledFree = ?;                    // 綠燈（可預約）
+int ledBusy = ?;                    // 紅燈（使用中）
+int pinBuzzer = ?;                  // 蜂鳴器
 
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-bool inUse = false;
-unsigned long startTime = 0;
-int lastButton = LOW;
+// ----- 參數區（文字只能用英文、數字，最多 16 格）-----
+String roomName = "ROOM A";         // 第 0 行顯示的名稱
+String freeText = "AVAILABLE";      // 可預約時第 1 行
+String busyText = "IN USE";         // 使用中時第 0 行後面的字
+int limitSec  = 60;                 // 使用超過幾秒算超時
+int remindGap = 5;                  // 超時後每隔幾秒提醒一次
+int remindTone = 1000;
+
+// ----- 功能開關 -----
+bool useLights   = false;           // Step 2：紅綠燈
+bool useReminder = false;           // Step 3：超時提醒
+
+// ===== 以下不用改 =====
+LiquidCrystal* lcdP = 0;
+Adafruit_LiquidCrystal* lcdI = 0;
+bool busy = false;
+unsigned long startMs = 0, lastRemind = 0;
+int lastBtn = LOW, meetings = 0;
+
+void lcdStart() {
+  if (useI2C) { lcdI = new Adafruit_LiquidCrystal(0); lcdI->begin(16, 2); lcdI->setBacklight(1); }
+  else        { lcdP = new LiquidCrystal(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7); lcdP->begin(16, 2); }
+}
 
 void showLine(int row, String text) {
   while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
+  text = text.substring(0, 16);
+  if (useI2C) { lcdI->setCursor(0, row); lcdI->print(text); }
+  else        { lcdP->setCursor(0, row); lcdP->print(text); }
 }
 
-String twoDigits(int n) {
-  return (n < 10) ? "0" + String(n) : String(n);
+String mmss(unsigned long ms) {
+  unsigned long s = ms / 1000;
+  String sec = (s % 60 < 10) ? "0" + String(s % 60) : String(s % 60);
+  return String(s / 60) + ":" + sec;
 }
 
 void setup() {
-  lcd.begin(16, 2);
+  lcdStart();
   pinMode(btnToggle, INPUT);
-  pinMode(ledRed, OUTPUT);
-  pinMode(ledGreen, OUTPUT);
+  if (ledFree >= 0) pinMode(ledFree, OUTPUT);
+  if (ledBusy >= 0) pinMode(ledBusy, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  if (useButton) {
-    int now = digitalRead(btnToggle);
-    if (now == HIGH && lastButton == LOW) {
-      delay(50);
-      inUse = !inUse;
-      startTime = millis();
-    }
-    lastButton = now;
+  int now = digitalRead(btnToggle);
+  if (now == HIGH && lastBtn == LOW) {
+    delay(50);
+    busy = !busy;
+    if (busy) { startMs = millis(); meetings++; }
+    Serial.println(busy ? "Meeting START" : "Meeting END");
   }
+  lastBtn = now;
 
-  showLine(0, roomName);
-  if (inUse) {
-    unsigned long sec = (millis() - startTime) / 1000;
-    showLine(1, "IN USE  " + twoDigits(sec / 60) + ":" + twoDigits(sec % 60));
+  if (busy) {
+    unsigned long used = millis() - startMs;
+    bool over = useReminder && used / 1000 >= (unsigned long)limitSec;
+    showLine(0, roomName + " " + busyText);
+    showLine(1, over ? "TIME UP! " + mmss(used) : "TIME " + mmss(used));
+    if (over && pinBuzzer >= 0 && millis() - lastRemind >= (unsigned long)remindGap * 1000) {
+      tone(pinBuzzer, remindTone, 200);
+      lastRemind = millis();
+    }
   } else {
-    showLine(1, "Available");
+    showLine(0, roomName);
+    showLine(1, freeText);
   }
 
   if (useLights) {
-    digitalWrite(ledRed,   inUse ? HIGH : LOW);
-    digitalWrite(ledGreen, inUse ? LOW : HIGH);
+    if (ledFree >= 0) digitalWrite(ledFree, busy ? LOW : HIGH);
+    if (ledBusy >= 0) digitalWrite(ledBusy, busy ? HIGH : LOW);
+  }
+  delay(100);
+}
+```
+
+**本關要改的地方**：
+
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表；限制卡 B 的 `useI2C = true`、6 隻平行腳填 `-1` |
+| 參數區 | `roomName` 依限制卡；其他用預設值 |
+| 功能開關 | Step 2 → `useLights = true`；Step 3 → `useReminder = true` |
+
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
+
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「看板的字太淡，要能調深淺」（限制卡 B 的同學：改成「會議室裡面的紅綠燈拆掉」） | （提示：技巧 2） |
+| 「沒人開會時看板太亮很耗電，背光只要開會時才亮」（限制卡 B 的同學：說明為什麼 I2C 版做不到） | （提示：技巧 3） |
+| 「看板出現亂碼」——老師會動手腳，找出來並修好 | |
+
+### 💼 情境思考
+
+1. 有人開完會忘了按按鈕，看板一直顯示「使用中」。你會建議用什麼感測器自動判斷會議室有沒有人？要裝在哪裡？
+2. Serial Monitor 記錄了每次會議的開始、結束。這些資料對辦公室管理者有什麼用？（提示：會議室使用率、要不要多租一間）
+
+### ✅ 關卡 1 驗收
+
+- [ ] LCD 正確顯示會議室名稱與「可預約」
+- [ ] 按按鈕切換使用中，使用時間每秒增加；再按恢復
+- [ ] 紅綠燈正確（限制卡 B：兩組同步）
+- [ ] 超過 60 秒顯示 `TIME UP`，每 5 秒提醒一次
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
+
+---
+
+## 關卡 2：藥品冷藏櫃溫度看板（模板 T26）
+
+⭐⭐ **難度**：LCD ＋ TMP36 ＋ 歸零鈕 ＋ 警示燈 ＋ 蜂鳴器
+
+### 📖 情境
+
+第 6 週的藥品冷藏櫃（2～8°C）升級版。藥局希望看板上除了即時溫度，還要顯示**今天的最高溫和最低溫**（衛生稽查時要看）。藥師每天早上按一下「歸零鈕」重新記錄。溫度超出範圍時，看板第 1 行改成警示訊息，蜂鳴器和警示燈同時提醒。
+
+### 🎯 本關配線學習目標
+
+- TMP36 和 I2C 版 LCD 搶 A 腳時，怎麼分配
+- 依限制卡練習平行版借 A 腳
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：藥品冷藏櫃 **2～8°C**，平行版 LCD |
+| **B** | **疫苗冷凍櫃 −25～−15°C**，客戶指定 **I2C 版** LCD |
+| **C** | 藥品冷藏櫃 2～8°C，平行版 LCD；警示燈**櫃上、藥師桌各一顆**（只能用 1 隻腳）；歸零鈕必須接 **A3**；**Pin 13** 已壞掉不能用 |
+
+### ✏️ ② 接線前決策題
+
+1. TMP36 平面朝自己，三隻腳各接哪裡？要接 A 腳的哪一隻？
+2. 限制卡 B：用 I2C 版時，A 腳還剩哪幾隻可以接 TMP36？
+3. 限制卡 B：溫度是負數，TMP36 量得到嗎？看板上的 `-20.5 C` 要佔幾格？
+4. 限制卡 C：歸零鈕接在 A3，需要 10kΩ 嗎？
+5. 畫出「正常」「太熱」「太冷」三種畫面的看板草圖。
+
+**腳位規劃表**：
+
+| 元件 | 腳位 |
+| --- | --- |
+| LCD | |
+| TMP36 | |
+| 歸零鈕 | |
+| 警示燈（C：兩顆共用） | |
+| 蜂鳴器 | |
+
+### 🔌 ③ 接線任務
+
+**Step 1：LCD＋TMP36**
+
+1. 接好 LCD；TMP36 中間腳接 A 腳。
+2. ✅ 檢查：LCD 測試器、溫度讀值檢查器。
+
+**Step 2：歸零鈕**
+
+1. 歸零鈕配 10kΩ。
+2. ✅ 檢查：按下時用 Serial Monitor 確認（Step 2 開關打開後會印出 `MAX/MIN reset`）。
+
+**Step 3：警示燈＋蜂鳴器**
+
+1. 警示燈串 220Ω（限制卡 C：兩顆共腳）；接好蜂鳴器。
+2. ✅ 檢查：接線驗證器、蜂鳴器測試器。
+
+### 💻 ④ 套用程式模板 T26
+
+```cpp
+// ===== 程式模板 T26：溫度看板 =====
+#include <LiquidCrystal.h>
+#include <Adafruit_LiquidCrystal.h>
+
+// ----- 腳位區（沒接的填 -1）-----
+bool useI2C = false;                // 用 I2C 版改成 true（自動使用 A4、A5）
+int lcdRS = ?, lcdE = ?, lcdD4 = ?, lcdD5 = ?, lcdD6 = ?, lcdD7 = ?;   // 平行版；I2C 版全部填 -1
+int pinTemp  = A0;                  // TMP36
+int btnReset = ?;                   // 歸零鈕
+int ledAlarm = ?;                   // 警示燈
+int pinBuzzer = ?;                  // 蜂鳴器
+
+// ----- 參數區 -----
+float lowLine  = 2.0;               // 低於這個溫度算太冷
+float highLine = 8.0;               // 高於這個溫度算太熱
+String placeName = "FRIDGE";        // 第 0 行名稱（建議 8 格以內）
+int beepGap  = 2000;                // 異常時每隔幾毫秒嗶一次
+int beepTone = 2000;
+
+// ----- 功能開關 -----
+bool useMinMax = false;             // Step 2：最高最低溫＋歸零鈕
+bool useAlarm  = false;             // Step 3：警示燈＋蜂鳴器
+
+// ===== 以下不用改 =====
+LiquidCrystal* lcdP = 0;
+Adafruit_LiquidCrystal* lcdI = 0;
+float tMax = -99, tMin = 199;
+int lastBtn = LOW;
+unsigned long lastBeep = 0;
+
+void lcdStart() {
+  if (useI2C) { lcdI = new Adafruit_LiquidCrystal(0); lcdI->begin(16, 2); lcdI->setBacklight(1); }
+  else        { lcdP = new LiquidCrystal(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7); lcdP->begin(16, 2); }
+}
+
+void showLine(int row, String text) {
+  while (text.length() < 16) text += " ";
+  text = text.substring(0, 16);
+  if (useI2C) { lcdI->setCursor(0, row); lcdI->print(text); }
+  else        { lcdP->setCursor(0, row); lcdP->print(text); }
+}
+
+float readC(int pin) {
+  return (analogRead(pin) * 5.0 / 1023.0 - 0.5) * 100.0;
+}
+
+void setup() {
+  lcdStart();
+  if (btnReset >= 0) pinMode(btnReset, INPUT);
+  if (ledAlarm >= 0) pinMode(ledAlarm, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  float t = readC(pinTemp);
+  if (t > tMax) tMax = t;
+  if (t < tMin) tMin = t;
+
+  if (useMinMax && btnReset >= 0) {
+    int now = digitalRead(btnReset);
+    if (now == HIGH && lastBtn == LOW) {
+      delay(50);
+      tMax = t;
+      tMin = t;
+      Serial.println("MAX/MIN reset");
+    }
+    lastBtn = now;
+  }
+
+  int state = 0;                                           // 0 正常、1 太熱、2 太冷
+  if (t > highLine)     state = 1;
+  else if (t < lowLine) state = 2;
+
+  showLine(0, placeName + " " + String(t, 1) + " C");
+  if (useAlarm && state == 1)      showLine(1, "!! TOO HOT !!");
+  else if (useAlarm && state == 2) showLine(1, "!! TOO COLD !!");
+  else if (useMinMax)              showLine(1, "H" + String(tMax, 1) + " L" + String(tMin, 1));
+  else                             showLine(1, "RANGE " + String(lowLine, 0) + "~" + String(highLine, 0) + " C");
+
+  if (useAlarm) {
+    if (ledAlarm >= 0) digitalWrite(ledAlarm, state > 0 ? HIGH : LOW);
+    if (state > 0 && pinBuzzer >= 0 && millis() - lastBeep > (unsigned long)beepGap) {
+      tone(pinBuzzer, beepTone, 300);
+      lastBeep = millis();
+    }
   }
   delay(200);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 平行版 LCD 加上一顆按鈕、兩顆燈，一共用了幾隻腳？這個情境需要改用 I2C 版嗎？
-2. 有了 LCD，為什麼還要紅綠燈？兩者分別給誰看？
-3. 💼 「使用中已經 2 小時 15 分」這個資訊，對辦公室管理者有什麼用？（提示：預約制度、超時收費、空間規劃）
-
-### ✅ 專案一驗收
-
-- [ ] LCD 第 0 行顯示會議室名稱，第 1 行顯示 `Available`
-- [ ] 按一下按鈕變 `IN USE` 並開始計時（分:秒），再按一下恢復
-- [ ] 可預約亮綠、使用中亮紅
-- [ ] 畫面沒有殘留的舊字
-
----
-
-## 專案二：藥品冷藏櫃溫度看板
-
-⭐⭐ **難度**：TMP36 ＋ LCD ＋ 最高／最低溫紀錄 ＋ 警報
-
-**客戶需求**：第 6 週的藥品冷藏櫃（2～8°C）升級版。藥局希望看板上除了即時溫度，還要顯示**今天的最高溫和最低溫**（衛生稽查時要看）。藥師每天早上按一下「歸零鈕」重新記錄。溫度超出範圍時，看板第 1 行改成警示訊息，蜂鳴器和紅燈同時提醒。
-
-### Step 0：腳位規劃與看板草圖
-
-| 元件 | 腳位 |
+| 區塊 | 要做什麼 |
 | --- | --- |
-| LCD（6 隻） | |
-| TMP36 | A0 |
-| 紀錄歸零鈕 | |
-| 蜂鳴器 | |
-| 紅燈（異常） | |
+| 腳位區 | 依腳位規劃表；限制卡 B 的 `useI2C = true`；限制卡 C 的 `btnReset = A3` |
+| 參數區 | `lowLine`、`highLine` 依限制卡；限制卡 B 的 `placeName` 改成 `"FREEZER"` |
+| 功能開關 | Step 2 → `useMinMax = true`；Step 3 → `useAlarm = true` |
 
-**看板草圖**：
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-```
-正常時：               異常時：
-┌────────────────┐   ┌────────────────┐
-│NOW  4.2C  OK   │   │NOW  9.6C       │
-│MAX 6.1 MIN 3.0 │   │!! OUT OF RANGE │
-└────────────────┘   └────────────────┘
-```
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「藥師桌也要一顆警示燈」（限制卡 C 的同學：改成「再加一顆蜂鳴器放在藥師桌」） | |
+| 「夜間背光太刺眼，背光只要在異常時才亮」（限制卡 B 的同學：說明 I2C 版要怎麼辦） | （提示：技巧 3） |
+| 「溫度一直顯示 −50 °C 左右」——老師會動手腳，找出來並修好 | （提示：TMP36 的方向） |
 
-### 逐步接線
+### 💼 情境思考
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 平行版 LCD＋TMP36 | 第 0 行顯示即時溫度與 OK／NG | （不用改） |
-| Step 2 | ＋歸零鈕 | 第 1 行顯示最高／最低溫，按鈕歸零 | `useRecord = true` |
-| Step 3 | ＋蜂鳴器＋紅燈 | 超出範圍時第 1 行改為警示，並響鈴亮燈 | `useAlarm = true` |
+1. 衛生稽查只看「今天最高、最低溫」。如果夜裡停電 2 小時、溫度升到 15°C 又降回來，藥師早上歸零前有看看板，就能發現嗎？歸零後呢？
+2. 「警示燈＋蜂鳴器」和「看板文字」各自適合讓誰看到？為什麼兩種都要？
 
-### 程式（只改設定區）
+### ✅ 關卡 2 驗收
 
-```cpp
-#include <LiquidCrystal.h>
+- [ ] 看板顯示即時溫度，數字有單位
+- [ ] 第 1 行顯示最高、最低溫，按歸零鈕重新記錄
+- [ ] 超出範圍時第 1 行換成警示訊息，警示燈亮、蜂鳴器間歇提醒（限制卡 B：冷凍範圍正確）
+- [ ] 完成 3 題配線變化挑戰
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int pinTemp   = A0;                 // TMP36
-int btnReset  = ?;                  // 紀錄歸零鈕
-int pinBuzzer = ?;                  // 蜂鳴器
-int ledAlarm  = ?;                  // 異常紅燈
-float lowLimit = 2.0, highLimit = 8.0;
-bool useRecord = false;             // Step 2 接好後改成 true
-bool useAlarm  = false;             // Step 3 接好後改成 true
-// ============================
-
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-float maxT = -100, minT = 100;
-int lastButton = LOW;
-
-float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
-}
-
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(btnReset, INPUT);
-  pinMode(ledAlarm, OUTPUT);
-}
-
-void loop() {
-  float t = readC(pinTemp);
-  bool ok = (t >= lowLimit && t <= highLimit);
-
-  if (t > maxT) maxT = t;
-  if (t < minT) minT = t;
-
-  if (useRecord) {
-    int now = digitalRead(btnReset);
-    if (now == HIGH && lastButton == LOW) {
-      delay(50);
-      maxT = t;
-      minT = t;
-    }
-    lastButton = now;
-  }
-
-  showLine(0, "NOW " + String(t, 1) + "C  " + (ok ? "OK" : "NG"));
-
-  if (useAlarm && !ok) {
-    showLine(1, "!! OUT OF RANGE");
-    digitalWrite(ledAlarm, HIGH);
-    tone(pinBuzzer, 1200, 150);
-  } else {
-    digitalWrite(ledAlarm, LOW);
-    if (useRecord) showLine(1, "MAX " + String(maxT, 1) + " MIN " + String(minT, 1));
-    else           showLine(1, "Range 2-8 C");
-  }
-  delay(500);
-}
-```
-
-### 情境思考
-
-1. 第 1 行在異常時被警示訊息「蓋掉」，最高／最低溫暫時看不到。這樣的設計合理嗎？為什麼？
-2. 藥師忘了每天早上按歸零鈕，看板上的「最高溫」會變成什麼意思？你會怎麼提醒藥師？
-3. 💼 衛生稽查員要看的是「過去 30 天每天的最高、最低溫」。這塊看板做得到嗎？還缺什麼？
-
-### ✅ 專案二驗收
-
-- [ ] 第 0 行顯示即時溫度（一位小數）與 OK／NG
-- [ ] 第 1 行顯示最高、最低溫，按歸零鈕後重新記錄
-- [ ] 超出 2～8°C 時第 1 行改為 `!! OUT OF RANGE`，紅燈亮、蜂鳴器響
-- [ ] 看板版面與 Step 0 草圖一致
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案三：產線績效看板
+## 關卡 3：產線績效看板（模板 T27）
 
-⭐⭐⭐ **難度**：HC-SR04 計數 ＋ 旋鈕設目標 ＋ 停機紀錄 ＋ 分頁 → **工管人最熟悉的看板**
+⭐⭐⭐ **難度**：計數 ＋ 旋鈕設目標 ＋ 達標燈 ＋ 停機紀錄 ＋ 分頁 → **工管人最熟悉的看板**
 
-**客戶需求**：食品工廠包裝線的末端看板，讓班長隨時掌握兩個關鍵指標：
+### 📖 情境
 
-- **第 1 頁：產量達成率**——超音波計算通過的產品數，旋鈕設定本班目標產量，顯示「實際／目標」與達成率 %；達標時蜂鳴器播放提示
+食品工廠包裝線末端的看板，讓班長隨時掌握兩個關鍵指標：
+
+- **第 1 頁：產量達成率**——超音波計算通過的產品數，旋鈕設定本班目標產量（10～200），顯示「實際／目標」與達成率 %；達標時達標燈亮、蜂鳴器提示一次
 - **第 2 頁：稼動率**——作業員按「停機鈕」記錄停機開始、再按一次記錄恢復；看板顯示累計運轉時間、停機時間，以及**稼動率＝運轉時間 ÷（運轉＋停機）**
 - 一顆「換頁鈕」切換兩頁
 
 > 🏭 **稼動率（Availability）** 是 OEE（設備綜合效率）的三大指標之一。稼動率低，代表設備常常停下來，要找出停機原因。
 
-### Step 0：腳位規劃與看板草圖
+### 🎯 本關配線學習目標
+
+- 元件變多時，比較平行版與 I2C 版的剩餘腳位
+- 同一個「計數」需求，有感測器和沒感測器的兩種接法
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：超音波計數、旋鈕設目標 |
+| **B** | 產線沒有空間裝超音波，改由作業員每包好一箱按一下「**完成鈕**」計數；目標固定 **120 箱**（不裝旋鈕） |
+| **C** | **Pin 2～4** 已被包裝機佔用；達標燈要**線頭、線尾各一顆**（同步） |
+
+### ✏️ ② 接線前決策題
+
+1. 先算一次：本關（依你的限制卡）需要幾隻一般腳？用平行版夠嗎？用 I2C 版還剩幾隻？你選哪一版？為什麼？
+2. 限制卡 B：模板的計數來源要填哪個腳位？超音波的兩隻腳填什麼？
+3. 限制卡 B：不裝旋鈕，目標要改哪個參數？
+4. 第 1 頁和第 2 頁，哪一頁應該是「預設頁」（開機時顯示）？為什麼？
+5. 畫出兩頁的看板草圖。
+
+**腳位規劃表**：
 
 | 元件 | 腳位 |
 | --- | --- |
-| LCD（6 隻） | |
-| HC-SR04 Trig／Echo | |
-| 目標產量旋鈕 | A0 |
-| 停機鈕、換頁鈕 | |
+| LCD | |
+| HC-SR04 Trig／Echo（B：完成鈕） | |
+| 目標旋鈕 | |
+| 達標燈（C：兩顆共用） | |
 | 蜂鳴器 | |
-| **合計用了幾隻？平行版夠嗎？** | |
+| 停機鈕、換頁鈕 | |
+| **一般腳合計／剩餘** | |
 
-**看板草圖**：
+### 🔌 ③ 接線任務
 
-```
-第 1 頁：              第 2 頁：
-┌────────────────┐   ┌────────────────┐
-│QTY  37/ 50     │   │RUN 12:05 [ON]  │
-│RATE  74%       │   │DOWN 2:10 A 85% │
-└────────────────┘   └────────────────┘
-```
+**Step 1：LCD＋計數來源**
 
-### 逐步接線
+1. 接好 LCD；HC-SR04（或完成鈕配 10kΩ）。
+2. ✅ 檢查：LCD 測試器、超音波測距檢查器。
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | 平行版 LCD＋HC-SR04 | 每有產品通過（擋一下），QTY 加 1 | （不用改） |
-| Step 2 | ＋旋鈕＋蜂鳴器 | 顯示目標與達成率，達標時播放提示 | `useTarget = true` |
-| Step 3 | ＋停機鈕＋換頁鈕 | 記錄停機，第 2 頁顯示稼動率 | `usePages = true` |
+**Step 2：旋鈕＋達標燈＋蜂鳴器**
 
-### 程式（只改設定區）
+1. 旋鈕接 A 腳（限制卡 B 不接）；達標燈串 220Ω；接好蜂鳴器。
+2. ✅ 檢查：類比讀值檢查器、接線驗證器、蜂鳴器測試器。
+
+**Step 3：停機鈕＋換頁鈕**
+
+1. 兩顆按鈕各配 10kΩ。
+
+### 💻 ④ 套用程式模板 T27
 
 ```cpp
+// ===== 程式模板 T27：產線績效看板 =====
 #include <LiquidCrystal.h>
+#include <Adafruit_LiquidCrystal.h>
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int pinTrig = ?, pinEcho = ?;       // HC-SR04（產品通過偵測）
-int pinKnob = A0;                   // 目標產量旋鈕
+// ----- 腳位區（沒接的填 -1）-----
+bool useI2C = false;                // 用 I2C 版改成 true（自動使用 A4、A5）
+int lcdRS = ?, lcdE = ?, lcdD4 = ?, lcdD5 = ?, lcdD6 = ?, lcdD7 = ?;   // 平行版；I2C 版全部填 -1
+int pinTrig = ?, pinEcho = ?;       // 計數用 HC-SR04（不用就填 -1）
+int btnCount = -1;                  // 計數用按鈕（沒有超音波時使用）
+int pinKnob  = A0;                  // 目標產量旋鈕（不用就填 -1）
+int ledDone  = ?;                   // 達標燈
+int pinBuzzer = ?;                  // 蜂鳴器
 int btnDown = ?;                    // 停機鈕
 int btnPage = ?;                    // 換頁鈕
-int pinBuzzer = ?;                  // 蜂鳴器
-float passCM = 10;                  // 小於這個距離算「產品經過」
-bool useTarget = false;             // Step 2 接好後改成 true
-bool usePages  = false;             // Step 3 接好後改成 true
-// ============================
 
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-int qty = 0;
-bool wasPassing = false;
-bool reached = false;
-bool running = true;
+// ----- 參數區 -----
+float passCM = 10;                  // 小於這個距離算「產品經過」
+int fixedTarget = 50;               // 沒接旋鈕時的目標
+int knobMin = 10, knobMax = 200;    // 旋鈕可設的目標範圍
+String unitName = "pcs";            // 單位（英文）
+int doneTone = 1047;
+
+// ----- 功能開關 -----
+bool useTarget = false;             // Step 2：目標、達標燈、蜂鳴器
+bool usePages  = false;             // Step 3：停機鈕、換頁鈕
+
+// ===== 以下不用改 =====
+LiquidCrystal* lcdP = 0;
+Adafruit_LiquidCrystal* lcdI = 0;
+int qty = 0, page = 0;
+bool wasPassing = false, reached = false, running = true;
 unsigned long runMs = 0, downMs = 0, lastTick = 0;
-int page = 0;
-int lastDown = LOW, lastPage = LOW;
+int lastCount = LOW, lastDown = LOW, lastPage = LOW;
+
+void lcdStart() {
+  if (useI2C) { lcdI = new Adafruit_LiquidCrystal(0); lcdI->begin(16, 2); lcdI->setBacklight(1); }
+  else        { lcdP = new LiquidCrystal(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7); lcdP->begin(16, 2); }
+}
+
+void showLine(int row, String text) {
+  while (text.length() < 16) text += " ";
+  text = text.substring(0, 16);
+  if (useI2C) { lcdI->setCursor(0, row); lcdI->print(text); }
+  else        { lcdP->setCursor(0, row); lcdP->print(text); }
+}
 
 float readCM(int trig, int echo) {
   digitalWrite(trig, LOW);  delayMicroseconds(2);
@@ -573,10 +790,13 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
+bool pressed(int pin, int &last) {
+  if (pin < 0) return false;
+  int now = digitalRead(pin);
+  bool edge = (now == HIGH && last == LOW);
+  last = now;
+  if (edge) delay(50);
+  return edge;
 }
 
 String mmss(unsigned long ms) {
@@ -585,21 +805,15 @@ String mmss(unsigned long ms) {
   return String(s / 60) + ":" + sec;
 }
 
-bool pressed(int pin, int &last) {
-  int now = digitalRead(pin);
-  bool edge = (now == HIGH && last == LOW);
-  last = now;
-  if (edge) delay(50);
-  return edge;
-}
-
 void setup() {
-  lcd.begin(16, 2);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
-  pinMode(btnDown, INPUT);
-  pinMode(btnPage, INPUT);
+  lcdStart();
+  if (pinTrig >= 0) { pinMode(pinTrig, OUTPUT); pinMode(pinEcho, INPUT); }
+  if (btnCount >= 0) pinMode(btnCount, INPUT);
+  if (ledDone >= 0)  pinMode(ledDone, OUTPUT);
+  if (btnDown >= 0)  pinMode(btnDown, INPUT);
+  if (btnPage >= 0)  pinMode(btnPage, INPUT);
   lastTick = millis();
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -609,63 +823,96 @@ void loop() {
   else         downMs += nowMs - lastTick;
   lastTick = nowMs;
 
-  // ---- 產品計數（只在運轉中計） ----
-  bool passing = readCM(pinTrig, pinEcho) < passCM;
-  if (passing && !wasPassing && running) qty++;
-  wasPassing = passing;
+  // ---- 計數（只在運轉中計） ----
+  bool hit = false;
+  if (pinTrig >= 0) {
+    bool passing = readCM(pinTrig, pinEcho) < passCM;
+    hit = passing && !wasPassing;
+    wasPassing = passing;
+  } else {
+    hit = pressed(btnCount, lastCount);
+  }
+  if (hit && running) {
+    qty++;
+    Serial.print("QTY: ");
+    Serial.println(qty);
+  }
 
-  int target = map(analogRead(pinKnob), 0, 1023, 10, 200);
-
+  int target = (pinKnob >= 0) ? map(analogRead(pinKnob), 0, 1023, knobMin, knobMax) : fixedTarget;
   if (useTarget && qty >= target && !reached) {
     reached = true;
-    tone(pinBuzzer, 1047, 300);
+    if (pinBuzzer >= 0) tone(pinBuzzer, doneTone, 300);
+    Serial.println("TARGET REACHED");
   }
   if (qty < target) reached = false;
+  if (useTarget && ledDone >= 0) digitalWrite(ledDone, reached ? HIGH : LOW);
 
   if (usePages) {
-    if (pressed(btnDown, lastDown)) running = !running;
+    if (pressed(btnDown, lastDown)) {
+      running = !running;
+      Serial.println(running ? "Line RUNNING" : "Line DOWN");
+    }
     if (pressed(btnPage, lastPage)) page = (page + 1) % 2;
   }
 
   if (page == 0) {
     if (useTarget) {
-      showLine(0, "QTY " + String(qty) + "/" + String(target));
-      showLine(1, "RATE " + String(qty * 100 / target) + "%" + (reached ? "  DONE!" : ""));
+      showLine(0, "QTY " + String(qty) + "/" + String(target) + " " + unitName);
+      showLine(1, "RATE " + String(qty * 100L / target) + "%" + (reached ? "  DONE!" : ""));
     } else {
-      showLine(0, "QTY " + String(qty));
-      showLine(1, "Counting...");
+      showLine(0, "QTY " + String(qty) + " " + unitName);
+      showLine(1, running ? "Counting..." : "LINE DOWN");
     }
   } else {
     unsigned long total = runMs + downMs;
     int avail = (total > 0) ? (int)(runMs * 100 / total) : 100;
-    showLine(0, "RUN " + mmss(runMs) + (running ? " [ON]" : " [DOWN]"));
-    showLine(1, "DOWN " + mmss(downMs) + " A " + String(avail) + "%");
+    showLine(0, "RUN " + mmss(runMs) + (running ? " [ON]" : " [DN]"));
+    showLine(1, "DOWN " + mmss(downMs) + " A" + String(avail) + "%");
   }
   delay(100);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 用你的腳位規劃表說明：平行版 LCD 加上其他元件一共幾隻腳？還剩幾隻？
-2. 第 1 頁和第 2 頁，你覺得哪一頁應該是「預設頁」（開機時顯示的那一頁）？為什麼？
-3. 💼 稼動率 85% 代表什麼？如果你是班長，看到稼動率一直下降，下一步要做什麼？（提示：停機時只按「停機鈕」，看板知道「為什麼停機」嗎？）
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表；限制卡 B 的 `pinTrig`、`pinEcho`、`pinKnob` 填 `-1`，`btnCount` 填完成鈕腳位 |
+| 參數區 | 限制卡 B 的 `fixedTarget = 120`、`unitName = "box"` |
+| 功能開關 | Step 2 → `useTarget = true`；Step 3 → `usePages = true` |
 
-### ✅ 專案三驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] 每擋一次超音波，QTY 只加 1
-- [ ] 旋鈕能改變目標，達成率正確，達標時蜂鳴器提示一次
-- [ ] 停機鈕切換運轉／停機，第 2 頁時間正確累計
-- [ ] 稼動率計算正確（可用計算機驗算）
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「達標時，班長辦公室也要亮燈」（限制卡 C 的同學：改成拆掉線尾那顆） | |
+| 「目標旋鈕往右轉應該是目標**變少**」（限制卡 B 的同學：改成「完成鈕要搬到產線另一側」） | |
+| 「停機鈕按了沒反應，按換頁卻變成停機」——老師會動手腳 | |
+
+### 💼 情境思考
+
+1. 稼動率 85% 代表什麼？如果你是班長，看到稼動率一直下降，下一步要做什麼？（提示：停機時只按「停機鈕」，看板知道「為什麼停機」嗎？）
+2. 限制卡 B 用人工按鈕計數。和超音波自動計數比，資料品質有什麼差別？哪些情境人工計數反而比較好？
+
+### ✅ 關卡 3 驗收
+
+- [ ] 每通過一件產品（或按一次完成鈕），QTY 只加 1；停機中不計數
+- [ ] 目標與達成率正確，達標時達標燈亮、蜂鳴器提示一次
+- [ ] 停機鈕切換運轉／停機，第 2 頁時間與稼動率正確（用計算機驗算）
 - [ ] 換頁鈕能在兩頁間切換
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
-## 專案四：冷鏈倉儲戰情中心
+## 關卡 4：冷鏈倉儲戰情中心（模板 T28）
 
-⭐⭐⭐⭐ **難度**：多感測器 ＋ RGB ＋ 蜂鳴器 ＋ 2 按鈕 ＋ 4 頁看板 → **平行版腳位不夠，改用 I2C 版**
+⭐⭐⭐⭐ **難度**：TMP36 ＋ HC-SR04 ＋ 光敏電阻 ＋ 狀態燈 ＋ 蜂鳴器 ＋ 2 按鈕 ＋ 4 頁看板 → **平行版、I2C 版的腳位大考驗**
 
-**客戶需求**：冷鏈物流倉庫的辦公室要一塊戰情看板，整合四種資訊，用按鈕翻頁：
+### 📖 情境
+
+冷鏈物流倉庫的辦公室要一塊戰情看板，整合四種資訊，用按鈕翻頁：
 
 | 頁面 | 內容 | 資料來源 |
 | --- | --- | --- |
@@ -674,10 +921,23 @@ void loop() {
 | 第 3 頁 | 倉庫照明狀態（日間／夜間） | 光敏電阻 |
 | 第 4 頁 | 異常次數與最近一次異常距今多久 | 系統紀錄 |
 
-- RGB 總狀態燈：正常綠、溫度警戒黃、溫度異常紅
+- 總狀態燈：正常綠、溫度警戒黃、溫度異常紅
 - 溫度異常時，**不論停在哪一頁，看板自動跳到第 1 頁**，蜂鳴器響；值班人員按「確認鈕」停止鳴叫
 
-### Step 0：腳位規劃——平行版還是 I2C 版？（本專案的重頭戲）
+### 🎯 本關配線學習目標
+
+- 完整算一次平行版、I2C 版的腳位帳
+- I2C 版佔用 A4、A5 後，類比感測器只剩 A0～A3
+
+### 🃏 ① 客戶限制卡
+
+| 限制卡 | 現場條件 |
+| --- | --- |
+| **A** | 標準款：自己算腳位、選 LCD 版本 |
+| **B** | 客戶倉庫裡有一批**平行版 LCD 庫存**，指定使用平行版 |
+| **C** | **I2C 版**；狀態燈改用**紅、綠、黃三顆單色燈**；**Pin 2～6** 已被門禁系統佔用 |
+
+### ✏️ ② 接線前決策題
 
 **先算一次平行版：**
 
@@ -685,59 +945,105 @@ void loop() {
 | --- | --- |
 | LCD（平行版） | 6 |
 | HC-SR04 Trig／Echo | 2 |
-| 狀態 RGB | 3 |
+| 狀態燈 R／G／B | 3 |
 | 蜂鳴器 | 1 |
 | 換頁鈕、確認鈕 | 2 |
-| **數位腳合計** | |
+| **一般腳合計** | |
 | TMP36、光敏電阻 | 2（A 腳） |
 | **可用總腳位（Pin 2～13＋A0～A5）** | 18 |
 | **還剩幾隻？** | |
 
 **再算一次 I2C 版**（LCD 改用 A4、A5）：還剩幾隻？
 
-> 🤔 **規劃提示**：平行版「勉強塞得下」，但幾乎沒有擴充空間。客戶明年想加一顆冷凍區溫度計和一扇自動門，哪一個版本放得下？
+1. 限制卡 A：你選哪一版？客戶明年想加一顆冷凍區溫度計和一扇自動門（伺服），哪一版放得下？
+2. 限制卡 B：Pin 2～13 放得下 14 隻嗎？要借哪幾隻 A 腳？
+3. 限制卡 C：扣掉 Pin 2～6 和 A4、A5，剩下的腳夠嗎？三顆單色燈的顏色參數怎麼改？
+4. 狀態燈只用全亮全滅顏色，需要 `~` 腳嗎？
+5. 畫出四頁的看板草圖。
 
-### 逐步接線
+**腳位規劃表**：
 
-| 步驟 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| Step 1 | I2C 版 LCD＋TMP36＋HC-SR04＋換頁鈕 | 第 1、2 頁顯示溫度與出貨數 | （不用改） |
-| Step 2 | ＋光敏電阻＋RGB＋蜂鳴器 | 第 3 頁照明狀態；RGB 狀態燈；異常時跳回第 1 頁並鳴叫 | `useAlarm = true` |
-| Step 3 | ＋確認鈕 | 按確認停止鳴叫；第 4 頁顯示異常紀錄 | `useLog = true` |
+| 元件 | 腳位 |
+| --- | --- |
+| LCD | |
+| TMP36／光敏電阻 | |
+| HC-SR04 Trig／Echo | |
+| 狀態燈 R／G／B（C：紅、綠、黃三顆） | |
+| 蜂鳴器 | |
+| 換頁鈕／確認鈕 | |
+| **剩餘可擴充腳位** | |
 
-### 程式（只改設定區）
+### 🔌 ③ 接線任務
+
+**Step 1：LCD＋TMP36＋HC-SR04＋換頁鈕**
+
+1. 接好 LCD、TMP36、HC-SR04（裝在出貨口）、換頁鈕（配 10kΩ）。
+2. ✅ 檢查：LCD 測試器、溫度讀值檢查器、超音波測距檢查器。
+
+**Step 2：光敏電阻＋狀態燈＋蜂鳴器**
+
+1. 光敏電阻配 10kΩ；狀態燈各串 220Ω；接好蜂鳴器。
+2. ✅ 檢查：類比讀值檢查器（記錄日、夜讀值）、接線驗證器、蜂鳴器測試器。
+
+**Step 3：確認鈕**
+
+1. 確認鈕配 10kΩ。
+
+### 💻 ④ 套用程式模板 T28
 
 ```cpp
+// ===== 程式模板 T28：多頁戰情看板 =====
+#include <LiquidCrystal.h>
 #include <Adafruit_LiquidCrystal.h>
 
-// ===== 設定區：只改這裡 =====
-// LCD 使用 I2C 版：SDA 接 A4、SCL 接 A5（固定，不用填）
-int pinTemp = A0;                   // 冷藏區 TMP36
-int pinLDR  = A1;                   // 倉庫光敏電阻
+// ----- 腳位區（沒接的填 -1）-----
+bool useI2C = false;                // 用 I2C 版改成 true（自動使用 A4、A5）
+int lcdRS = ?, lcdE = ?, lcdD4 = ?, lcdD5 = ?, lcdD6 = ?, lcdD7 = ?;   // 平行版；I2C 版全部填 -1
+int pinTemp = A0;                   // TMP36
+int pinLDR  = A1;                   // 光敏電阻
 int pinTrig = ?, pinEcho = ?;       // 出貨口 HC-SR04
-int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（黃色要調光，避開 3、11）
+int pinR = ?, pinG = ?, pinB = ?;   // 狀態燈（只用全亮全滅顏色）
 int pinBuzzer = ?;                  // 蜂鳴器
 int btnPage = ?;                    // 換頁鈕
 int btnAck  = ?;                    // 確認鈕
-float warnLine = 6.0, dangerLine = 8.0;   // 冷藏區溫度警戒／異常線
-float passCM = 15;                  // 出貨口偵測距離
-int darkLine = 300;                 // 光線低於這個數字算夜間
-bool useAlarm = false;              // Step 2 接好後改成 true
-bool useLog   = false;              // Step 3 接好後改成 true
-// ============================
 
-Adafruit_LiquidCrystal lcd(0);
-int page = 0, pageCount = 3;
-int shipped = 0;
-bool wasPassing = false;
-bool wasDanger = false, acked = false;
-int alarmCount = 0;
-unsigned long lastAlarm = 0;
+// ----- 參數區 -----
+float warnLine  = 6.0;              // 溫度 ≥ 這個值：警戒
+float alarmLine = 8.0;              // 溫度 ≥ 這個值：異常
+float passCM  = 30;                 // 出貨口：小於這個距離算一件
+int darkLine  = 300;                // 光敏電阻低於這個值算夜間
+int colorOK[3]    = { 0, 1, 0 };    // 正常（R, G, B 開關：1 亮、0 滅）
+int colorWarn[3]  = { 1, 1, 0 };    // 警戒
+int colorAlarm[3] = { 1, 0, 0 };    // 異常
+String siteName = "COLD HUB";       // 第 1 頁名稱（建議 8 格以內）
+int alarmTone = 2000;
+
+// ----- 功能開關 -----
+bool useAlarm = false;              // Step 2：照明頁、狀態燈、異常跳頁＋鳴叫
+bool useLog   = false;              // Step 3：確認鈕、異常紀錄頁
+
+// ===== 以下不用改 =====
+LiquidCrystal* lcdP = 0;
+Adafruit_LiquidCrystal* lcdI = 0;
+int page = 0, shipped = 0, alarms = 0, tick = 0;
 int lastPage = LOW, lastAck = LOW;
+bool wasPassing = false, alarmOn = false, acked = false;
+unsigned long lastAlarmMs = 0;
+
+void lcdStart() {
+  if (useI2C) { lcdI = new Adafruit_LiquidCrystal(0); lcdI->begin(16, 2); lcdI->setBacklight(1); }
+  else        { lcdP = new LiquidCrystal(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7); lcdP->begin(16, 2); }
+}
+
+void showLine(int row, String text) {
+  while (text.length() < 16) text += " ";
+  text = text.substring(0, 16);
+  if (useI2C) { lcdI->setCursor(0, row); lcdI->print(text); }
+  else        { lcdP->setCursor(0, row); lcdP->print(text); }
+}
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  return (analogRead(pin) * 5.0 / 1023.0 - 0.5) * 100.0;
 }
 
 float readCM(int trig, int echo) {
@@ -749,19 +1055,8 @@ float readCM(int trig, int echo) {
   return t / 58.0;
 }
 
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setColor(int r, int g, int b) {
-  analogWrite(pinR, r);
-  analogWrite(pinG, g);
-  analogWrite(pinB, b);
-}
-
 bool pressed(int pin, int &last) {
+  if (pin < 0) return false;
   int now = digitalRead(pin);
   bool edge = (now == HIGH && last == LOW);
   last = now;
@@ -769,580 +1064,322 @@ bool pressed(int pin, int &last) {
   return edge;
 }
 
+void setColor(int c[]) {
+  if (pinR >= 0) digitalWrite(pinR, c[0] ? HIGH : LOW);
+  if (pinG >= 0) digitalWrite(pinG, c[1] ? HIGH : LOW);
+  if (pinB >= 0) digitalWrite(pinB, c[2] ? HIGH : LOW);
+}
+
 void setup() {
-  lcd.begin(16, 2);
-  lcd.setBacklight(1);
+  lcdStart();
   pinMode(pinTrig, OUTPUT);
   pinMode(pinEcho, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
+  if (pinR >= 0) pinMode(pinR, OUTPUT);
+  if (pinG >= 0) pinMode(pinG, OUTPUT);
+  if (pinB >= 0) pinMode(pinB, OUTPUT);
   pinMode(btnPage, INPUT);
-  pinMode(btnAck, INPUT);
-  if (useLog) pageCount = 4;
+  if (btnAck >= 0) pinMode(btnAck, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
+  tick++;
   float t = readC(pinTemp);
-  int level = 0;                                   // 0=正常, 1=警戒, 2=異常
-  if (t >= dangerLine)    level = 2;
-  else if (t >= warnLine) level = 1;
+  int light = analogRead(pinLDR);
 
-  // ---- 出貨計數 ----
   bool passing = readCM(pinTrig, pinEcho) < passCM;
   if (passing && !wasPassing) shipped++;
   wasPassing = passing;
 
-  if (pressed(btnPage, lastPage)) page = (page + 1) % pageCount;
+  int level = 0;                                           // 0 正常、1 警戒、2 異常
+  if (t >= alarmLine)     level = 2;
+  else if (t >= warnLine) level = 1;
 
-  // ---- 異常處理 ----
+  int numPages = useLog ? 4 : (useAlarm ? 3 : 2);
+  if (pressed(btnPage, lastPage)) page = (page + 1) % numPages;
+
   if (useAlarm) {
-    bool danger = (level == 2);
-    if (danger && !wasDanger) {                    // 剛變成異常
-      alarmCount++;
-      lastAlarm = millis();
+    if (level == 2 && !alarmOn) {
+      alarmOn = true;
       acked = false;
-      page = 0;                                    // 自動跳回第 1 頁
+      alarms++;
+      lastAlarmMs = millis();
+      Serial.println("TEMP ALARM!");
     }
-    wasDanger = danger;
-
-    if (useLog && pressed(btnAck, lastAck)) acked = true;
-
-    if (level == 2)      setColor(255, 0, 0);
-    else if (level == 1) setColor(255, 180, 0);
-    else                 setColor(0, 255, 0);
-
-    if (danger && !acked) tone(pinBuzzer, 1500, 150);
+    if (level < 2) alarmOn = false;
+    if (useLog && pressed(btnAck, lastAck) && alarmOn) {
+      acked = true;
+      Serial.println("Alarm acknowledged");
+    }
+    if (alarmOn && !acked) {
+      page = 0;                                            // 異常未確認：強制第 1 頁
+      if (tick % 5 == 0 && pinBuzzer >= 0) tone(pinBuzzer, alarmTone, 200);
+    }
+    if (level == 2)      setColor(colorAlarm);
+    else if (level == 1) setColor(colorWarn);
+    else                 setColor(colorOK);
   }
 
-  // ---- 看板內容 ----
   if (page == 0) {
-    showLine(0, "COLD " + String(t, 1) + " C");
-    if (level == 2)      showLine(1, acked ? "ALARM (ACKED)" : "!! TEMP ALARM !!");
-    else if (level == 1) showLine(1, "WARNING");
-    else                 showLine(1, "STATUS OK");
+    showLine(0, siteName + " " + String(t, 1) + "C");
+    if (level == 2)      showLine(1, (alarmOn && !acked) ? "!! ALARM !!" : "ALARM (ACKED)");
+    else if (level == 1) showLine(1, "STATUS: WARNING");
+    else                 showLine(1, "STATUS: OK");
   } else if (page == 1) {
     showLine(0, "SHIPPED TODAY");
     showLine(1, String(shipped) + " pcs");
   } else if (page == 2) {
-    bool night = analogRead(pinLDR) < darkLine;
-    showLine(0, "WAREHOUSE LIGHT");
-    showLine(1, night ? "NIGHT MODE" : "DAY MODE");
+    showLine(0, "LIGHT " + String(light));
+    showLine(1, light < darkLine ? "MODE: NIGHT" : "MODE: DAY");
   } else {
-    showLine(0, "ALARMS: " + String(alarmCount));
-    if (alarmCount == 0) showLine(1, "No alarm today");
-    else showLine(1, "Last " + String((millis() - lastAlarm) / 60000) + " min ago");
+    showLine(0, "ALARMS: " + String(alarms));
+    if (alarms == 0) showLine(1, "LAST: --");
+    else             showLine(1, "LAST: " + String((millis() - lastAlarmMs) / 1000) + " s ago");
   }
-  delay(200);
+  delay(100);
 }
 ```
 
-### 情境思考
+**本關要改的地方**：
 
-1. 用你的兩張腳位計算表說明：為什麼選 I2C 版？用 I2C 版之後，還能借哪些 A 腳？
-2. 「異常時自動跳回第 1 頁」這個設計，解決了什麼問題？如果沒有這個設計，會發生什麼事？
-3. 💼 這塊看板放在辦公室，但冷藏區的溫度異常可能發生在半夜沒人的時候。看板管理的極限在哪裡？下一步應該怎麼延伸？（提示：物聯網的「聯網」兩個字）
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 依腳位規劃表；I2C 版 `useI2C = true`、6 隻平行腳填 `-1` |
+| 參數區 | `darkLine` 依類比讀值記錄；限制卡 C 依決策題 3 改三種顏色 |
+| 功能開關 | Step 2 → `useAlarm = true`；Step 3 → `useLog = true` |
 
-### ✅ 專案四驗收
+### 🔄 ⑤ 配線變化挑戰（程式一個字都不能改）
 
-- [ ] I2C 版 LCD 正確顯示，換頁鈕能循環切換所有頁面
-- [ ] 出貨口每擋一次，件數只加 1
-- [ ] RGB 依溫度顯示綠／黃／紅
-- [ ] 溫度異常時看板自動跳回第 1 頁、蜂鳴器響，按確認後停止鳴叫
-- [ ] 第 4 頁正確顯示異常次數與距今時間
-- [ ] 腳位規劃表比較平行版與 I2C 版，並說明選擇理由
+| 客戶臨時要求 | 你要改哪幾條線？ |
+| --- | --- |
+| 「冷藏區門口也要一顆『異常』紅燈，跟狀態燈的紅色同步」 | |
+| 「光敏電阻裝到倉庫外面，結果白天顯示 NIGHT、晚上顯示 DAY」——讓判斷反過來 | （提示：第 5 週技巧 2） |
+| 「換頁鈕和確認鈕的位置要對調」 | |
+
+### 💼 情境思考
+
+1. 異常時「強制跳回第 1 頁」，但值班人員可能正在看第 2 頁的出貨數。這種「打斷」是好設計嗎？什麼情況下應該打斷、什麼情況下不應該？
+2. 第 4 頁的「異常次數」對主管有什麼用？如果一週內異常 15 次，你會建議主管做什麼？（提示：根本原因分析）
+
+### ✅ 關卡 4 驗收
+
+- [ ] 腳位帳正確，平行版／I2C 版的選擇有理由（限制卡 B：借 A 腳正確）
+- [ ] 四頁內容正確，換頁鈕能循環切換
+- [ ] 狀態燈依溫度顯示綠／黃／紅（限制卡 C：三顆單色燈）
+- [ ] 溫度異常時強制跳回第 1 頁並鳴叫；按確認鈕停止鳴叫；第 4 頁紀錄正確
+- [ ] 完成 3 題配線變化挑戰
+
+**驗收同學簽名**：＿＿＿＿＿＿
 
 ---
 
 ## 練習題大補帖：情境配置挑戰
 
-> 🎯 **本區定位**：四個範例專案是「跟著做」，這一區換你「自己規劃」。每一關先**畫看板草圖**、**算腳位決定 LCD 版本**，再動手接線。
+> 🎯 **本區定位**：每一關都是**新的客戶情境**，從 T25～T28 挑一個模板，**先算腳位、選 LCD 版本、畫看板草圖**，再規劃腳位、接線，並填寫**參數修改表**。**不寫新程式**。
 >
-> 📈 **難度安排**：
+> | 關卡 | 情境 | 套用模板 | 元件 | 配線重點 |
+> | --- | --- | --- | --- | --- |
+> | Lv.1 | 百貨公司哺乳室看板 | T25 | LCD＋按鈕＋2 LED | 安靜、改文字 |
+> | Lv.2 | 溫室育苗溫度看板 | T26 | LCD＋TMP36＋按鈕＋LED | 對比度旋鈕、不要聲音 |
+> | Lv.3 | 手工皂包裝線看板 | T27 | LCD＋4 按鈕＋LED＋蜂鳴器 | 人工計數、借 A 腳 |
+> | Lv.4 | 物流揀貨區績效看板 | T27 | LCD＋HC-SR04＋旋鈕＋2 LED＋蜂鳴器＋2 按鈕 | 平行版 vs I2C 版 |
+> | Lv.5 | 生鮮超市冷藏戰情看板 | T28 | 平行版 LCD＋TMP36＋光敏電阻＋HC-SR04＋RGB＋蜂鳴器＋2 按鈕 | **腳位幾乎用完** |
+> | Lv.6 | 顧問提案 | 自選 | 自訂 | 自己設計情境 |
 >
-> | 關卡 | LCD 版本 | 其他元件 | 配線重點 |
-> | --- | --- | --- | --- |
-> | Lv.1 | 平行版 | 按鈕 | 第一次自己接 LCD 12 條線 |
-> | Lv.2 | 平行版 | 2 按鈕＋蜂鳴器 | 看板內容設計 |
-> | Lv.3 | 平行版 | 旋鈕＋按鈕＋L293D 馬達＋蜂鳴器 | LCD＋馬達共存 |
-> | Lv.4 | 平行版或 I2C | 2 個 HC-SR04＋RGB＋旋鈕 | 算腳位、決定版本 |
-> | Lv.5 | 平行版或 I2C | 3 按鈕＋3 LED＋確認鈕＋蜂鳴器＋TMP36 | 腳位極限，比較兩種方案 |
-> | Lv.6 | 自訂 | 自訂 | 顧問提案 |
->
-> 📌 **作答規則**：每一關先畫看板草圖、填腳位規劃表，再接線；接好後先用 LCD 測試器確認有字，最後才上傳程式。程式只需要改「設定區」。
+> 📌 **作答規則**：先畫「看板草圖」，再填「腳位規劃表」「參數修改表」，然後接線；接好後先用工具檢查，最後才上傳程式。Lv.3 之後每關要附**配線設計單**。
 
 ---
 
-### 🟢 Lv.1 店門口跑馬燈招牌
+### 🟢 Lv.1 百貨公司哺乳室看板
 
-**情境**：手搖飲店門口的小招牌，輪流顯示三則訊息（店名、今日推薦、營業時間），每 3 秒換一則；店員按按鈕可以立刻跳到下一則。
+**情境**：百貨公司哺乳室門口的看板。媽媽進去時按一下按鈕，看板顯示「使用中」與已使用時間，門口紅燈亮；離開時再按一下，顯示「歡迎使用」、綠燈亮。**哺乳室要安靜，不能有聲音**，也不需要超時提醒。
 
-**元件**：平行版 LCD＋1 顆按鈕
+**元件**：LCD＋1 顆按鈕＋2 顆單色 LED（紅、綠）
 
-**程式**：
+**套用模板**：T25
 
-```cpp
-#include <LiquidCrystal.h>
+**限制條件**：客戶指定 **I2C 版**。
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int btnNext = ?;                    // 下一則按鈕
-String top[3]    = { "TEA TIME SHOP", "TODAY SPECIAL",  "OPEN HOURS" };
-String bottom[3] = { "Welcome!",      "Mango Green Tea", "10:00 - 22:00" };
-int showTime = 3000;                // 每則顯示幾毫秒
-// ============================
+**參數修改表**（請填寫）：
 
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-int msg = 0;
-unsigned long lastChange = 0;
-int lastButton = LOW;
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `useI2C`、6 隻平行腳 | | | |
+| `pinBuzzer` | `?` | | |
+| `roomName` | `"ROOM A"` | | 16 格以內的英文 |
+| `freeText` | `"AVAILABLE"` | | |
+| `busyText` | `"IN USE"` | | |
+| 功能開關 | | | 哪一個不要打開？ |
 
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(btnNext, INPUT);
-}
-
-void loop() {
-  int now = digitalRead(btnNext);
-  bool next = (now == HIGH && lastButton == LOW);
-  lastButton = now;
-
-  if (next || millis() - lastChange > showTime) {
-    if (next) delay(50);
-    msg = (msg + 1) % 3;
-    lastChange = millis();
-  }
-  showLine(0, top[msg]);
-  showLine(1, bottom[msg]);
-  delay(100);
-}
-```
-
-**情境思考**：
-
-1. 把 `bottom` 的某一則改成超過 16 個字，看板會怎麼顯示？你會怎麼改寫文字？
-2. 💼 招牌每 3 秒換一則，路人走過大概只看得到一則。你會把哪一則排第一？為什麼？
+**情境思考**：看板顯示「使用中 12:30」對門外排隊的人有什麼幫助？有沒有可能造成使用者的壓力？你會怎麼取捨？
 
 ---
 
-### 🟢 Lv.2 診所排隊叫號機
+### 🟢 Lv.2 溫室育苗溫度看板
 
-**情境**：社區診所的叫號系統。病人按「取號鈕」拿號碼；護理師按「叫號鈕」叫下一位，蜂鳴器「叮咚」一聲。看板第 0 行顯示**目前叫到幾號**，第 1 行顯示**還有幾人在等**。沒有人等時按叫號無效。
+**情境**：溫室育苗區適合 **18～28°C**。看板顯示即時溫度、今天最高最低溫；超出範圍時第 1 行警示、警示燈亮。**溫室裡有很多人工作，不要聲音**。溫室裡光線變化大，看板的字要能**調深淺**。
 
-**元件**：平行版 LCD＋2 顆按鈕＋1 顆蜂鳴器
+**元件**：平行版 LCD＋1 顆 TMP36＋1 顆按鈕（歸零）＋1 顆單色 LED＋1 顆旋鈕（調字的深淺）
 
-**程式**：
+**套用模板**：T26
 
-```cpp
-#include <LiquidCrystal.h>
+**你要想的問題**：
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int btnTake = ?;                    // 病人取號鈕
-int btnCall = ?;                    // 護理師叫號鈕
-int pinBuzzer = ?;                  // 蜂鳴器
-// ============================
+- 調字深淺的旋鈕要接 Arduino 嗎？程式要改嗎？
+- 不要聲音，`pinBuzzer` 填什麼？警示燈還會亮嗎？
 
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-int lastTicket = 0;                 // 最後發出的號碼
-int nowServing = 0;                 // 目前叫到的號碼
-int lastTake = LOW, lastCall = LOW;
+**參數修改表**（請填寫）：
 
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| LCD 腳位 | | | |
+| `pinTemp`、`btnReset`、`ledAlarm`、`pinBuzzer` | | | |
+| `lowLine`、`highLine` | 2.0、8.0 | | |
+| `placeName` | `"FRIDGE"` | | |
+| 功能開關 | | | |
 
-String threeDigits(int n) {
-  if (n < 10) return "00" + String(n);
-  if (n < 100) return "0" + String(n);
-  return String(n);
-}
-
-bool pressed(int pin, int &last) {
-  int now = digitalRead(pin);
-  bool edge = (now == HIGH && last == LOW);
-  last = now;
-  if (edge) delay(50);
-  return edge;
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(btnTake, INPUT);
-  pinMode(btnCall, INPUT);
-}
-
-void loop() {
-  if (pressed(btnTake, lastTake)) lastTicket++;
-
-  if (pressed(btnCall, lastCall) && nowServing < lastTicket) {
-    nowServing++;
-    tone(pinBuzzer, 880, 300); delay(350);
-    tone(pinBuzzer, 700, 500); delay(550);
-  }
-
-  showLine(0, "NOW SERVING " + threeDigits(nowServing));
-  showLine(1, "WAITING: " + String(lastTicket - nowServing));
-  delay(100);
-}
-```
-
-**情境思考**：
-
-1. 病人最想知道的是什麼？「目前幾號」還是「還要等多久」？看板能不能顯示「預估等候時間」？需要什麼資料？
-2. 💼 取號後離開的病人（過號）會讓等候人數失真。真實診所怎麼處理過號？這個系統要怎麼改？
+**情境思考**：育苗溫度超出範圍幾分鐘可能沒事，超出幾小時就會影響發芽率。看板只顯示「現在」和「最高最低」，夠嗎？你會建議多記錄什麼？
 
 ---
 
-### 🟡 Lv.3 健身房跑步機面板
+### 🟡 Lv.3 手工皂包裝線看板
 
-**情境**：健身房的跑步機面板。按「開始鈕」啟動，跑帶（直流馬達）**緩啟動**到旋鈕設定的速度（1～12 km/h）。看板顯示速度、運動時間與累計距離。再按一次開始鈕暫停，跑帶緩停止，蜂鳴器提示。
+**情境**：小型手工皂工坊，包裝員每包好一盒按一下「完成鈕」，今天目標固定 **80 盒**。看板第 1 頁顯示「完成／目標」與達成率，達標時達標燈亮、蜂鳴器提示；第 2 頁顯示稼動率（停機鈕記錄休息與換料時間）；一顆換頁鈕。
 
-**元件**：平行版 LCD＋L293D＋直流馬達＋1 顆旋鈕＋1 顆按鈕＋1 顆蜂鳴器
+**元件**：平行版 LCD＋3 顆按鈕（完成、停機、換頁）＋1 顆單色 LED＋1 顆蜂鳴器
 
-**Step 0：腳位規劃**
+**套用模板**：T27
 
-| 問題 | 你的答案 |
+**限制條件**：**Pin 12、13** 被工坊的封口機佔用。
+
+**腳位帳**：
+
+| 項目 | 你的答案 |
 | --- | --- |
-| 跑帶要調速、不用反轉，選哪種 L293D 接法？佔幾隻腳？ | |
-| 有蜂鳴器，EN 要避開哪兩隻腳？ | |
-| LCD 6 隻＋其他元件，一共幾隻？ | |
+| 平行版 LCD＋其他元件，一般腳共要幾隻？ | |
+| 可用的一般腳（扣掉 12、13） | |
+| 要借幾隻 A 腳？借給誰？ | |
 
-**程式**：
+**參數修改表**（請填寫）：
 
-```cpp
-#include <LiquidCrystal.h>
+| 參數 | 模板原本的值 | 改成 | 為什麼 |
+| --- | --- | --- | --- |
+| `pinTrig`、`pinEcho`、`btnCount` | | | |
+| `pinKnob` | `A0` | | |
+| `fixedTarget` | 50 | | |
+| `unitName` | `"pcs"` | | |
+| 其他腳位 | | | |
+| 功能開關 | | | |
 
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int pinEN = ?;                      // L293D EN1（~ 腳，接法 B，避開 3、11）
-int pinKnob  = A0;                  // 速度旋鈕
-int btnStart = ?;                   // 開始／暫停鈕
-int pinBuzzer = ?;                  // 蜂鳴器
-// ============================
-
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-bool running = false;
-int current = 0;                    // 目前油門
-unsigned long runMs = 0, lastTick = 0;
-float distanceKm = 0;
-int lastButton = LOW;
-
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(pinEN, OUTPUT);
-  pinMode(btnStart, INPUT);
-  lastTick = millis();
-}
-
-void loop() {
-  int now = digitalRead(btnStart);
-  if (now == HIGH && lastButton == LOW) {
-    delay(50);
-    running = !running;
-    tone(pinBuzzer, running ? 1200 : 600, 200);
-  }
-  lastButton = now;
-
-  int kmh = map(analogRead(pinKnob), 0, 1023, 1, 12);
-  int target = running ? map(kmh, 1, 12, 80, 255) : 0;
-
-  // 緩啟動／緩停止
-  if (current < target) current = min(current + 5, target);
-  if (current > target) current = max(current - 5, target);
-  analogWrite(pinEN, current);
-
-  unsigned long nowMs = millis();
-  if (running) {
-    runMs += nowMs - lastTick;
-    distanceKm += kmh * (nowMs - lastTick) / 3600000.0;
-  }
-  lastTick = nowMs;
-
-  unsigned long s = runMs / 1000;
-  showLine(0, "SPEED " + String(kmh) + " km/h" + (running ? "" : " ||"));
-  showLine(1, "T " + String(s / 60) + ":" + (s % 60 < 10 ? "0" : "") + String(s % 60) +
-              "  " + String(distanceKm, 2) + "km");
-  delay(50);
-}
-```
-
-**情境思考**：
-
-1. 本關的 LCD、L293D、按鈕、蜂鳴器一共用了幾隻腳？如果要加「心率燈號」（RGB），還放得下嗎？
-2. 💼 健身房想知道「哪個時段使用率最高」。這台跑步機的看板資料可以怎麼幫忙？還缺什麼？
+**情境思考**：包裝員可能忘了按、或多按一次。人工計數的誤差要怎麼發現？（提示：和出貨單、原料用量比對）
 
 ---
 
-### 🟡 Lv.4 停車場剩餘車位看板
+### 🟡 Lv.4 物流揀貨區績效看板
 
-**情境**：第 9 週停車場入口的看板升級版。入口、出口各一顆超音波計算車輛進出；管理員用旋鈕設定總車位。看板第 0 行大大顯示**剩餘車位**，第 1 行顯示「已停／總車位」；RGB 在入口外顯示綠（充足）、黃（剩 3 格以下）、紅（客滿）。
+**情境**：電商倉庫的揀貨區出口，超音波計算揀完的籃子數（**15 cm** 內算一籃），主管用旋鈕設定本班目標（**50～500 籃**）。達標時**揀貨區、主管室各一顆**達標燈亮、蜂鳴器提示。第 2 頁顯示稼動率（停機鈕記錄系統當機時間）。
 
-**元件**：LCD（平行版或 I2C 版，自己決定）＋2 顆 HC-SR04＋1 顆 RGB＋1 顆旋鈕
+**元件**：LCD（平行版或 I2C 版，自己決定）＋1 顆 HC-SR04＋1 顆旋鈕＋2 顆單色 LED＋1 顆蜂鳴器＋2 顆按鈕
 
-**Step 0：腳位規劃（本關重點）**
+**套用模板**：T27
 
-| 元件 | 平行版方案 | I2C 版方案 |
+**限制條件**：**Pin 2、3** 被條碼掃描器佔用。
+
+**你要想的問題**：
+
+- 分別算平行版、I2C 版的腳位帳，兩種都放得下嗎？各還剩幾隻？
+- 客戶下個月想再加一顆「異常燈」和一顆「呼叫主管鈕」，哪一版比較好？
+
+**參數修改表**（請填寫）：
+
+| 參數 | 模板原本的值 | 改成 |
 | --- | --- | --- |
-| LCD | 6 隻 | 2 隻（A4、A5） |
-| 2 顆 HC-SR04 | 4 | 4 |
-| RGB | 3 | 3 |
-| 旋鈕 | 1（A 腳） | 1（A 腳） |
-| **合計** | | |
-| **剩餘可擴充** | | |
-| **你選哪一個？為什麼？** | | |
+| `useI2C` | `false` | |
+| `passCM` | 10 | |
+| `knobMin`、`knobMax` | 10、200 | |
+| `unitName` | `"pcs"` | |
+| 腳位區 | | |
+| 功能開關 | | |
 
-**程式**（以平行版為例；選 I2C 版的同學，把開頭兩行換成工具 2 的寫法，並在 `setup()` 加上 `lcd.setBacklight(1);`）：
-
-```cpp
-#include <LiquidCrystal.h>
-
-// ===== 設定區：只改這裡 =====
-int pinRS = ?, pinE = ?, pinD4 = ?, pinD5 = ?, pinD6 = ?, pinD7 = ?;   // LCD
-int trigIn  = ?, echoIn  = ?;       // 入口 HC-SR04
-int trigOut = ?, echoOut = ?;       // 出口 HC-SR04
-int pinR = ?, pinG = ?, pinB = ?;   // 入口外 RGB
-int pinKnob = A0;                   // 總車位旋鈕
-float carCM = 50;
-// ============================
-
-LiquidCrystal lcd(pinRS, pinE, pinD4, pinD5, pinD6, pinD7);
-int cars = 0;
-bool wasIn = false, wasOut = false;
-
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
-  if (t == 0) return 999;
-  return t / 58.0;
-}
-
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setColor(int r, int g, int b) {
-  digitalWrite(pinR, r);
-  digitalWrite(pinG, g);
-  digitalWrite(pinB, b);
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(trigIn, OUTPUT);  pinMode(echoIn, INPUT);
-  pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT);
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-}
-
-void loop() {
-  int capacity = map(analogRead(pinKnob), 0, 1023, 5, 50);
-
-  bool carIn = readCM(trigIn, echoIn) < carCM;
-  if (carIn && !wasIn && cars < capacity) cars++;
-  wasIn = carIn;
-  delay(30);
-
-  bool carOut = readCM(trigOut, echoOut) < carCM;
-  if (carOut && !wasOut && cars > 0) cars--;
-  wasOut = carOut;
-
-  if (cars > capacity) cars = capacity;
-  int left = capacity - cars;
-
-  if (left == 0) {
-    showLine(0, "   ** FULL **");
-    setColor(HIGH, LOW, LOW);
-  } else {
-    showLine(0, "SPACES LEFT: " + String(left));
-    if (left <= 3) setColor(HIGH, HIGH, LOW);
-    else           setColor(LOW, HIGH, LOW);
-  }
-  showLine(1, "PARKED " + String(cars) + "/" + String(capacity));
-  delay(70);
-}
-```
-
-**情境思考**：
-
-1. 駕駛開車經過入口，大概只有 2 秒看看板。第 0 行的文字設計得夠清楚嗎？你會怎麼改？
-2. 💼 停車場主管想知道「今天總共進出幾台車」。目前的看板做得到嗎？要加什麼？
+**情境思考**：揀貨員知道看板在計數後，可能會為了衝數字把籃子拆小。績效看板會不會造成「指標扭曲」？你會建議怎麼設計指標，避免這種情況？
 
 ---
 
-### 🔴 Lv.5 病房護理站呼叫看板
+### 🔴 Lv.5 生鮮超市冷藏戰情看板
 
-**情境**：醫院病房有三間病房，每間一顆**呼叫鈕**和一顆**呼叫燈**。病人按呼叫鈕後，該房呼叫燈亮起，護理站看板依**先後順序**顯示呼叫：第 0 行顯示「最早的呼叫」與已等待秒數，第 1 行顯示還有幾筆在排隊。護理師處理完按「確認鈕」，清除最早的那一筆。另外顯示護理站的室溫（TMP36）。
+**情境**：生鮮超市後場的冷藏庫戰情看板，四頁內容和關卡 4 相同：冷藏溫度（**警戒 4°C、異常 6°C**）、今日進貨件數（進貨口超音波，**40 cm** 內算一件）、後場照明日夜、異常紀錄。狀態燈用 RGB。溫度異常時強制跳回第 1 頁並鳴叫，按確認鈕停止。
 
-**元件**：LCD＋3 顆呼叫鈕＋3 顆呼叫燈＋1 顆確認鈕＋1 顆蜂鳴器＋1 顆 TMP36
+**元件**：**平行版** LCD＋1 顆 TMP36＋1 顆光敏電阻＋1 顆 HC-SR04＋1 顆 RGB＋1 顆蜂鳴器＋2 顆按鈕
 
-**Step 0：腳位規劃（本關重點）**
+**套用模板**：T28
 
-| 元件 | 平行版方案 | I2C 版方案 |
+**限制條件**：超市只有**平行版** LCD；**Pin 13** 已壞掉不能用。
+
+**Step 0：腳位預算（本關重點）**
+
+| 元件 | 需要幾隻腳 | 腳位 |
 | --- | --- | --- |
-| LCD | 6 | 2（A4、A5） |
-| 3 顆呼叫鈕 | 3 | 3 |
-| 3 顆呼叫燈 | 3 | 3 |
-| 確認鈕 | 1 | 1 |
-| 蜂鳴器 | 1 | 1 |
-| TMP36 | 1（A 腳） | 1（A 腳） |
-| **合計** | | |
-| **需要借幾隻 A 腳？** | | |
-| **你選哪一個？為什麼？** | | |
+| 平行版 LCD | 6 | |
+| HC-SR04 | 2 | |
+| RGB | 3 | |
+| 蜂鳴器 | 1 | |
+| 換頁鈕、確認鈕 | 2 | |
+| TMP36、光敏電阻 | 2（A 腳） | |
+| **可用總腳位（扣掉 Pin 13）** | | |
+| **還剩幾隻？** | | |
 
-> 🤔 平行版需要借 A 腳才塞得下；I2C 版則會佔掉 A4、A5。兩種方案都畫出來，比較哪一種擴充空間比較大。
+**參數修改表**（請填寫）：
 
-**程式**（以 I2C 版為例；選平行版的同學請改用工具 1 的寫法）：
-
-```cpp
-#include <Adafruit_LiquidCrystal.h>
-
-// ===== 設定區：只改這裡 =====
-// LCD 使用 I2C 版：SDA 接 A4、SCL 接 A5
-int btnCall[3] = { ?, ?, ? };       // 101、102、103 呼叫鈕
-int ledCall[3] = { ?, ?, ? };       // 101、102、103 呼叫燈
-int btnAck = ?;                     // 護理師確認鈕
-int pinBuzzer = ?;                  // 蜂鳴器
-int pinTemp = A0;                   // 護理站 TMP36
-String roomName[3] = { "101", "102", "103" };
-// ============================
-
-Adafruit_LiquidCrystal lcd(0);
-int queue[3];                       // 依先後順序排隊的房間編號
-unsigned long callTime[3];          // 各房按下的時間
-int queueLen = 0;
-bool calling[3] = { false, false, false };
-int lastCall[3] = { LOW, LOW, LOW };
-int lastAck = LOW;
-int tick = 0;
-
-float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
-}
-
-void showLine(int row, String text) {
-  while (text.length() < 16) text += " ";
-  lcd.setCursor(0, row);
-  lcd.print(text.substring(0, 16));
-}
-
-void setup() {
-  lcd.begin(16, 2);
-  lcd.setBacklight(1);
-  for (int r = 0; r < 3; r++) {
-    pinMode(btnCall[r], INPUT);
-    pinMode(ledCall[r], OUTPUT);
-  }
-  pinMode(btnAck, INPUT);
-}
-
-void loop() {
-  tick++;
-
-  // ---- 病人呼叫：加入隊伍尾端 ----
-  for (int r = 0; r < 3; r++) {
-    int now = digitalRead(btnCall[r]);
-    if (now == HIGH && lastCall[r] == LOW && !calling[r]) {
-      delay(50);
-      calling[r] = true;
-      callTime[r] = millis();
-      queue[queueLen] = r;
-      queueLen++;
-      tone(pinBuzzer, 1000, 200);
-    }
-    lastCall[r] = now;
-    digitalWrite(ledCall[r], calling[r] ? HIGH : LOW);
-  }
-
-  // ---- 護理師確認：移除隊伍最前面那一筆 ----
-  int now = digitalRead(btnAck);
-  if (now == HIGH && lastAck == LOW && queueLen > 0) {
-    delay(50);
-    calling[queue[0]] = false;
-    for (int i = 0; i < queueLen - 1; i++) queue[i] = queue[i + 1];
-    queueLen--;
-  }
-  lastAck = now;
-
-  // ---- 看板 ----
-  if (queueLen > 0) {
-    int r = queue[0];
-    unsigned long waitSec = (millis() - callTime[r]) / 1000;
-    showLine(0, "CALL " + roomName[r] + "  " + String(waitSec) + "s");
-    showLine(1, "QUEUE " + String(queueLen) + "  " + String(readC(pinTemp), 1) + "C");
-    if (waitSec > 60 && tick % 20 == 0) tone(pinBuzzer, 1500, 150);   // 等太久再提醒
-  } else {
-    showLine(0, "NO CALLS");
-    showLine(1, "ROOM TEMP " + String(readC(pinTemp), 1) + "C");
-  }
-  delay(50);
-}
-```
+| 參數 | 模板原本的值 | 改成 |
+| --- | --- | --- |
+| `warnLine`、`alarmLine` | 6.0、8.0 | |
+| `passCM` | 30 | |
+| `darkLine` | 300 | 依記錄表 |
+| `siteName` | `"COLD HUB"` | |
+| 腳位區（含借用的 A 腳） | | |
+| 功能開關 | | |
 
 **情境思考**：
 
-1. 你最後選平行版還是 I2C 版？用腳位計算表說明理由。
-2. 看板只顯示「最早的呼叫」，而不是「最新的呼叫」。這是什麼排隊原則？醫院一定要用這個原則嗎？有沒有例外？
-3. 💼 「呼叫到確認的等待秒數」是醫院的服務品質指標（回應時間）。如果把每一筆的等待秒數記錄下來，護理長可以做什麼分析？
+1. 附上你的腳位預算表。如果店長要再加一顆「冷藏庫門沒關」的按鈕，還放得下嗎？
+2. 第 2 頁「今日進貨件數」和「今日出貨件數」放在同一塊看板，對庫存管理有什麼幫助？
 
 ---
 
-### 🏆 Lv.6 BOSS 關：物聯網顧問提案
+### 🏆 Lv.6 BOSS 關：顧問提案
 
-**情境**：你的顧問公司接到新客戶。從下面三個案例中**任選一個**，自己完成需求分析、元件選擇、腳位規劃與 Tinkercad 實作。
+**情境**：自己找一個生活或職場情境，**從 T25～T28 選一個模板**，設計一塊現場看板。
 
-> **案例 A：餐廳廚房出餐看板**
-> 外場按按鈕新增訂單（三種餐點各一顆按鈕），廚房看板依順序顯示待出餐的餐點與等待時間；廚師按「出餐鈕」完成一筆。等待超過設定時間（旋鈕調整）時 RGB 轉紅並提醒。
->
-> **案例 B：工廠能源看板**
-> 用旋鈕模擬目前用電量、TMP36 監測機台溫度、光敏電阻判斷照明是否忘了關。看板分頁顯示各項數據，用電超過契約容量時警示，下班後偵測到燈還亮著時提醒。
->
-> **案例 C：自訂情境**
-> 自己找一個需要現場看板的情境（例如：圖書館座位數看板、公車站到站提示、自助洗衣店機台狀態、健身房人數看板）。
+| 情境靈感 | 可能適合的模板 |
+| --- | --- |
+| 自習室座位使用牌 | T25 |
+| 寵物店爬蟲箱溫度看板 | T26 |
+| 社團義賣成交數看板 | T27 |
+| 社區管理室戰情看板 | T28 |
 
 **最低規格**：
 
-- 1 塊 LCD（平行版或 I2C 版，須說明選擇理由）
-- 至少 2 種感測器或輸入元件、1 顆按鈕
-- 總共使用 10 隻以上腳位
-- 至少 2 頁顯示內容，或異常時的自動切換顯示
-- 程式可以從專案一～四或 Lv.1～Lv.5 改寫，說明你是從哪裡改來的、改了哪些設定
+- 至少 1 塊 LCD，並說明**選平行版或 I2C 版的理由**（附兩種版本的腳位帳）
+- 至少用到 8 隻腳位
+- 至少修改模板參數區的 **5 個參數**（含顯示文字）
+- 附**看板草圖**，說明符合哪幾條看板設計原則
+- 自己設計 1 題「配線變化挑戰」並附解答
 
-**繳交內容**：
+**繳交內容**：情境說明、看板草圖、配線設計單、參數修改表、配線變化挑戰與解答、Tinkercad 連結
 
-1. **需求分析**：誰會看這塊看板？他們在什麼情況下看？看多久？（3～5 句）
-2. **看板版面設計**：每一頁的草圖（2 行 × 16 格），以及為什麼這樣排
-3. **腳位規劃表**：平行版、I2C 版兩種方案的腳位計算，以及你的選擇
-4. **Tinkercad 實作**：電路截圖＋LCD 測試器截圖
-5. **KPI 說明**：看板上顯示的數字中，哪一個是最重要的管理指標？管理者看到後會做什麼決策？
+---
 
-**驗收標準**：
+### 📝 配線設計單
 
-- [ ] LCD 接線正確，文字清楚無殘影
-- [ ] 版面符合看板設計原則（重要的在上、有單位、異常搶眼）
-- [ ] LCD 版本選擇合理，腳位規劃表有比較兩種方案
-- [ ] 計數類功能「只在狀態改變的瞬間」計一次
-- [ ] 麵包板依功能分區
+| 項目 | 內容 |
+| --- | --- |
+| 情境名稱 | |
+| 套用模板 | T25／T26／T27／T28 |
+| LCD 版本 | 平行版／I2C 版，理由（附兩種版本的腳位帳） |
+| 看板草圖 | 每一頁的 2 行 × 16 格 |
+| 元件清單 | 元件名稱 × 數量（含 220Ω、10kΩ） |
+| 腳位分配表 | 元件 → 腳位（標註 `~` 腳、借用 A 腳、A4／A5 是否被 I2C 佔用） |
+| 遇到的問題 | 接線過程中出過什麼錯？怎麼修正的？ |
 
 ---
 
@@ -1350,64 +1387,51 @@ void loop() {
 
 | 現象 | 先檢查這裡 | 修正方式 |
 | --- | --- | --- |
-| 畫面全黑、沒有任何東西 | VCC、GND、背光 LED+／LED− 是否接好 | 照接線表重接電源 |
-| 第 0 行出現一排白色方塊，但沒有字 | RW 是否接 GND；RS、E 是否接對；程式腳位順序 | `LiquidCrystal lcd(RS, E, D4, D5, D6, D7)` 順序不能錯 |
-| 有字但看不清楚 | V0（對比度） | 轉動對比度旋鈕，或 V0 直接接 GND 試試 |
-| 出現亂碼 | DB4～DB7 是否接錯順序、是否誤接 DB0～DB3 | 只接 DB4～DB7，順序對照程式 |
-| I2C 版完全沒反應 | SDA 是否接 A4、SCL 是否接 A5；程式是否用 `Adafruit_LiquidCrystal` | 對調檢查，並加上 `setBacklight(1)` |
-| 數字變短後尾巴殘留舊數字 | 是否用 `showLine()` 顯示 | 改用 `showLine()`，它會自動補空白 |
-| 中文顯示成亂碼 | LCD 不支援中文 | 改用英文與縮寫 |
-| I2C 版接好後，A4、A5 上的其他元件失效 | A4、A5 已被 LCD 佔用 | 把其他元件改接別的腳 |
-| 程式無法上傳 | 設定區是否還有 `?` 沒填 | 填完所有腳位 |
+| LCD 全黑或全白方塊、沒有字 | 電源、GND；平行版的 V0、RW 是否接 GND | 對照接法表 |
+| 出現亂碼 | DB4～DB7 順序；腳位區是否和實際接線一致 | 逐條對照 |
+| 平行版完全沒反應 | RS、E 是否接反 | 對照腳位區 |
+| I2C 版沒有字 | SDA、SCL 是否接在 A4、A5；`useI2C` 是否改成 `true` | 修正接線或開關 |
+| 用 I2C 版後，接在 A4 或 A5 的感測器讀值怪怪的 | A4、A5 已被 LCD 佔用 | 感測器改接 A0～A3 |
+| 字只有一半、後面被切掉 | 文字超過 16 格 | 縮短參數區的文字 |
+| 溫度顯示 −50°C 左右或亂跳 | TMP36 方向 | 平面朝自己：左 5V、中 A 腳、右 GND |
+| 程式無法上傳 | 腳位區是否還有 `?` 沒填 | 用到的填腳位，沒接的填 `-1` |
 
 ---
 
 ## 成果繳交與評分
 
-### 範例專案繳交
+### 繳交清單
 
-每個專案各自建立一個 Tinkercad 檔案，命名格式：`W11-專案編號-學號`（例如 `W11-P3-B12345678`）。
+每個關卡、每個練習題各自建立一個 Tinkercad 檔案，命名格式：`W11-關卡或Lv編號-限制卡-學號`。
 
-| 繳交項目 | 專案一 | 專案二 | 專案三 | 專案四 |
-| --- | --- | --- | --- | --- |
-| Tinkercad 分享連結 | ✅ | ✅ | ✅ | ✅ |
-| 看板版面草圖 | ✅ | ✅ | ✅ | ✅ |
-| 腳位規劃表 | ✅ | ✅ | ✅ | ✅（含兩種方案比較） |
-| 完成 Step 3 的電路截圖 | ✅ | ✅ | ✅ | ✅ |
-| 情境思考題作答 | ✅ | ✅ | ✅ | ✅ |
-
-> 🎯 **最低完成標準**：專案一、二完成 Step 3，專案三、四至少完成 Step 2。
-
-### 練習題繳交
-
-| 關卡 | 繳交內容 | 建議定位 |
-| --- | --- | --- |
-| Lv.1～Lv.2 | Tinkercad 連結＋看板草圖＋情境思考題 | 課堂暖身，全班必做 |
-| Lv.3～Lv.4 | ＋腳位規劃表 | 課後作業，必做 |
-| Lv.5 | ＋兩種方案腳位比較＋麵包板擺放截圖 | 選做加分 |
-| Lv.6 BOSS | 完整顧問提案（需求分析、版面設計、腳位規劃、實作、KPI 說明） | 可分組 |
+| 項目 | 繳交內容 |
+| --- | --- |
+| 關卡 1～4 | Tinkercad 連結＋決策題答案（含 LCD 版本選擇）＋看板草圖＋腳位規劃表＋配線變化挑戰說明＋同學驗收簽名 |
+| Lv.1～Lv.2 | Tinkercad 連結＋參數修改表＋情境思考 |
+| Lv.3～Lv.5 | ＋配線設計單 |
+| Lv.6 | 完整顧問提案 |
 
 ### 評分比重建議
 
 | 項目 | 比重 | 說明 |
 | --- | --- | --- |
-| 電路正確性 | 30% | LCD 正確顯示，每個 Step 功能正常 |
-| 腳位規劃與版本選擇 | 20% | 正確計算腳位，LCD 版本選擇有理由 |
-| 看板版面設計 | 20% | 符合看板設計原則，資訊取捨合理 |
-| 情境思考題 | 20% | 尤其是 KPI 與 💼 管理面向論述 |
-| 麵包板擺放 | 10% | LCD 線路整齊，分區清楚 |
+| 腳位帳與 LCD 版本選擇 | 25% | 符合限制卡；兩種版本的腳位帳正確，選擇有理由 |
+| 電路正確性 | 25% | LCD 接線正確，每個 Step 通過工具檢查 |
+| 配線變化挑戰 | 20% | 正確運用對比度旋鈕、背光跟燈、兩燈共腳等技巧 |
+| 看板草圖與參數修改表 | 15% | 版面符合看板設計原則，文字不超過 16 格 |
+| 情境思考 | 15% | 💼 管理面向論述 |
+
+> 🎯 **最低完成標準**：關卡 1～4 全部完成（含配線變化挑戰）、Lv.1～Lv.3 完成。
 
 ### 課堂時間建議（3 節課）
 
 | 時段 | 內容 |
 | --- | --- |
-| 第 1 節前 40 分鐘 | 認識 LCD 兩種版本、看板設計原則、全班一起接平行版並跑 LCD 測試器 |
-| 第 1 節後段 | 專案一 |
-| 第 2 節 | 專案二、專案三（分組進行） |
-| 第 3 節前段 | 專案四（I2C 版） |
-| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，Lv.3 之後帶回家 |
-
-> 💡 **教學建議**：平行版 LCD 有 12 條線，是學生最容易接錯的地方。建議第 1 節全班一起接，確認每個人的 LCD 都顯示 `LCD TEST OK` 之後，再開始專案。專案四再讓學生體驗 I2C 版「4 條線就搞定」的對比。
+| 第 1 節前 40 分鐘 | 認識 LCD 兩種版本、三個新技巧、看板設計原則、LCD 測試器 |
+| 第 1 節後段 | 關卡 1 |
+| 第 2 節 | 關卡 2、關卡 3 |
+| 第 3 節前段 | 關卡 4 |
+| 第 3 節後段 | 練習題 Lv.1～Lv.2 當堂完成，其餘帶回家 |
 
 ---
 
@@ -1415,43 +1439,40 @@ void loop() {
 
 | 名稱 | 白話解釋 |
 | --- | --- |
-| LCD 16×2 | 2 行、每行 16 格的文字顯示器，只能顯示英文、數字、符號 |
-| 平行版 LCD | 用 RS、E、DB4～DB7 六條線控制，佔 6 隻腳 |
-| I2C 版 LCD | 只用 SDA（A4）、SCL（A5）兩條線控制，佔 2 隻腳 |
-| 對比度（V0） | 調整字的深淺 |
-| `showLine()` | 已寫好的函式，在指定行顯示文字並自動蓋掉舊字 |
-| 分頁顯示 | 螢幕太小時，用按鈕切換不同主題的頁面 |
-| 看板管理（Visual Management） | 讓現場狀況一眼可見的管理方法 |
-| 稼動率（Availability） | 運轉時間占總時間的比例，OEE 指標之一 |
-| 先進先出（FIFO） | 先來的先處理，排隊與叫號的基本原則 |
+| LCD 16×2 | 2 行、每行 16 格的文字顯示器 |
+| 平行版 | 佔 6 隻腳（RS、E、DB4～DB7），可調對比、背光 |
+| I2C 版 | 只佔 A4（SDA）、A5（SCL）兩隻腳 |
+| V0 | 平行版的對比度腳，接旋鈕可調字的深淺 |
+| 背光（LED+、LED−） | 螢幕後面的燈 |
+| 看板草圖 | 先在 2 × 16 的格子裡規劃要顯示什麼 |
+| 目視管理 | 讓異常一眼可見的現場管理方法 |
+| 稼動率 | 運轉時間 ÷（運轉＋停機）時間 |
 
 ---
 
 ## 反思與延伸討論
 
-1. 本週每個看板都只有 32 格。這逼著你做取捨：什麼要顯示、什麼不顯示、什麼放第一行。在職場上做簡報、寫報告、設計儀表板時，這種「資訊取捨」的能力有多重要？
-2. 專案四和 Lv.5 都要比較「平行版 vs I2C 版」。平行版便宜但吃腳位、I2C 版省腳位但佔掉 A4、A5。這種「沒有完美方案，只有適合方案」的決策，你在其他管理情境中遇過嗎？
-3. 專案三的稼動率、Lv.5 的回應時間，都是「把現場行為轉成數字」。但看板只能顯示「現在」，不能保存「過去」。如果要做到「每週檢討、持續改善」，資料還需要怎麼處理？這就是下半學期物聯網「聯網」要解決的問題。
+1. 本週的四塊看板，你覺得哪一塊最能幫助現場人員「不用問、不用算」就知道該做什麼？哪一塊還可以改進？
+2. 平行版「便宜但吃腳」、I2C 版「省腳但佔固定介面」。真實的採購決策中，你還會考慮哪些因素？（提示：庫存、維修、未來擴充）
+3. 看板讓績效「被看見」。被看見的指標會被改善，沒被看見的指標可能被犧牲（例如只看產量不看品質）。設計看板時，要怎麼避免這種問題？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 能正確接上平行版 LCD（RW 接 GND、只接 DB4～DB7），並用 LCD 測試器確認
-- [ ] 能正確接上 I2C 版 LCD（SDA 接 A4、SCL 接 A5）
-- [ ] 能依腳位需求，判斷該用平行版還是 I2C 版，並說明理由
-- [ ] 能依看板設計原則規劃 2 行 × 16 格的版面
-- [ ] 能用分頁顯示更多資訊，並設計異常時自動切換
-- [ ] 能說明稼動率、回應時間等看板指標的管理意義
-- [ ] 完成 4 個獨立專案，並各自繳交 Tinkercad 檔案
-- [ ] 完成練習題 Lv.1～Lv.4，挑戰 Lv.5 與 Lv.6
+- [ ] 能正確接上平行版（12 條線）與 I2C 版（4 條線）LCD，並用測試器確認
+- [ ] 能分別算出平行版、I2C 版的腳位帳，並依情境選擇
+- [ ] 能用 V0 旋鈕調字的深淺、用 LED+ 讓背光跟著燈走（不改程式）
+- [ ] 能畫出符合看板設計原則的看板草圖
+- [ ] 完成關卡 1～4，並取得同學驗收簽名
+- [ ] 完成練習題 Lv.1～Lv.3，挑戰 Lv.4～Lv.6
 
 ---
 
 ## 下週預告
 
-第 12 週是 Arduino 基礎元件的最後一週——加入 **4×4 矩陣鍵盤**，打造電子密碼鎖，並進行 12 週以來的期末統整。鍵盤要佔 8 隻腳，配上本週的 LCD，腳位規劃會是一大挑戰——本週學到的「I2C 版省腳位」下週就派上用場了。
+第 12 週是 Arduino 單元的最後一週：加入 **4×4 矩陣鍵盤**，讓現場人員可以「輸入數字」。鍵盤一顆就佔 7～8 隻腳，加上 LCD，腳位規劃是全學期最緊的一次。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 10 週](week-10.md) | [下一週：第 12 週 — 期末統整與電子密碼鎖 ➡](week-12.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 10 週](week-10.md) | [下一週：第 12 週 — 會輸入的智慧場域 ➡](week-12.md)

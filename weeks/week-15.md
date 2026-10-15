@@ -1,4 +1,4 @@
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 14 週](week-14.md) | [下一週：第 16 週 — 終極整合大專題（下）➡](week-16.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 14 週](week-14.md) | [下一週：第 16 週 — 期末整合大專題（下）➡](week-16.md)
 
 ---
 
@@ -14,11 +14,15 @@
 >
 > 看完範例後，各組套用同一套方法，提出自己的期末專題，並在本週完成**規劃書與子系統建置**；第 16 週完成整合、驗收測試與成果展演。
 >
-> 和整學期一樣，**重點不在寫程式**：範例的整合程式都已經寫好，各子系統用功能開關逐一打開；你們的專題可以從範例或前 14 週的程式改寫。
+> 和整學期一樣，**重點不在寫程式**，而在**配線規劃與情境判斷**：
+>
+> - **跟做範例時**，每人依座號抽一張**跟做限制卡**，同一個範例會配出不同的電路（整合程式只改腳位區、參數區）。
+> - **各組的期末專題**，每組抽一張**小組客戶限制卡**，影響整個系統的腳位總表；每個子系統都要從 **T1～T40** 找一個最接近的模板套用。
+> - 第 16 週整合完成後，老師會到各組**現場出配線變化挑戰**，只能改線應變。
 >
 > 🏁 **本週成果**：
-> - 全班：跟做一個範例（A 或 B），完成 4 個子系統的逐步建置
-> - 各組：期末專題規劃書＋至少 3 個子系統各自獨立的 Tinkercad 檔案
+> - 個人：跟做一個範例（A 或 B），依跟做限制卡完成 4 個子系統的逐步建置
+> - 各組：期末專題規劃書（含限制卡因應）＋至少 3 個子系統各自獨立的 Tinkercad 檔案
 
 ---
 
@@ -26,6 +30,7 @@
 
 - [學習地圖](#學習地圖)
 - [期末專題規格](#期末專題規格)
+- [🃏 小組客戶限制卡](#-小組客戶限制卡)
 - [設計方法：從需求到系統的六個步驟](#設計方法從需求到系統的六個步驟)
 - [範例 A：智慧冷鏈出貨中心](#範例-a智慧冷鏈出貨中心)
 - [範例 B：智慧便利商店](#範例-b智慧便利商店)
@@ -55,6 +60,8 @@
 | 類別 | 觀念 | 學習週次 |
 | --- | --- | --- |
 | **配線規劃** | `~` 腳可用表、借 A 腳、L293D 接法、I2C、鍵盤 3 行、74HC595 串接 | 3～13 |
+| **改線應變** | 兩燈共腳、反相接法、共用訊號線、整組對調、馬達並聯、按鈕並聯、NO＋NC 雙負載 | 5～14 |
+| **程式模板** | T1～T40（只改腳位區、參數區、功能開關） | 4～14 |
 | **安全設計** | 鎖定與復歸、安全連鎖、急停、失效安全（NO／NC） | 6、7、10、14 |
 | **模式與優先權** | 模組化、優先權順序、HOA 三段模式 | 8、14 |
 | **管理介面** | 看板設計、操作流程設計、KPI | 11、12、13 |
@@ -81,10 +88,35 @@
 | 安全設計 | 至少 **1 個**安全連鎖或急停，並說明優先權 |
 | 模式設計 | 至少 **2 種**運作模式（例如 HOA、營業／打烊、布防／撤防） |
 | 現場看板 | LCD 或七段顯示器至少一種，顯示至少 **1 個管理指標（KPI）** |
-| 腳位規劃 | 完整腳位總表，並運用至少 **2 種**省腳位技巧 |
+| 腳位規劃 | 完整腳位總表，並運用至少 **2 種**省腳位技巧，且符合**小組客戶限制卡** |
+| 改線應變 | 至少用到 **2 種**「改線就能解決」的技巧（見第 12 週總整理、第 13～14 週新技巧） |
+| 模板對照 | 每個子系統註明套用或改編自哪一個模板（T1～T40） |
+| 失效安全 | 每個繼電器、馬達都填**失效安全表** |
 | 繳交 | 規劃書、每個子系統的獨立檔案、整合檔案、QA 測試報告、展演 |
 
 > 💡 **元件不是越多越好**。評分看的是「每個元件都有理由存在」，以及「元件之間的配合是否合理」。
+
+---
+
+## 🃏 小組客戶限制卡
+
+每一組依**組別編號**抽一張小組限制卡。限制卡會影響你們期末專題的**腳位總表與配線設計**，規劃書第 8 項要說明怎麼因應。
+
+| 組別編號 | 抽到 |
+| --- | --- |
+| 1、5、9 | 限制卡 甲 |
+| 2、6、10 | 限制卡 乙 |
+| 3、7、11 | 限制卡 丙 |
+| 4、8、12 | 限制卡 丁 |
+
+| 限制卡 | 客戶條件 | 主要考驗 |
+| --- | --- | --- |
+| **甲：擴充預留** | 客戶明年要擴充，腳位總表必須保留**至少 3 隻空腳**（其中 1 隻是 `~` 腳） | 省腳技巧的組合運用 |
+| **乙：舊設備相容** | **Pin 2、3** 被客戶既有的收費系統佔用；如果要用 LCD，只能用**平行版** | 平行版 LCD 的腳位取捨 |
+| **丙：消防與保險** | 至少 **1 個**繼電器負載在系統故障時必須**保持運作**（接 NC）；**急停必須兩處都能按** | 失效安全表、按鈕並聯 |
+| **丁：雙現場** | 至少 **2 個**指示（燈號或數字）要在「現場」和「辦公室」**兩處同步顯示**；74HC595 最多只能用 **2 顆** | 共腳、一個 Q 接兩顆燈、NO 並聯 |
+
+> 💡 限制卡不是刁難——真實的顧問案一定有「客戶現場的限制」。能在限制下做出合理設計，才是顧問的價值。
 
 ---
 
@@ -102,10 +134,22 @@
 | ⑥ 驗收測試 | 在什麼情況下會出錯？ | QA 測試報告 | 第 16 週 |
 
 > 📌 **最重要的規則**（第 8 週期中專題學過）：步驟 ④ 的每個子系統都要**照步驟 ③ 的腳位總表接線**。這樣第 16 週整合時，只要把電路「合併」，腳位完全不用改。
+>
+> 📌 **步驟 ④ 的捷徑**：每個子系統先從 **T1～T40** 找最接近的模板（見第 12 週「程式模板索引」與第 13、14 週），套用後只改腳位區、參數區。範例 A、B 的「對應模板」欄就是示範。
 
 ---
 
 ## 範例 A：智慧冷鏈出貨中心
+
+### 🃏 跟做限制卡（範例 A）
+
+跟做範例 A 的同學，依座號尾數抽卡：1、4、7 → A；2、5、8 → B；3、6、9、0 → C。
+
+| 限制卡 | 現場條件 | 要改哪裡 |
+| --- | --- | --- |
+| **A** | 依範例的腳位總表 | — |
+| **B** | 客戶評估後改成「省電優先」：壓縮機負載改接 **NO**；出貨區有**兩條並排輸送帶**同步運轉 | 接線＋參數 `compOnNC` |
+| **C** | **Pin 2、3** 的插座鬆脫不能用；輸送帶旁也要一顆「安全區有人」燈，和看板 Q7 同步 | 接線＋腳位區 |
 
 ### ① 需求分析
 
@@ -188,16 +232,16 @@
 
 > 💡 **RGB 接在 74HC595 上**：它只需要全亮全滅的顏色（綠、黃、紅），不必佔用 Arduino 的 3 隻腳。這是把第 7 週「全亮全滅顏色不需要 `~` 腳」和第 13 週 74HC595 結合起來的做法。
 
-> 🤔 **壓縮機繼電器接 NO 還是 NC？** 接 NO：Arduino 故障時壓縮機停止 → 產品可能退冰。接 NC：Arduino 故障時壓縮機一直運轉 → 產品不會壞，但可能結冰、耗電。**範例選 NC**，理由是「產品報廢的損失遠大於多花的電費」。程式中 `HIGH` 代表「切斷壓縮機」。你同意嗎？
+> 🤔 **壓縮機繼電器接 NO 還是 NC？** 接 NO：Arduino 故障時壓縮機停止 → 產品可能退冰。接 NC：Arduino 故障時壓縮機一直運轉 → 產品不會壞，但可能結冰、耗電。**範例選 NC**，理由是「產品報廢的損失遠大於多花的電費」。程式參數 `compOnNC = true`，會自動把訊號反過來（和第 14 週的 `loadOnNC` 一樣）。你同意嗎？
 
 ### ④ 子系統建置（逐步打開功能開關）
 
-| 子系統 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| S1 冷藏安全 | TMP36、繼電器（負載 LED 接 NC）、蜂鳴器、復歸鈕 | 高於 5°C 壓縮機運轉、低於 3°C 停止；超過 8°C 鎖定警報，降溫後按復歸解除 | `useCold = true` |
-| S2 出貨輸送 | L293D（接法 B）＋馬達、HC-SR04 | 箱子到入口（15 cm 內）輸送帶啟動，最後一箱後 3 秒停止；Serial Monitor 顯示出貨數 | `useConveyor = true` |
-| S3 現場看板 | 3 顆 74HC595（串接）、2 顆七段、8 顆燈（含 RGB）、I2C LCD | 七段顯示出貨數；狀態燈與 LCD 顯示溫度、模式 | `useBoard = true` |
-| S4 總控與安全 | 模式鈕、急停鈕、PIR | HOA 切換、急停、安全區有人停止 | `useControl = true` |
+| 子系統 | 對應模板 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- | --- |
+| S1 冷藏安全 | T11 三段鎖定＋T38 繼電器 | TMP36、繼電器（負載 LED 接 NC）、蜂鳴器、復歸鈕 | 高於 5°C 壓縮機運轉、低於 3°C 停止；超過 8°C 鎖定警報，降溫後按復歸解除 | `useCold = true` |
+| S2 出貨輸送 | T23 緩啟動輸送帶 | L293D（接法 B）＋馬達、HC-SR04 | 箱子到入口（15 cm 內）輸送帶啟動，最後一箱後 3 秒停止；Serial Monitor 顯示出貨數 | `useConveyor = true` |
+| S3 現場看板 | T35 計數器＋T26 看板 | 3 顆 74HC595（串接）、2 顆七段、8 顆燈（含 RGB）、I2C LCD | 七段顯示出貨數；狀態燈與 LCD 顯示溫度、模式 | `useBoard = true` |
+| S4 總控與安全 | T40 輸送線控制盤 | 模式鈕、急停鈕、PIR | HOA 切換、急停、安全區有人停止 | `useControl = true` |
 
 > 📌 **建置建議**：每完成一個子系統就**另存一個 Tinkercad 檔案**（`FINAL-A-S1`、`FINAL-A-S1S2`……），出問題時可以退回上一版。
 
@@ -221,32 +265,34 @@
 // ===== 期末範例 A：智慧冷鏈出貨中心 =====
 #include <Adafruit_LiquidCrystal.h>
 
-// ===== 設定區：腳位（照腳位總表） =====
-const int pinRelay  = 2;     // S1 壓縮機繼電器（負載接 NC：HIGH = 切斷壓縮機）
-const int pinBuzzer = 3;     // S1 蜂鳴器
-const int btnReset  = 4;     // S1 溫度警報復歸鈕
-const int pinEN     = 5;     // S2 L293D EN1（接法 B：IN1 接 5V、IN2 接 GND）
-const int pinTrig = 6, pinEcho = 7;   // S2 HC-SR04
-const int pinPIR    = 8;     // S4 輸送帶安全區 PIR
-const int btnMode   = 9;     // S4 模式鈕（AUTO → HAND → OFF）
-const int btnEStop  = 10;    // S4 急停鈕
-const int dataPin = 11, clockPin = 12, latchPin = 13;   // S3 74HC595 ×3
-const int pinTemp   = A0;    // S1 TMP36
+// ----- 腳位區（照腳位總表；依跟做限制卡調整）-----
+int pinRelay  = 2;                  // S1 壓縮機繼電器線圈
+int pinBuzzer = 3;                  // S1 蜂鳴器
+int btnReset  = 4;                  // S1 溫度警報復歸鈕
+int pinEN     = 5;                  // S2 L293D EN1（接法 B：IN1 接 5V、IN2 接 GND）
+int pinTrig = 6, pinEcho = 7;       // S2 HC-SR04
+int pinPIR    = 8;                  // S4 輸送帶安全區 PIR
+int btnMode   = 9;                  // S4 模式鈕（AUTO → HAND → OFF）
+int btnEStop  = 10;                 // S4 急停鈕
+int dataPin = 11, clockPin = 12, latchPin = 13;   // S3 74HC595 ×3
+int pinTemp   = A0;                 // S1 TMP36
 // I2C LCD：SDA → A4、SCL → A5
 
-// ===== 設定區：客戶規格 =====
-float compOn = 5.0, compOff = 3.0;   // 壓縮機：高於 5°C 運轉、低於 3°C 停止
+// ----- 參數區：客戶規格 -----
+bool compOnNC = true;               // 壓縮機負載接在 NC 填 true；接在 NO 填 false
+float compOn = 5.0, compOff = 3.0;  // 壓縮機：高於 5°C 運轉、低於 3°C 停止
 float warnLine = 6.0, dangerLine = 8.0;
-float boxCM = 15;                    // 箱子到入口的距離
-int beltSpeed = 200;                 // 輸送帶速度
-int runAfter  = 3000;                // 最後一箱後再跑幾毫秒
-int handLimitPct = 30;               // HAND 時安全區有人的限速
+float boxCM = 15;                   // 箱子到入口的距離
+int beltSpeed = 200;                // 輸送帶速度
+int runAfter  = 3000;               // 最後一箱後再跑幾毫秒
+int handLimitPct = 30;              // HAND 時安全區有人的限速
+String siteName = "COLD";           // LCD 名稱（建議 4 格）
 
-// ===== 功能開關：逐一打開 =====
-bool useCold     = false;            // S1
-bool useConveyor = false;            // S2
-bool useBoard    = false;            // S3
-bool useControl  = false;            // S4
+// ----- 功能開關：逐一打開 -----
+bool useCold     = false;           // S1
+bool useConveyor = false;           // S2
+bool useBoard    = false;           // S3
+bool useControl  = false;           // S4
 
 // ===== 以下不用改 =====
 Adafruit_LiquidCrystal lcd(0);
@@ -254,17 +300,15 @@ byte font[10] = {
   0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
   0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
 };
-int mode = 0;                        // 0=AUTO, 1=HAND, 2=OFF
+int mode = 0;                       // 0=AUTO, 1=HAND, 2=OFF
 String modeName[3] = { "AUTO", "HAND", "OFF" };
-bool eStopped = false, tempLocked = false, compRunning = false;
-bool wasBox = false;
+bool eStopped = false, tempLocked = false, compRunning = false, wasBox = false;
 int shipped = 0, tick = 0;
 unsigned long lastBox = 0;
 int lastReset = LOW, lastMode = LOW, lastEStop = LOW;
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  return (analogRead(pin) * 5.0 / 1023.0 - 0.5) * 100.0;
 }
 
 float readCM(int trig, int echo) {
@@ -296,6 +340,11 @@ void showLine(int row, String text) {
   lcd.print(text.substring(0, 16));
 }
 
+void compressor(bool on) {
+  bool coil = compOnNC ? !on : on;                 // 接 NC 時，訊號反過來
+  digitalWrite(pinRelay, coil ? HIGH : LOW);
+}
+
 void setup() {
   pinMode(pinRelay, OUTPUT);
   pinMode(btnReset, INPUT);
@@ -321,7 +370,7 @@ void loop() {
   if (useCold) {
     if (t > compOn)  compRunning = true;
     if (t < compOff) compRunning = false;
-    digitalWrite(pinRelay, compRunning ? LOW : HIGH);   // NC 接法：LOW = 壓縮機運轉
+    compressor(compRunning);
 
     if (t >= dangerLine)    tempLevel = 2;
     else if (t >= warnLine) tempLevel = 1;
@@ -360,15 +409,13 @@ void loop() {
   if (useConveyor) {
     bool box = readCM(pinTrig, pinEcho) < boxCM;
     if (box && !wasBox) {
-      lastBox = millis();
       shipped++;
       Serial.print("Box shipped: ");
       Serial.println(shipped);
     }
     if (box) lastBox = millis();
     wasBox = box;
-
-    bool hasWork = (lastBox > 0) && (millis() - lastBox < runAfter);
+    bool hasWork = (lastBox > 0) && (millis() - lastBox < (unsigned long)runAfter);
 
     if (eStopped)          { speed = 0; status = "!! E-STOP !!"; }          // ①
     else if (tempLocked)   { speed = 0; status = "QUALITY HOLD"; }          // ②
@@ -385,7 +432,6 @@ void loop() {
 
   // ================= S3 現場看板 =================
   if (useBoard) {
-    // 狀態 RGB：紅＝急停或溫度鎖定；黃＝溫度警戒或有人；綠＝正常
     bool red    = eStopped || tempLocked;
     bool yellow = !red && (tempLevel == 1 || person);
     byte status8 = 0;
@@ -400,13 +446,21 @@ void loop() {
     sendOut(chip, 3);
 
     if (tick % 5 == 0) {
-      showLine(0, "COLD " + String(t, 1) + "C " + (tempLocked ? "ALARM" : tempLevel == 1 ? "WARN" : "OK"));
+      showLine(0, siteName + " " + String(t, 1) + "C " + (tempLocked ? "ALARM" : tempLevel == 1 ? "WARN" : "OK"));
       showLine(1, modeName[mode] + " " + status);
     }
   }
   delay(40);
 }
 ```
+
+**跟做時要改的地方**：
+
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 限制卡 C：`pinRelay`、`pinBuzzer` 改到空著的 A 腳（例如 `A1`、`A2`） |
+| 參數區 | 限制卡 B：`compOnNC = false` |
+| 功能開關 | 依 S1 → S2 → S3 → S4 逐一打開，每開一個就驗收一次 |
 
 ### ⑥ 驗收測試案例（範例）
 
@@ -431,6 +485,16 @@ void loop() {
 ---
 
 ## 範例 B：智慧便利商店
+
+### 🃏 跟做限制卡（範例 B）
+
+跟做範例 B 的同學，依座號尾數抽卡：1、4、7 → A；2、5、8 → B；3、6、9、0 → C。
+
+| 限制卡 | 現場條件 | 要改哪裡 |
+| --- | --- | --- |
+| **A** | 依範例的腳位總表 | — |
+| **B** | 店長認為「系統壞掉時招牌也要亮」：招牌燈改接 **NC**；門口是**雙開自動門**（兩顆伺服） | 接線＋參數 `signOnNC` |
+| **C** | 店長密碼改成 **2468**；商品改成你們自己設計的 4 項；**店員休息室**也要一顆「冷藏異常」燈，和看板 Q5 同步 | 參數＋接線 |
 
 ### ① 需求分析
 
@@ -509,16 +573,16 @@ void loop() {
 | 第 2 顆 | 個位數七段（a～dp） |
 | 第 3 顆 | Q0 RGB 紅、Q1 RGB 綠、Q2 RGB 藍、Q3 招牌燈指示、Q4 門開啟、Q5 冷藏異常、Q6 購物車有商品、Q7 （保留） |
 
-> 🤔 **招牌燈繼電器接 NO 還是 NC？** 接 NO：系統故障時招牌熄滅（省電，但晚上看起來像沒開）。接 NC：系統故障時招牌一直亮（耗電，但不影響生意）。**範例選 NO**，理由是招牌燈不涉及安全，故障時以省電為優先。你同意嗎？
+> 🤔 **招牌燈繼電器接 NO 還是 NC？** 接 NO：系統故障時招牌熄滅（省電，但晚上看起來像沒開）。接 NC：系統故障時招牌一直亮（耗電，但不影響生意）。**範例選 NO**（`signOnNC = false`），理由是招牌燈不涉及安全，故障時以省電為優先。你同意嗎？
 
 ### ④ 子系統建置（逐步打開功能開關）
 
-| 子系統 | 接上哪些元件 | 完成後會看到 | 功能開關 |
-| --- | --- | --- | --- |
-| S1 自動門與來客 | PIR、伺服、蜂鳴器 | 有人靠近門開並播迎賓聲，人離開 2 秒後關門；Serial Monitor 顯示來客數 | `useDoor = true` |
-| S2 自助結帳 | 鍵盤（3 行）、I2C LCD | 輸入 11～14＋`#` 加入商品，空白按 `#` 結帳，`*` 清除；`9999#` 切換營業／打烊 | `usePOS = true` |
-| S3 環境節能 | 光敏電阻、繼電器（招牌燈）、TMP36 | 天黑且營業中招牌亮；冷藏櫃超過 7°C 提醒 | `useEnv = true` |
-| S4 門市看板 | 3 顆 74HC595、2 顆七段、8 顆燈（含 RGB） | 七段顯示今日來客；狀態燈顯示各項狀態 | `useBoard = true` |
+| 子系統 | 對應模板 | 接上哪些元件 | 完成後會看到 | 功能開關 |
+| --- | --- | --- | --- | --- |
+| S1 自動門與來客 | T37 感應＋T15 自動門 | PIR、伺服、蜂鳴器 | 有人靠近門開並播迎賓聲，人離開 2 秒後關門；Serial Monitor 顯示來客數 | `useDoor = true` |
+| S2 自助結帳 | T30 選號付款出貨 | 鍵盤（3 行）、I2C LCD | 輸入 11～14＋`#` 加入商品，空白按 `#` 結帳，`*` 清除；`9999#` 切換營業／打烊 | `usePOS = true` |
+| S3 環境節能 | T6 光線控制＋T9 溫度監測 | 光敏電阻、繼電器（招牌燈）、TMP36 | 天黑且營業中招牌亮；冷藏櫃超過 7°C 提醒 | `useEnv = true` |
+| S4 門市看板 | T35 計數器 | 3 顆 74HC595、2 顆七段、8 顆燈（含 RGB） | 七段顯示今日來客；狀態燈顯示各項狀態 | `useBoard = true` |
 
 ### ⑤ 優先權
 
@@ -539,39 +603,36 @@ void loop() {
 #include <Adafruit_LiquidCrystal.h>
 #include <Servo.h>
 
-// ===== 設定區：腳位（照腳位總表） =====
+// ----- 腳位區（照腳位總表；依跟做限制卡調整）-----
 byte rowPins[4] = { 2, 3, 4, 5 };   // S2 鍵盤 R1~R4
 byte colPins[3] = { 6, 7, 8 };      // S2 鍵盤 C1~C3（C4 不接）
-const int dataPin = 9, clockPin = 10, latchPin = 11;   // S4 74HC595 ×3
-const int pinDoor   = 12;           // S1 自動門伺服
-const int pinPIR    = 13;           // S1 門口 PIR
-const int pinLDR    = A0;           // S3 光敏電阻
-const int pinTemp   = A1;           // S3 冷藏櫃 TMP36
-const int pinRelay  = A2;           // S3 招牌燈繼電器（負載接 NO）
-const int pinBuzzer = A3;           // S1 蜂鳴器
+int dataPin = 9, clockPin = 10, latchPin = 11;   // S4 74HC595 ×3
+int pinDoor   = 12;                 // S1 自動門伺服（雙開門：兩顆橘線共用）
+int pinPIR    = 13;                 // S1 門口 PIR
+int pinLDR    = A0;                 // S3 光敏電阻
+int pinTemp   = A1;                 // S3 冷藏櫃 TMP36
+int pinRelay  = A2;                 // S3 招牌燈繼電器
+int pinBuzzer = A3;                 // S1 蜂鳴器
 // I2C LCD：SDA → A4、SCL → A5
 
-// ===== 設定區：客戶規格 =====
+// ----- 參數區：客戶規格 -----
 String names[4] = { "WATER", "MILK", "BREAD", "RICE BALL" };
 int prices[4]   = { 20, 35, 30, 32 };   // 商品編號 11~14
 String managerCode = "9999";        // 店長密碼：切換營業／打烊
+bool signOnNC  = false;             // 招牌燈負載接在 NC 填 true；接在 NO 填 false
 int darkLine   = 300;               // 光線低於這個數字開招牌燈
 float fridgeMax = 7.0;              // 冷藏櫃上限
 int doorHold   = 2000;              // 人離開後幾毫秒關門
+int doorClosed = 0, doorOpen = 90;  // 自動門角度（依角度記錄表）
 
-// ===== 功能開關：逐一打開 =====
+// ----- 功能開關：逐一打開 -----
 bool useDoor  = false;              // S1
 bool usePOS   = false;              // S2
 bool useEnv   = false;              // S3
 bool useBoard = false;              // S4
 
 // ===== 以下不用改 =====
-char keys[4][3] = {                 // 只接 3 行的鍵盤配置（沒有 A～D）
-  { '1', '2', '3' },
-  { '4', '5', '6' },
-  { '7', '8', '9' },
-  { '*', '0', '#' }
-};
+char keys[4][3] = { {'1','2','3'}, {'4','5','6'}, {'7','8','9'}, {'*','0','#'} };   // 4 列 × 3 行
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, 4, 3);
 Adafruit_LiquidCrystal lcd(0);
 Servo door;
@@ -579,18 +640,11 @@ byte font[10] = {
   0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110,
   0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
 };
-
-bool storeOpen = true;
-bool doorOpen = false;
-unsigned long lastSeen = 0;
-int visitors = 0;
-String input = "";
-int cartItems = 0, cartTotal = 0;
+bool storeOpen = true, isOpen = false, signOn = false, fridgeAlarm = false;
+unsigned long lastSeen = 0, messageUntil = 0;
+int visitors = 0, cartItems = 0, cartTotal = 0, tick = 0;
 long salesToday = 0;
-bool signOn = false, fridgeAlarm = false;
-int tick = 0;
-String message = "";
-unsigned long messageUntil = 0;
+String input = "", message = "";
 
 void showLine(int row, String text) {
   while (text.length() < 16) text += " ";
@@ -598,7 +652,7 @@ void showLine(int row, String text) {
   lcd.print(text.substring(0, 16));
 }
 
-void flash(String msg) {              // 在 LCD 第 0 行顯示 2 秒訊息
+void flash(String msg) {                                  // 在 LCD 第 0 行顯示 2 秒訊息
   message = msg;
   messageUntil = millis() + 2000;
 }
@@ -610,8 +664,12 @@ void sendOut(byte chip[], int n) {
 }
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  return (analogRead(pin) * 5.0 / 1023.0 - 0.5) * 100.0;
+}
+
+void sign(bool on) {
+  bool coil = signOnNC ? !on : on;                        // 接 NC 時，訊號反過來
+  digitalWrite(pinRelay, coil ? HIGH : LOW);
 }
 
 void setup() {
@@ -622,7 +680,7 @@ void setup() {
   pinMode(pinRelay, OUTPUT);
   pinMode(pinBuzzer, OUTPUT);
   door.attach(pinDoor);
-  door.write(0);
+  door.write(doorClosed);
   if (usePOS) { lcd.begin(16, 2); lcd.setBacklight(1); }
   Serial.begin(9600);
 }
@@ -632,19 +690,18 @@ void loop() {
 
   // ================= S1 自動門與來客 =================
   if (useDoor) {
-    bool someone = digitalRead(pinPIR) == HIGH;
-    if (someone) lastSeen = millis();
-    bool wantOpen = storeOpen && (lastSeen > 0) && (millis() - lastSeen < doorHold);
-    if (wantOpen && !doorOpen) {
-      doorOpen = true;
-      door.write(90);
+    if (digitalRead(pinPIR) == HIGH) lastSeen = millis();
+    bool wantOpen = storeOpen && (lastSeen > 0) && (millis() - lastSeen < (unsigned long)doorHold);
+    if (wantOpen && !isOpen) {
+      isOpen = true;
+      door.write(doorOpen);
       visitors++;
       tone(pinBuzzer, 880, 250);
       Serial.print("Visitor #");
       Serial.println(visitors);
-    } else if (!wantOpen && doorOpen) {
-      doorOpen = false;
-      door.write(0);
+    } else if (!wantOpen && isOpen) {
+      isOpen = false;
+      door.write(doorClosed);
     }
   }
 
@@ -659,14 +716,14 @@ void loop() {
       cartTotal = 0;
       flash("CART CLEARED");
     } else if (k == '#') {
-      if (input == managerCode) {                    // 店長：營業／打烊
+      if (input == managerCode) {                         // 店長：營業／打烊
         storeOpen = !storeOpen;
         flash(storeOpen ? "STORE OPEN" : "STORE CLOSED");
         Serial.print(storeOpen ? "OPEN" : "CLOSED  Sales today: $");
         if (!storeOpen) Serial.println(salesToday); else Serial.println();
       } else if (!storeOpen) {
         flash("SORRY, CLOSED");
-      } else if (input == "") {                      // 空白按 # ＝ 結帳
+      } else if (input == "") {                           // 空白按 # ＝ 結帳
         if (cartItems > 0) {
           salesToday += cartTotal;
           flash("PAID $" + String(cartTotal) + " THANKS");
@@ -676,7 +733,7 @@ void loop() {
           cartItems = 0;
           cartTotal = 0;
         }
-      } else {                                       // 加入商品
+      } else {                                            // 加入商品
         int code = input.toInt();
         if (code >= 11 && code <= 14) {
           cartItems++;
@@ -702,7 +759,7 @@ void loop() {
   // ================= S3 環境節能 =================
   if (useEnv) {
     signOn = storeOpen && analogRead(pinLDR) < darkLine;
-    digitalWrite(pinRelay, signOn ? HIGH : LOW);     // NO 接法：HIGH = 招牌亮
+    sign(signOn);
 
     bool alarm = readC(pinTemp) > fridgeMax;
     if (alarm && !fridgeAlarm) Serial.println("FRIDGE TOO WARM!");
@@ -713,13 +770,13 @@ void loop() {
   // ================= S4 門市看板 =================
   if (useBoard) {
     byte status8 = 0;
-    if (!storeOpen)       status8 |= 0b00000001;     // 紅：打烊
-    else if (fridgeAlarm) status8 |= 0b00000011;     // 黃：冷藏異常
-    else                  status8 |= 0b00000010;     // 綠：營業正常
-    if (signOn)        status8 |= 0b00001000;        // Q3 招牌燈
-    if (doorOpen)      status8 |= 0b00010000;        // Q4 門開啟
-    if (fridgeAlarm)   status8 |= 0b00100000;        // Q5 冷藏異常
-    if (cartItems > 0) status8 |= 0b01000000;        // Q6 購物車有商品
+    if (!storeOpen)       status8 |= 0b00000001;          // 紅：打烊
+    else if (fridgeAlarm) status8 |= 0b00000011;          // 黃：冷藏異常
+    else                  status8 |= 0b00000010;          // 綠：營業正常
+    if (signOn)        status8 |= 0b00001000;             // Q3 招牌燈
+    if (isOpen)        status8 |= 0b00010000;             // Q4 門開啟
+    if (fridgeAlarm)   status8 |= 0b00100000;             // Q5 冷藏異常
+    if (cartItems > 0) status8 |= 0b01000000;             // Q6 購物車有商品
 
     byte chip[3] = { font[(visitors / 10) % 10], font[visitors % 10], status8 };
     sendOut(chip, 3);
@@ -728,7 +785,15 @@ void loop() {
 }
 ```
 
-> 💡 **鍵盤只接 3 行的程式寫法**：第 12 週的範例在 `colPins` 的第 4 格填一隻空腳；但範例 B 的 18 隻腳全部用完，沒有空腳可填。所以這裡把鍵盤配置改成「4 列 × 3 行」（`keys[4][3]`、`colPins[3]`，最後的參數寫 `4, 3`），完全不需要第 4 行的腳位。**腳位全滿時，這是正確的做法。**
+> 💡 **鍵盤只接 3 行**：範例 B 直接把鍵盤寫成「4 列 × 3 行」（`keys[4][3]`、`colPins[3]`，最後的參數寫 `4, 3`），效果和第 12 週模板的 `numCols = 3` 完全一樣——第 4 行不佔任何腳。
+
+**跟做時要改的地方**：
+
+| 區塊 | 要做什麼 |
+| --- | --- |
+| 腳位區 | 限制卡 B：雙開門的第二顆伺服橘線接在 `pinDoor` 同一隻腳（腳位區不用改） |
+| 參數區 | 限制卡 B：`signOnNC = true`、門的角度依角度記錄表；限制卡 C：`managerCode`、`names[]`、`prices[]` |
+| 功能開關 | 依 S1 → S2 → S3 → S4 逐一打開，每開一個就驗收一次 |
 
 ### ⑥ 驗收測試案例（範例）
 
@@ -766,6 +831,7 @@ void loop() {
 | 失效安全選擇 | 壓縮機接 NC | 招牌燈接 NO |
 | 看板 KPI | 今日出貨數 | 今日來客數 |
 | 優先權複雜度 | 6 層 | 4 層 |
+| 跟做限制卡考的技巧 | NO／NC＋參數、馬達並聯、借 A 腳、一個 Q 接兩顆燈 | NO／NC＋參數、伺服共用訊號線、一個 Q 接兩顆燈 |
 
 > 💡 **兩個範例告訴我們**：同一套設計方法，套用在不同場域，會得出完全不同的元件組合、腳位分配和安全設計。**沒有標準答案，只有「針對這個客戶最合理的答案」**。
 
@@ -785,7 +851,7 @@ void loop() {
 
 ### F1 規劃書（第 1 節後段～第 2 節前段）✅ 老師審查
 
-規劃書包含以下七項，**審查通過後才能開始接線**：
+規劃書包含以下九項，**審查通過後才能開始接線**：
 
 | 項目 | 內容 | 參考範例的哪一段 |
 | --- | --- | --- |
@@ -795,12 +861,15 @@ void loop() {
 | 4. 失效安全分析 | 每個繼電器、馬達的 NO／NC 或停止策略 | ③ 的 🤔 討論 |
 | 5. 優先權流程圖 | 從最高安全條件到一般功能 | ⑤ 優先權 |
 | 6. 看板設計 | LCD 版面草圖或七段＋狀態燈分配 | ③ 的 74HC595 輸出分配 |
-| 7. 驗收測試案例 | 至少 8 個測試情境（含極端情況） | ⑥ 驗收測試 |
+| 7. 驗收測試案例 | 至少 8 個測試情境（含極端情況、限制卡專屬測試） | ⑥ 驗收測試 |
+| 8. 限制卡因應 | 抽到哪張小組限制卡？腳位總表、配線怎麼因應？ | 🃏 小組客戶限制卡 |
+| 9. 模板與配線技巧清單 | 每個子系統對應的模板；用到哪些「改線就能解決」的技巧 | ④ 的「對應模板」欄 |
 
 ### F2 子系統建置（第 2 節後段～第 3 節）
 
 - 每個子系統**照腳位總表接線**，單獨驗收後各自存檔：`FINAL-組別-S1`、`FINAL-組別-S2`……
-- 程式可以從範例 A、B 或前 14 週的專案改寫，**在檔案開頭註明來源**
+- 每個子系統套用 T1～T40 中最接近的模板，或改編範例 A、B 的整合程式，**在檔案開頭註明來源與修改的參數**
+- 每個子系統完成後，**自己出一題配線變化挑戰給隔壁組**（只能改線），為第 16 週的現場挑戰暖身
 - 每個子系統都要有一段驗收紀錄：接了什麼、測了什麼、結果如何
 
 ### 本週結束時應該有
@@ -845,8 +914,8 @@ void loop() {
 
 | 項目 | 格式 |
 | --- | --- |
-| 範例 A 或 B 跟做成果（4 個子系統全部打開） | Tinkercad 連結（個人） |
-| 期末專題規劃書（7 項） | PDF 或線上文件（小組） |
+| 範例 A 或 B 跟做成果（依跟做限制卡，4 個子系統全部打開） | Tinkercad 連結（個人） |
+| 期末專題規劃書（9 項） | PDF 或線上文件（小組） |
 | 子系統檔案（至少 3 個） | Tinkercad 連結（小組） |
 | 子系統驗收紀錄 | 文件（小組） |
 | 下週整合待辦清單 | 文件（小組） |
@@ -855,8 +924,8 @@ void loop() {
 
 | 項目 | 比重 | 優秀（A） | 合格（C） |
 | --- | --- | --- | --- |
-| 範例跟做 | 10% | 4 個子系統全部正常，能回答情境思考題 | 至少 3 個子系統正常 |
-| 規劃書 | 15% | 七項完整，需求具體、腳位總表正確運用省腳技巧、失效安全有理由 | 七項都有填寫 |
+| 範例跟做 | 10% | 依跟做限制卡完成，4 個子系統全部正常，能回答情境思考題 | 至少 3 個子系統正常 |
+| 規劃書 | 15% | 九項完整，腳位總表符合小組限制卡、正確運用省腳與改線技巧、失效安全有理由 | 九項都有填寫 |
 | 子系統建置 | 10% | 3 個以上子系統各自通過驗收，接線與腳位總表一致 | 至少 2 個子系統可運作 |
 | 驗收紀錄與待辦 | 5% | 紀錄清楚，待辦清單具體 | 有紀錄 |
 
@@ -886,6 +955,8 @@ void loop() {
 | 失效安全分析 | 逐一檢查每個設備在系統故障時會停在什麼狀態 |
 | 驗收測試案例 | 事先寫好「做什麼操作、應該看到什麼結果」的測試清單 |
 | 整合待辦清單 | 記錄還沒完成、或整合時要處理的問題 |
+| 小組客戶限制卡 | 期末專題中，客戶現場的條件限制（腳位、設備、法規） |
+| 跟做限制卡 | 跟做範例時，每人不同的接線與參數變化 |
 | 工作分解結構（WBS） | 把大專案拆成可分工、可追蹤的小工作 |
 
 ---
@@ -894,7 +965,7 @@ void loop() {
 
 1. 範例 A 的急停「不停壓縮機」，範例 B 的招牌燈「故障時熄滅」。兩個決定的背後都在回答「什麼才是真正的風險」。在你的期末專題中，最大的風險是什麼？你的設計怎麼回應它？
 2. 兩個範例都先拆子系統、各自驗收，再整合。如果一開始就把所有元件接在一起，會遇到什麼困難？這和專案管理中「分階段交付」的道理有什麼關係？
-3. 範例 B 的 18 隻腳全部用完，連鍵盤第 4 行的程式寫法都要調整。在真實的產品開發中，資源「剛好用完」常常是整合時出問題的來源。你的規劃書要留多少「擴充空間」才算合理？審查時要怎麼及早發現資源不足？
+3. 範例 B 的 18 隻腳全部用完；限制卡甲卻要求保留 3 隻空腳。在真實的產品開發中，資源「剛好用完」常常是整合時出問題的來源。你的規劃書要留多少「擴充空間」才算合理？審查時要怎麼及早發現資源不足？
 
 ---
 
@@ -903,8 +974,8 @@ void loop() {
 - [ ] 能說明期末專題的最低規格
 - [ ] 能用六步驟方法分析範例 A、B 的設計
 - [ ] 完成範例 A 或 B 的跟做，4 個子系統全部正常
-- [ ] 能說明範例 B 為什麼要改用 4×3 鍵盤配置
-- [ ] 小組完成規劃書七項，並通過審查
+- [ ] 能依跟做限制卡，正確修改範例的接線與參數（含 NO／NC 與參數同步）
+- [ ] 小組完成規劃書九項（含小組限制卡因應），並通過審查
 - [ ] 小組完成至少 3 個子系統的獨立檔案與驗收紀錄
 - [ ] 小組完成下週整合待辦清單
 
@@ -912,8 +983,8 @@ void loop() {
 
 ## 下週預告
 
-第 16 週是學期的最後一週：把本週完成的子系統**整合**成完整系統，進行**驗收測試與同儕交叉測試**，最後在**期末成果展演**中，以顧問身分向「客戶」提案。請保留好本週的規劃書、所有子系統檔案與整合待辦清單——下週直接在這個基礎上繼續。
+第 16 週是學期的最後一週：把本週完成的子系統**整合**成完整系統，老師會到各組出**現場配線變化挑戰**，接著進行**驗收測試與同儕交叉測試**，最後在**期末成果展演**中，以顧問身分向「客戶」提案。請保留好本週的規劃書、所有子系統檔案與整合待辦清單——下週直接在這個基礎上繼續。
 
 ---
 
-[⬅ 回目錄](../README.md) | [⬅ 上一週：第 14 週](week-14.md) | [下一週：第 16 週 — 終極整合大專題（下）➡](week-16.md)
+[⬅ 回目錄](../README.md) | [⬅ 上一週：第 14 週](week-14.md) | [下一週：第 16 週 — 期末整合大專題（下）➡](week-16.md)
