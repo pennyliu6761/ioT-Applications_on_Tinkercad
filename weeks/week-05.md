@@ -527,7 +527,7 @@ int lowLine  = 300;                 // 低於這個數字算「低光區」（�
 int midBand  = 200;                 // 低光線上方多少範圍算「中光區」
 bool lampWhenLow = true;            // true：低光區點亮照明；false：高光區點亮
 bool dimLamp = false;               // true：越暗越亮（照明要接 ~ 腳）；false：只亮或滅
-int colorLow[3]  = { 0, 0, 255 };   // 低光區顏色（藍）
+int colorLow[3]  = { 0, 50, 255 };   // 低光區顏色（藍）
 int colorMid[3]  = { 255, 180, 0 }; // 中光區顏色（黃）
 int colorHigh[3] = { 0, 255, 0 };   // 高光區顏色（綠）
 int beepZone  = 0;                  // 0：不嗶；1：低光區嗶；2：高光區嗶
@@ -597,6 +597,8 @@ void loop() {
   delay(200);
 }
 ```
+
+<img width="777" height="341" alt="image" src="https://github.com/user-attachments/assets/35c072e2-ab14-4345-94e9-f6d926dd749c" />
 
 **本關要改的地方**：
 
