@@ -983,6 +983,8 @@ void loop() {
 }
 ```
 
+<img width="686" height="323" alt="image" src="https://github.com/user-attachments/assets/dfa49616-533e-4d57-87de-057c320c2097" />
+
 **本關要改的地方**：
 
 | 區塊 | 要做什麼 |
