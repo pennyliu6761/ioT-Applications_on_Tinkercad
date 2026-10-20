@@ -415,7 +415,7 @@ void loop() {
 }
 ```
 
-<img width="964" height="440" alt="image" src="https://github.com/user-attachments/assets/d86c6f4b-42fc-4a93-be5c-a172daac61fa" />
+<img width="841" height="351" alt="image" src="https://github.com/user-attachments/assets/eec69b73-886a-48c5-a0ba-fc24126fb5a9" />
 
 **本關要改的地方**：
 
