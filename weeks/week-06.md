@@ -170,8 +170,8 @@ float readC(int pin) {
 int pinTemp = A0;   // ← 改成你 TMP36 中間腳接的 A 腳
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  float voltage = analogRead(pin);
+  voltage = map(voltage, 20,358,0,100);
 }
 
 void setup() {
