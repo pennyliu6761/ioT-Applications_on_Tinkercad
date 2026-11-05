@@ -172,6 +172,7 @@ int pinTemp = A0;   // ← 改成你 TMP36 中間腳接的 A 腳
 float readC(int pin) {
   float voltage = analogRead(pin);
   voltage = map(voltage, 20,358,0,100);
+  return(voltage);
 }
 
 void setup() {
@@ -334,8 +335,9 @@ bool muted = false;
 int lastButton = LOW;
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  float voltage = analogRead(pin);
+  voltage = map(voltage, 20,358,0,100);
+  return(voltage);
 }
 
 void setLed(int pin, bool on) {
@@ -508,8 +510,9 @@ bool useRGB   = false;              // Step 3：RGB
 
 // ===== 以下不用改 =====
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  float voltage = analogRead(pin);
+  voltage = map(voltage, 20,358,0,100);
+  return(voltage);
 }
 
 void setColor(int c[]) {
@@ -679,8 +682,9 @@ bool latched = false;
 int events = 0, lastButton = LOW, tick = 0;
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  float voltage = analogRead(pin);
+  voltage = map(voltage, 20,358,0,100);
+  return(voltage);
 }
 
 void setColor(int c[]) {
@@ -869,8 +873,9 @@ bool acked = false;
 int lastButton = LOW;
 
 float readC(int pin) {
-  float voltage = analogRead(pin) * 5.0 / 1023.0;
-  return (voltage - 0.5) * 100.0;
+  float voltage = analogRead(pin);
+  voltage = map(voltage, 20,358,0,100);
+  return(voltage);
 }
 
 int levelOf(float t, float lo, float hi, float band) {
