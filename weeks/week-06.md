@@ -383,6 +383,8 @@ void loop() {
 }
 ```
 
+<img width="950" height="397" alt="image" src="https://github.com/user-attachments/assets/48aae056-83bb-4a51-946a-829159990828" />
+
 **本關要改的地方**：
 
 | 區塊 | 要做什麼 |
