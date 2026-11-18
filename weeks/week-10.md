@@ -50,8 +50,8 @@
 ### 你已經會的（第 1～9 週）
 
 - ✅ LED、RGB、蜂鳴器、伺服四種輸出元件
-- ✅ 按鈕、旋鈕、光敏電阻、TMP36、HC-SR04 五種輸入元件
-- ✅ 配線技巧：兩燈共腳、光敏電阻反相、全亮全滅顏色接一般腳、逐腳判斷 `~` 腳、伺服共用訊號線、感測器整組對調、借 A 腳
+- ✅ 按鈕、旋鈕、光敏電阻、TMP36、超音波感測器五種輸入元件
+- ✅ 配線技巧：兩燈共腳、光敏電阻反相、全亮全滅顏色接一般腳、逐腳判斷 `~` 腳、伺服共用訊號線、感測器對調 SIG 線、借 A 腳
 - ✅ 「~ 腳可用表」：伺服借走 9、10；蜂鳴器借走 3、11
 
 ### 這週要新學的
@@ -74,7 +74,7 @@
 | 蜂鳴器、光敏電阻 | 第 5 週 |
 | TMP36 | 第 6 週 |
 | 伺服馬達 | 第 7 週 |
-| HC-SR04 | 第 9 週 |
+| 超音波感測器（3 腳：GND、5V、SIG） | 第 9 週 |
 | 直流馬達（DC Motor）、L293D | **本週新增** |
 
 ---
@@ -224,8 +224,8 @@ L293D OUT2 ──┬── 馬達① 腳 2
 | ④ 方向不對 → 對調馬達兩條線 | 不用改程式 |
 | ⑤ 兩顆馬達同步 → 接在同一組 OUT | 不多佔腳 |
 | ⑥ 有伺服，9、10 不能調速；有蜂鳴器，3、11 不能調速 | 兩者都有時只剩 5、6 |
-| ⑦ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | L293D、馬達、HC-SR04、伺服、蜂鳴器、旋鈕、TMP36 不用 |
-| ⑧ Pin 0、1 不用；腳位不夠時借 A 腳 | A 腳也能接 IN 腳、Trig、Echo、燈、按鈕 |
+| ⑦ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | L293D、馬達、超音波感測器、伺服、蜂鳴器、旋鈕、TMP36 不用 |
+| ⑧ Pin 0、1 不用；腳位不夠時借 A 腳 | A 腳也能接 IN 腳、超音波 SIG、燈、按鈕 |
 
 ---
 
@@ -288,7 +288,7 @@ void loop() {
 | 類比讀值檢查器 | 檢查旋鈕、光敏電阻 | 第 5 週 |
 | 溫度讀值檢查器 | 檢查 TMP36 | 第 6 週 |
 | 伺服測試器 | 找伺服角度 | 第 7 週 |
-| 超音波測距檢查器 | 檢查 HC-SR04 | 第 9 週 |
+| 超音波測距檢查器 | 檢查超音波感測器（每顆 SIG 各測一次） | 第 9 週 |
 
 ---
 
@@ -518,7 +518,7 @@ void loop() {
 | --- | --- |
 | **A** | 標準款：上升、下降都全速 |
 | **B** | 捲門很重，客戶要求**下降時慢速（約一半速度）**，避免重重摔下 |
-| **C** | 只裝**一顆按鈕**（按一下上、再按一下下）；店面有**兩扇捲門同步**；門下 HC-SR04 必須接 **A1（Trig）、A2（Echo）** |
+| **C** | 只裝**一顆按鈕**（按一下上、再按一下下）；店面有**兩扇捲門同步**；門下超音波感測器的 SIG 必須接 **A1** |
 
 ### ✏️ ② 接線前決策題
 
@@ -535,7 +535,7 @@ void loop() {
 | 上升鈕／下降鈕 | |
 | 上升中燈／下降中燈 | |
 | 蜂鳴器 | |
-| HC-SR04 Trig／Echo | |
+| 超音波 SIG | |
 
 ### 🔌 ③ 接線任務
 
@@ -550,9 +550,9 @@ void loop() {
 1. 上升中燈、下降中燈各串 220Ω；接好蜂鳴器。
 2. ✅ 檢查：接線驗證器、蜂鳴器測試器。
 
-**Step 3：門下 HC-SR04**
+**Step 3：門下超音波感測器**
 
-1. 接好 HC-SR04。
+1. 超音波感測器的 5V、GND 接電源軌，SIG 接你規劃的腳位。
 2. ✅ 檢查：超音波測距檢查器。
 
 ### 💻 ④ 套用程式模板 T22
@@ -569,7 +569,7 @@ int btnDown = ?;                    // 下降鈕
 int ledUp   = ?;                    // 上升中燈
 int ledDown = ?;                    // 下降中燈
 int pinBuzzer = ?;                  // 提醒蜂鳴器
-int pinTrig = ?, pinEcho = ?;       // 防壓 HC-SR04
+int pinSig = ?;                    // 防壓超音波 SIG
 
 // ----- 參數區 -----
 int runTime   = 4000;               // 從底到頂（或頂到底）要轉幾毫秒
@@ -596,11 +596,13 @@ void motor(int dir, int speed) {
   if (pinEN  >= 0) analogWrite(pinEN, dir == 0 ? 0 : speed);
 }
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -630,7 +632,7 @@ void travel(int dir) {
       tone(pinBuzzer, beepTone, 80);
       lastBeep = millis();
     }
-    if (dir == -1 && useSafety && pinTrig >= 0 && readCM(pinTrig, pinEcho) < safeCM) {
+    if (dir == -1 && useSafety && pinSig >= 0 && readCM(pinSig) < safeCM) {
       motor(0, 0);
       Serial.println("OBSTACLE! Reversing");
       if (useSignal && pinBuzzer >= 0) tone(pinBuzzer, 2000, 300);
@@ -659,7 +661,6 @@ void setup() {
   if (btnDown >= 0) pinMode(btnDown, INPUT);
   if (ledUp >= 0)   pinMode(ledUp, OUTPUT);
   if (ledDown >= 0) pinMode(ledDown, OUTPUT);
-  if (pinTrig >= 0) { pinMode(pinTrig, OUTPUT); pinMode(pinEcho, INPUT); }
   motor(0, 0);
   Serial.begin(9600);
   Serial.println(doorName + " READY (at bottom)");
@@ -683,7 +684,7 @@ void loop() {
 
 | 區塊 | 要做什麼 |
 | --- | --- |
-| 腳位區 | 依接法填；限制卡 B 的 `pinEN` 填 `~` 腳；限制卡 C 的 `btnDown = -1`、`pinTrig = A1`、`pinEcho = A2` |
+| 腳位區 | 依接法填；限制卡 B 的 `pinEN` 填 `~` 腳；限制卡 C 的 `btnDown = -1`、`pinSig = A1` |
 | 參數區 | 限制卡 B 的 `downSpeed` 改成約一半；限制卡 C 的 `oneButton = true` |
 | 功能開關 | Step 2 → `useSignal = true`；Step 3 → `useSafety = true` |
 
@@ -760,7 +761,7 @@ void loop() {
 | --- | --- |
 | L293D EN1／IN1／IN2 | |
 | 速度旋鈕 | |
-| HC-SR04 Trig／Echo | |
+| 超音波 SIG | |
 | 繼續鈕 | |
 | 狀態燈 R／G／B（C：紅、綠、黃三顆） | |
 | 蜂鳴器 | |
@@ -773,9 +774,9 @@ void loop() {
 2. 旋鈕接 A 腳（限制卡 C 不接）。
 3. ✅ 檢查：工具 1（馬達記錄表）、類比讀值檢查器。
 
-**Step 2：HC-SR04＋繼續鈕**
+**Step 2：超音波感測器＋繼續鈕**
 
-1. HC-SR04 裝在輸送帶**末端**，朝向來貨方向；繼續鈕配 10kΩ。
+1. 超音波感測器裝在輸送帶**末端**，朝向來貨方向；繼續鈕配 10kΩ。
 2. ✅ 檢查：超音波測距檢查器。
 
 **Step 3：狀態燈＋蜂鳴器**
@@ -793,7 +794,7 @@ int pinEN  = ?;                     // L293D EN（緩啟動要用 ~ 腳）
 int pinIN1 = -1;                    // L293D IN1（固定接 5V 時填 -1）
 int pinIN2 = -1;                    // L293D IN2（固定接 GND 時填 -1）
 int pinKnob = ?;                    // 速度旋鈕
-int pinTrig = ?, pinEcho = ?;       // 末端 HC-SR04
+int pinSig = ?;                    // 末端超音波 SIG
 int btnResume = ?;                  // 繼續鈕
 int pinR = ?, pinG = ?, pinB = ?;   // 狀態燈
 int pinBuzzer = ?;                  // 蜂鳴器
@@ -825,11 +826,13 @@ void motor(int dir, int speed) {
   if (pinEN  >= 0) analogWrite(pinEN, dir == 0 ? 0 : speed);
 }
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -844,7 +847,6 @@ void setup() {
   if (pinEN >= 0)  pinMode(pinEN, OUTPUT);
   if (pinIN1 >= 0) pinMode(pinIN1, OUTPUT);
   if (pinIN2 >= 0) pinMode(pinIN2, OUTPUT);
-  if (pinTrig >= 0) { pinMode(pinTrig, OUTPUT); pinMode(pinEcho, INPUT); }
   if (btnResume >= 0) pinMode(btnResume, INPUT);
   if (pinR >= 0) pinMode(pinR, OUTPUT);
   if (pinG >= 0) pinMode(pinG, OUTPUT);
@@ -859,7 +861,7 @@ void loop() {
   bool slowing = false;
 
   if (useSensor) {
-    float d = readCM(pinTrig, pinEcho);
+    float d = readCM(pinSig);
     if (d < stopCM && !halted) {
       halted = true;
       delivered++;
@@ -971,7 +973,7 @@ void loop() {
 | 左輪 EN1（IN1、IN2 接哪？） | |
 | 右輪 EN2（IN3、IN4 接哪？） | |
 | 左、右循線光敏電阻 | |
-| HC-SR04 Trig／Echo | |
+| 超音波 SIG | |
 | 蜂鳴器 | |
 | 啟動／停止鈕 | |
 | 貨叉伺服（C：到站燈） | |
@@ -985,9 +987,9 @@ void loop() {
 3. 兩顆光敏電阻各配 10kΩ，左邊的接 A0、右邊的接 A1（限制卡 B 用反相接法）。
 4. ✅ 檢查：工具 1（左右輪各測一次）、類比讀值檢查器（記錄「看到線／沒看到線」的讀值）。
 
-**Step 2：HC-SR04＋蜂鳴器**
+**Step 2：超音波感測器＋蜂鳴器**
 
-1. HC-SR04 裝在車頭朝前；接好蜂鳴器。
+1. 超音波感測器裝在車頭朝前；接好蜂鳴器。
 2. ✅ 檢查：超音波測距檢查器、蜂鳴器測試器。
 
 **Step 3：貨叉伺服（限制卡 C：到站燈）**
@@ -1005,7 +1007,7 @@ void loop() {
 int enLeft  = ?;                    // 左輪 EN（~ 腳；IN 腳固定接 5V／GND）
 int enRight = ?;                    // 右輪 EN（~ 腳）
 int ldrLeft = A0, ldrRight = A1;    // 左、右循線光敏電阻
-int pinTrig = ?, pinEcho = ?;       // 前方 HC-SR04
+int pinSig = ?;                    // 前方超音波 SIG
 int pinBuzzer = ?;                  // 蜂鳴器
 int btnStart  = ?;                  // 啟動／停止鈕
 int pinFork   = ?;                  // 貨叉伺服（沒有就填 -1）
@@ -1029,11 +1031,13 @@ Servo fork;
 bool running = false;
 int lastStart = LOW, tick = 0;
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -1047,7 +1051,6 @@ void setup() {
   if (pinFork >= 0) { fork.attach(pinFork); fork.write(forkDown); }
   pinMode(enLeft, OUTPUT);
   pinMode(enRight, OUTPUT);
-  if (pinTrig >= 0) { pinMode(pinTrig, OUTPUT); pinMode(pinEcho, INPUT); }
   pinMode(btnStart, INPUT);
   if (ledStation >= 0) pinMode(ledStation, OUTPUT);
   Serial.begin(9600);
@@ -1066,7 +1069,7 @@ void loop() {
   if (!running) { drive(0, 0); delay(50); return; }
 
   // ---- 避障：最優先 ----
-  if (useObstacle && readCM(pinTrig, pinEcho) < stopCM) {
+  if (useObstacle && readCM(pinSig) < stopCM) {
     drive(0, 0);
     if (tick % 10 == 0) {
       if (pinBuzzer >= 0) tone(pinBuzzer, 1500, 150);
@@ -1149,9 +1152,9 @@ void loop() {
 > | --- | --- | --- | --- | --- |
 > | Lv.1 | 手搖飲店果汁機 | T21 | L293D＋馬達＋按鈕＋3 LED | 三段速、`~` 腳只剩一隻 |
 > | Lv.2 | 機房散熱風扇 | T21 | L293D＋2 馬達＋TMP36＋旋鈕＋按鈕＋LED | 溫度自動、兩顆並聯 |
-> | Lv.3 | 住家車庫捲門 | T22 | L293D＋馬達＋按鈕＋4 LED＋蜂鳴器＋HC-SR04 | 單鈕、兩燈共腳、避開被佔腳位 |
-> | Lv.4 | 麵包店出爐輸送帶 | T23 | L293D＋2 馬達＋HC-SR04＋按鈕＋3 LED＋蜂鳴器 | `~` 腳只剩一隻 |
-> | Lv.5 | 倉庫夜間巡檢車 | T24 | L293D＋4 馬達＋2 光敏電阻＋HC-SR04＋伺服＋蜂鳴器＋按鈕＋LED | **腳位剛好用完** |
+> | Lv.3 | 住家車庫捲門 | T22 | L293D＋馬達＋按鈕＋4 LED＋蜂鳴器＋超音波感測器 | 單鈕、兩燈共腳、避開被佔腳位 |
+> | Lv.4 | 麵包店出爐輸送帶 | T23 | L293D＋2 馬達＋超音波感測器＋按鈕＋3 LED＋蜂鳴器 | `~` 腳只剩一隻 |
+> | Lv.5 | 倉庫夜間巡檢車 | T24 | L293D＋4 馬達＋2 光敏電阻＋超音波感測器＋伺服＋蜂鳴器＋按鈕＋LED | **腳位只剩 1 隻** |
 > | Lv.6 | 顧問提案 | 自選 | 自訂 | 自己設計情境 |
 >
 > 📌 **作答規則**：先填「接法選擇」「腳位規劃表」「參數修改表」，再接線；接好後先用工具檢查，最後才上傳程式。Lv.3 之後每關要附**配線設計單**。
@@ -1214,7 +1217,7 @@ void loop() {
 
 **情境**：住家車庫的捲門，牆上只有**一顆按鈕**：按一下上升、再按一下下降，全程約 **5 秒**。上升中亮綠燈、下降中亮紅燈，蜂鳴器間歇提醒。**車庫裡、車庫外各一組綠紅燈**，同步顯示。下降時門下 **40 cm** 內有東西就停止並上升 1.5 秒。
 
-**元件**：L293D＋直流馬達＋1 顆按鈕＋4 顆單色 LED＋1 顆蜂鳴器＋1 顆 HC-SR04
+**元件**：L293D＋直流馬達＋1 顆按鈕＋4 顆單色 LED＋1 顆蜂鳴器＋1 顆超音波感測器
 
 **套用模板**：T22
 
@@ -1246,7 +1249,7 @@ void loop() {
 
 **情境**：麵包店的出爐區有**兩條並排輸送帶**，固定速度 **150** 同步運轉，啟動和停止都要**緩慢變化**（避免麵包滑落）。末端超音波：麵包接近（25 cm 內）減速到一半，到末端（8 cm 內）停止，店員拿走麵包按「繼續鈕」再走。狀態用**紅、綠、黃三顆單色燈**，停止時蜂鳴器提醒。
 
-**元件**：L293D＋2 顆直流馬達＋1 顆 HC-SR04＋1 顆按鈕＋3 顆單色 LED＋1 顆蜂鳴器
+**元件**：L293D＋2 顆直流馬達＋1 顆超音波感測器＋1 顆按鈕＋3 顆單色 LED＋1 顆蜂鳴器
 
 **套用模板**：T23
 
@@ -1280,7 +1283,7 @@ void loop() {
 
 **情境**：冷鏈倉庫的夜間巡檢車，沿地上的**反光膠帶**（比地面亮）行駛；車子是**四輪驅動**（左右各兩顆馬達）。前方 **30 cm** 有障礙就停車鳴叫。到站點（兩側都看到膠帶）時停車，**相機雲台（伺服）**左右轉一圈拍照，到站燈亮 2 秒，再繼續。
 
-**元件**：L293D＋4 顆直流馬達＋2 顆光敏電阻＋1 顆 HC-SR04＋1 顆伺服＋1 顆蜂鳴器＋1 顆按鈕＋1 顆單色 LED
+**元件**：L293D＋4 顆直流馬達＋2 顆光敏電阻＋1 顆超音波感測器＋1 顆伺服＋1 顆蜂鳴器＋1 顆按鈕＋1 顆單色 LED
 
 **套用模板**：T24
 
@@ -1292,7 +1295,7 @@ void loop() {
 | --- | --- | --- | --- |
 | 左、右輪 EN | 2 | | |
 | 左、右光敏電阻 | 2（A 腳） | — | |
-| HC-SR04 | 2 | | |
+| 超音波感測器 | 1 | | |
 | 伺服 | 1 | | |
 | 蜂鳴器 | 1 | | |
 | 啟動鈕 | 1 | | |
