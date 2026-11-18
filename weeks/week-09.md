@@ -6,9 +6,9 @@
 
 ## 主題專案：讓系統知道「東西離我多遠」
 
-> 🎯 **本週定位**：期中專題結束，顧問公司接案能力大增。這一週加入新感官：**超音波測距感測器 HC-SR04**。前面學過的感測器只能回答「亮不亮」「熱不熱」，超音波可以直接回答「**離我幾公分**」。
+> 🎯 **本週定位**：期中專題結束，顧問公司接案能力大增。這一週加入新感官：**超音波測距感測器 PING)))**（Tinkercad 元件庫裡的 3 腳超音波）。前面學過的感測器只能回答「亮不亮」「熱不熱」，超音波可以直接回答「**離我幾公分**」。
 >
-> 超音波一顆就佔 **2 隻腳**，系統裡有兩顆就是 4 隻，**一般腳位不夠、要借 A 腳**是本週最大的配線挑戰。另外，感測器「裝在哪裡、朝哪裡看」決定了量到的數字代表什麼——這是本週最重要的情境思考。
+> 超音波只有 **3 隻腳**（GND、5V、SIG），一顆只佔 **1 隻訊號腳**——同一隻 SIG 腳**先發射、再接收**。腳位雖然省，但加上伺服、燈號、蜂鳴器之後，**一般腳位不夠、要借 A 腳**仍是本週的配線挑戰。另外，感測器「裝在哪裡、朝哪裡看」決定了量到的數字代表什麼——這是本週最重要的情境思考。
 >
 > 每一個關卡照「五個固定環節」進行：抽**客戶限制卡** → 回答**接線前決策題** → 照**接線任務**一步步接 → 套用**程式模板**（只改腳位區、參數區） → 完成**配線變化挑戰**（程式一個字都不改，只改線）。
 >
@@ -20,7 +20,7 @@
 
 - [學習地圖](#學習地圖)
 - [開場任務簡報](#開場任務簡報)
-- [認識新元件：超音波測距感測器 HC-SR04](#認識新元件超音波測距感測器-hc-sr04)
+- [認識新元件：超音波測距感測器 PING)))](#認識新元件超音波測距感測器-ping)
 - [本週配線新技巧](#本週配線新技巧)
 - [配線口訣卡](#配線口訣卡)
 - [共用工具](#共用工具)
@@ -59,9 +59,9 @@
 
 | 新東西 | 白話說明 | 在職場上像什麼 |
 | --- | --- | --- |
-| 超音波感測器 HC-SR04 | 發出聲波、聽回音，算出前方物體距離 | 倒車雷達、感應水龍頭、水位計 |
+| 超音波感測器 PING))) | 發出聲波、聽回音，算出前方物體距離 | 倒車雷達、感應水龍頭、水位計 |
 | 安裝位置換算 | 感測器量到的是「到我的距離」，要換算成客戶真正想知道的數字 | 從天花板量身高、從桶頂量垃圾高度 |
-| 兩顆感測器角色互換 | 入口、出口裝反了，對調兩組線就好 | 現場施工裝錯位置的快速修正 |
+| 兩顆感測器角色互換 | 入口、出口裝反了，對調兩條 SIG 線就好 | 現場施工裝錯位置的快速修正 |
 | 程式模板 T17～T20 | 本週四個新模板 | 公司的標準表單 |
 
 ### 本週可用元件（只限這些）
@@ -74,7 +74,7 @@
 | 蜂鳴器、光敏電阻 | 第 5 週 |
 | TMP36 | 第 6 週 |
 | 伺服馬達 | 第 7 週 |
-| 超音波感測器 HC-SR04 | **本週新增** |
+| 超音波感測器 PING))) | **本週新增** |
 
 ---
 
@@ -91,53 +91,59 @@
 
 ---
 
-## 認識新元件：超音波測距感測器 HC-SR04
+## 認識新元件：超音波測距感測器 PING)))
 
 ### 它怎麼量距離？
 
-HC-SR04 正面有兩個圓筒，像一對「眼睛」，其實是**一張嘴和一隻耳朵**：
+PING))) 正面有兩個圓筒，像一對「眼睛」，其實是**一張嘴和一隻耳朵**。特別的是：嘴巴和耳朵**共用同一隻訊號腳 SIG**。
 
 ```
-   ┌──────────────────────┐
-   │  (Trig)       (Echo)  │   ← 一個發出聲波，一個聽回音
-   │   嘴巴          耳朵   │
-   └──┬────┬────┬────┬────┘
-     VCC  Trig Echo  GND
+   ┌──────────────────────────────┐
+   │   (嘴巴)            (耳朵)    │   ← 一個發出聲波，一個聽回音
+   │            PING)))           │
+   └───────────┬─────┬─────┬──────┘
+              GND    5V   SIG        ← 只有 3 隻腳
 ```
 
-1. 「嘴巴」發出人耳聽不到的超音波
+1. 程式先把 SIG 當「**輸出**」，送出一個極短的訊號，「嘴巴」發出人耳聽不到的超音波
 2. 聲波撞到前方物體反彈回來
-3. 「耳朵」聽到回音，系統計算來回花了多久，換算成公分
+3. 程式馬上把 SIG 改成「**輸入**」，「耳朵」聽到回音後，SIG 會送回一段訊號，長度就是聲波來回花的時間，再換算成公分
 
 > 🦇 蝙蝠、潛水艇的聲納、汽車倒車雷達都是同樣的原理。
+>
+> 📻 同一隻腳「先講、再聽」，就像對講機：按著說話、放開才聽得到。這個切換**由程式自動完成**，接線時不用管。
 
-### 接法：4 隻腳，不用電阻
+### 接法：3 隻腳，不用電阻
 
-| HC-SR04 的腳 | 接到哪裡 |
+| PING))) 的腳 | 接到哪裡 |
 | --- | --- |
-| VCC | 5V |
-| Trig（發射） | 任何一隻數位腳位（也可以借 A 腳） |
-| Echo（接收） | 任何一隻數位腳位（也可以借 A 腳） |
 | GND | GND |
+| 5V | 5V |
+| SIG（訊號） | 任何一隻數位腳位（也可以借 A 腳） |
 
-- Trig、Echo 接**一般腳位就可以**，不需要 `~` 腳——把 `~` 腳留給要調光的燈。
-- **一顆 HC-SR04 佔 2 隻腳**。系統裡有兩顆，就要 4 隻。
-- 在 Tinkercad 元件庫搜尋「Ultrasonic Distance Sensor」，選 **4 隻腳**的版本（HC-SR04）。開始模擬後**點一下感測器**，前方會出現一個可以拖曳的小圓點，代表「物體」。把它拉近拉遠，就能模擬距離變化。
+- SIG 接**一般腳位就可以**，不需要 `~` 腳——把 `~` 腳留給要調光的燈。
+- **一顆 PING))) 只佔 1 隻腳**。系統裡有兩顆，就是 2 隻。
+- 在 Tinkercad 元件庫搜尋「超音波距離感測器」（Ultrasonic Distance Sensor），板子上印著 **PING)))**，腳位由左到右是 **GND、5V、SIG**（接線前先看清楚板子上的標示）。開始模擬後**點一下感測器**，前方會出現一個可以拖曳的小圓點，代表「物體」。把它拉近拉遠，就能模擬距離變化。
+- ⚠️ 網路上很多範例用的是 **4 隻腳的 HC-SR04**（Trig、Echo 分開兩隻腳），程式寫法不同，**不能直接拿來用**。
 
 ### 程式裡的「距離翻譯機」
 
-本週所有模板都附上同一個函式，你**不需要修改它**，只要知道它會回傳「幾公分」：
+本週所有模板都附上同一個函式，你**不需要修改它**，只要知道：給它 **SIG 接的那一隻腳**，它就會回傳「幾公分」。
 
 ```cpp
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);   // 發出一聲超音波
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);               // 等回音，最多等 30 毫秒
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);                              // SIG 先當「嘴巴」
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);     // 發出一聲超音波
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);                               // SIG 改當「耳朵」
+  long t = pulseIn(sig, HIGH, 30000);                // 等回音，最多等 30 毫秒
   if (t == 0) return 999;                            // 沒聽到回音：當作很遠
   return t / 58.0;                                   // 時間換算成公分
 }
 ```
+
+> 💡 這個函式每次都會自己切換 SIG 的輸出／輸入，所以 `setup()` 裡**不用**替超音波寫 `pinMode`。
 
 ---
 
@@ -156,20 +162,22 @@ float readCM(int trig, int echo) {
 
 > 💡 和第 7 週的伺服一樣：**換算是參數區的事，不是改線的事**。本週模板都有「安裝高度」或「深度」參數，填對就會自動換算。
 
-### 技巧 2：兩顆感測器角色互換 → 對調兩組線
+### 技巧 2：兩顆感測器角色互換 → 對調兩條 SIG 線
 
-系統有兩顆 HC-SR04（例如入口、出口），現場卻發現裝反了：
+系統有兩顆 PING)))（例如入口、出口），現場卻發現裝反了：
 
 ```
-原本：入口那顆 → Pin 7、8（程式當作入口）    出口那顆 → Pin 12、13（程式當作出口）
-修正：把兩顆感測器的 Trig、Echo 線「整組」對調，程式一個字都不用改
+原本：入口那顆 SIG → Pin 7（程式當作入口）    出口那顆 SIG → Pin 8（程式當作出口）
+修正：兩顆感測器的 SIG 線對調（入口那顆改插 Pin 8、出口那顆改插 Pin 7），程式一個字都不用改
 ```
 
-> ⚠️ 要**整組**對調（Trig 跟 Trig 換、Echo 跟 Echo 換），只換一條會兩顆都量不到。
+> ⚠️ 兩條 SIG 線要**互換**。只把一條移過去，會變成兩顆接在同一隻腳、另一隻腳空著，量到的數字會亂跳或一直是 999。
+>
+> 💡 5V、GND 接在電源軌上，兩顆共用，**不用動**。
 
-### 技巧 3：Trig、Echo 可以借 A 腳
+### 技巧 3：SIG 可以借 A 腳
 
-A0～A5 也能當數位腳用。兩顆超音波＋伺服＋燈號時，一般腳常常不夠，把 Trig、Echo 搬到 A 腳是最常見的解法——但**旋鈕、光敏電阻、TMP36 只能接 A 腳**，借之前先保留它們的位置。
+A0～A5 也能當數位腳用。兩顆超音波＋伺服＋燈號時，一般腳常常不夠，把 SIG 搬到 A 腳是最常見的解法——但**旋鈕、光敏電阻、TMP36 只能接 A 腳**，借之前先保留它們的位置。
 
 ---
 
@@ -177,12 +185,12 @@ A0～A5 也能當數位腳用。兩顆超音波＋伺服＋燈號時，一般腳
 
 | 口訣 | 說明 |
 | --- | --- |
-| ① **HC-SR04：VCC 5V、Trig、Echo、GND** | 不用電阻，一顆佔 2 隻腳 |
-| ② Trig、Echo 不要佔 `~` 腳 | 把 `~` 腳留給需要調光的燈 |
+| ① **PING)))：GND、5V、SIG** | 不用電阻，一顆只佔 1 隻腳 |
+| ② SIG 不要佔 `~` 腳 | 把 `~` 腳留給需要調光的燈 |
 | ③ 先想「站在哪、看向哪」，換算填在參數區 | 量身高、水位、垃圾高度都要換算 |
-| ④ 兩顆感測器裝反 → 整組對調 Trig、Echo 線 | 程式不用改 |
+| ④ 兩顆感測器裝反 → 對調兩條 SIG 線 | 程式不用改 |
 | ⑤ 有伺服，9、10 不能調光；有蜂鳴器，3、11 不能調光 | 兩者都有時只剩 5、6 |
-| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | HC-SR04、伺服、蜂鳴器、旋鈕、TMP36 不用 |
+| ⑥ 每條燈線一顆 220Ω；按鈕、光敏電阻一顆 10kΩ | PING)))、伺服、蜂鳴器、旋鈕、TMP36 不用 |
 | ⑦ Pin 0、1 不用；腳位不夠時借 A 腳 | 先保留旋鈕、光敏電阻、TMP36 的 A 腳 |
 
 ---
@@ -191,40 +199,39 @@ A0～A5 也能當數位腳用。兩顆超音波＋伺服＋燈號時，一般腳
 
 ### 🔧 工具 1：超音波測距檢查器
 
-接好 HC-SR04 後先跑這支。拖曳 Tinkercad 前方的小圓點，確認 Serial Monitor 顯示的公分數**跟畫面上標示的距離差不多**。有兩顆感測器時，**每一顆都要各測一次**。
+接好 PING))) 後先跑這支。拖曳 Tinkercad 前方的小圓點，確認 Serial Monitor 顯示的公分數**跟畫面上標示的距離差不多**。有兩顆感測器時，**每一顆都要各測一次**。
 
 ```cpp
-int pinTrig = 7;   // ← 改成你 Trig 接的腳位
-int pinEcho = 8;   // ← 改成你 Echo 接的腳位
+int pinSig = 7;    // ← 改成你 SIG 接的腳位
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
 
 void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
   Serial.begin(9600);
 }
 
 void loop() {
   Serial.print("Distance: ");
-  Serial.print(readCM(pinTrig, pinEcho));
+  Serial.print(readCM(pinSig));
   Serial.println(" cm");
   delay(200);
 }
 ```
 
-**檢查標準**：小圓點拉到 50 cm 附近，顯示約 48～52 cm。如果一直顯示 999，先檢查 Trig、Echo 有沒有接反。
+**檢查標準**：小圓點拉到 50 cm 附近，顯示約 48～52 cm。如果一直顯示 999，先檢查 SIG 是否接在程式寫的腳位、5V 和 GND 有沒有接上。
 
 **距離記錄表**（每顆感測器都要填）：
 
-| 感測器 | Trig／Echo 接在 | 小圓點 20 cm 時顯示 | 小圓點 100 cm 時顯示 | 朝向（看什麼？） |
+| 感測器 | SIG 接在 | 小圓點 20 cm 時顯示 | 小圓點 100 cm 時顯示 | 朝向（看什麼？） |
 | --- | --- | --- | --- | --- |
 | 第 1 顆 | | | | |
 | 第 2 顆 | | | | |
@@ -260,7 +267,7 @@ void loop() {
 
 ## 關卡 1：感應式給皂機（模板 T17）
 
-⭐ **難度**：HC-SR04 ＋ LED，再逐步加蜂鳴器與旋鈕
+⭐ **難度**：PING))) ＋ LED，再逐步加蜂鳴器與旋鈕
 
 ### 📖 情境
 
@@ -268,8 +275,8 @@ void loop() {
 
 ### 🎯 本關配線學習目標
 
-- 第一次接 HC-SR04，用測距檢查器確認讀值
-- 判斷 Trig、Echo 要不要 `~` 腳，練習借 A 腳
+- 第一次接 PING)))，用測距檢查器確認讀值
+- 判斷 SIG 要不要 `~` 腳，練習借 A 腳
 
 ### 🃏 ① 客戶限制卡
 
@@ -277,11 +284,11 @@ void loop() {
 | --- | --- |
 | **A** | 標準款：一個出皂口、一顆出皂燈 |
 | **B** | 洗手台控制盒已佔用 **Pin 7～13**；**兩個出皂口同步**出皂，兩顆出皂燈只能用 **1 隻腳** |
-| **C** | 客戶要「可使用」**綠色待機燈**（沒有手時亮）＋**藍色出皂燈**；蜂鳴器必須接 **A1**，HC-SR04 必須接 **A2（Trig）、A3（Echo）** |
+| **C** | 客戶要「可使用」**綠色待機燈**（沒有手時亮）＋**藍色出皂燈**；蜂鳴器必須接 **A1**，超音波的 SIG 必須接 **A2** |
 
 ### ✏️ ② 接線前決策題
 
-1. HC-SR04 需要電阻嗎？Trig、Echo 需要 `~` 腳嗎？
+1. PING))) 需要電阻嗎？SIG 需要 `~` 腳嗎？
 2. 給皂機的感測器要裝在出皂口的哪裡、朝哪個方向？畫出示意圖。
 3. 限制卡 B：Pin 7～13 不能用，剩下哪些腳？夠不夠接所有元件？兩顆出皂燈怎麼接？
 4. 限制卡 C：待機燈要填在模板的哪個腳位？旋鈕還能接 A0 嗎？
@@ -290,8 +297,7 @@ void loop() {
 
 | 元件 | 腳位 |
 | --- | --- |
-| HC-SR04 Trig | |
-| HC-SR04 Echo | |
+| 超音波 SIG | |
 | 出皂燈（B：兩顆共用） | |
 | 待機燈（限制卡 C） | |
 | 蜂鳴器 | |
@@ -299,9 +305,9 @@ void loop() {
 
 ### 🔌 ③ 接線任務
 
-**Step 1：HC-SR04＋出皂燈**
+**Step 1：PING)))＋出皂燈**
 
-1. HC-SR04 的 VCC 接 5V 軌、GND 接 GND 軌，Trig、Echo 接你規劃的腳位。
+1. 超音波的 5V 接 5V 軌、GND 接 GND 軌，SIG 接你規劃的腳位。
 2. 出皂燈（限制卡 C 再加待機燈）各串 220Ω。
 3. ✅ 檢查：**工具 1**（填距離記錄表）、接線驗證器。
 
@@ -321,8 +327,7 @@ void loop() {
 // ===== 程式模板 T17：近接觸發 =====
 
 // ----- 腳位區（沒接的元件填 -1）-----
-int pinTrig   = ?;                  // HC-SR04 Trig
-int pinEcho   = ?;                  // HC-SR04 Echo
+int pinSig    = ?;                  // 超音波 SIG
 int ledAction = ?;                  // 動作燈（偵測到時亮）
 int ledIdle   = -1;                 // 待機燈（沒偵測到時亮）
 int pinBuzzer = ?;                  // 提示蜂鳴器
@@ -345,11 +350,13 @@ bool wasNear = false, counted = false;
 unsigned long nearSince = 0;
 int count = 0;
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -360,8 +367,6 @@ void setLights(bool on) {
 }
 
 void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
   if (ledAction >= 0) pinMode(ledAction, OUTPUT);
   if (ledIdle >= 0)   pinMode(ledIdle, OUTPUT);
   setLights(false);
@@ -373,7 +378,7 @@ void loop() {
     triggerCM = map(analogRead(pinKnob), 0, 1023, knobMinCM, knobMaxCM);
   }
 
-  float d = readCM(pinTrig, pinEcho);
+  float d = readCM(pinSig);
   bool near = d < triggerCM;
   if (near && !wasNear) nearSince = millis();               // 剛偵測到，開始計時
   bool confirmed = near && (millis() - nearSince >= (unsigned long)confirmTime);
@@ -407,7 +412,7 @@ void loop() {
 
 | 區塊 | 要做什麼 |
 | --- | --- |
-| 腳位區 | 依腳位規劃表填入；限制卡 C 的 `pinTrig = A2`、`pinEcho = A3`、`pinBuzzer = A1`，`ledIdle` 填綠燈腳位 |
+| 腳位區 | 依腳位規劃表填入；限制卡 C 的 `pinSig = A2`、`pinBuzzer = A1`，`ledIdle` 填綠燈腳位 |
 | 參數區 | 本關不用改（`actionTime = 800` 就是出皂 0.8 秒） |
 | 功能開關 | Step 2 → `useBuzzer = true`；Step 3 → `useKnob = true` |
 
@@ -427,7 +432,7 @@ void loop() {
 
 ### ✅ 關卡 1 驗收
 
-- [ ] 距離記錄表已填，Trig、Echo 沒有佔用 `~` 腳
+- [ ] 距離記錄表已填，SIG 沒有佔用 `~` 腳
 - [ ] 手（小圓點）靠近時給皂一次，不拿開不會重複給；給皂時嗶一聲
 - [ ] 旋鈕能調整感應距離（Serial Monitor 的 trigger 數值會變）
 - [ ] 依限制卡完成（B：兩燈同步；C：待機綠燈、A 腳配置正確）
@@ -439,7 +444,7 @@ void loop() {
 
 ## 關卡 2：停車格倒車引導（模板 T18）
 
-⭐⭐ **難度**：HC-SR04 ＋ RGB ＋ 蜂鳴器 ＋ 長條燈（注意蜂鳴器借走 3、11）
+⭐⭐ **難度**：PING))) ＋ RGB ＋ 蜂鳴器 ＋ 長條燈（注意蜂鳴器借走 3、11）
 
 ### 📖 情境
 
@@ -476,16 +481,16 @@ void loop() {
 
 | 元件 | 腳位 | 是不是 `~` 腳？ |
 | --- | --- | --- |
-| HC-SR04 Trig／Echo | | |
+| PING))) SIG | | |
 | RGB 的 R／G／B（B：紅、綠、黃三顆燈） | | |
 | 蜂鳴器 | | |
 | 長條燈 × 5（C：× 3），由遠到近 | | |
 
 ### 🔌 ③ 接線任務
 
-**Step 1：HC-SR04＋RGB（或三顆單色燈）**
+**Step 1：PING)))＋RGB（或三顆單色燈）**
 
-1. HC-SR04 接法同關卡 1。
+1. PING))) 接法同關卡 1。
 2. RGB 三條腳各串 220Ω（限制卡 B：三顆單色燈各串 220Ω）。
 3. ✅ 檢查：工具 1、接線驗證器。
 
@@ -505,7 +510,7 @@ void loop() {
 // ===== 程式模板 T18：距離分段指示 =====
 
 // ----- 腳位區（沒接的元件填 -1）-----
-int pinTrig = ?, pinEcho = ?;       // HC-SR04
+int pinSig = ?;                    // 超音波 SIG
 int pinR = ?, pinG = ?, pinB = ?;   // 狀態 RGB（或三顆單色燈）
 int pinBuzzer = ?;                  // 蜂鳴器
 int bar[5] = { ?, ?, ?, ?, ? };     // 長條燈（由遠到近；沒接的填 -1）
@@ -529,11 +534,13 @@ bool useBuzzer = false;             // Step 2：蜂鳴器
 bool useBar    = false;             // Step 3：長條燈
 
 // ===== 以下不用改 =====
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -545,8 +552,6 @@ void setColor(int c[]) {
 }
 
 void setup() {
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
   if (pinR >= 0) pinMode(pinR, OUTPUT);
   if (pinG >= 0) pinMode(pinG, OUTPUT);
   if (pinB >= 0) pinMode(pinB, OUTPUT);
@@ -555,7 +560,7 @@ void setup() {
 }
 
 void loop() {
-  float d = readCM(pinTrig, pinEcho);
+  float d = readCM(pinSig);
   float v = (mountCM > 0) ? (mountCM - d) : d;             // 安裝位置換算
   if (mountCM > 0 && v < 0) v = 0;
 
@@ -625,7 +630,7 @@ void loop() {
 
 ## 關卡 3：智慧垃圾桶（模板 T19）
 
-⭐⭐⭐ **難度**：**2 顆 HC-SR04**（一顆朝外、一顆朝內）＋ 伺服 ＋ 容量燈 ＋ 滿桶連鎖
+⭐⭐⭐ **難度**：**2 顆 PING)))**（一顆朝外、一顆朝內）＋ 伺服 ＋ 容量燈 ＋ 滿桶連鎖
 
 ### 📖 情境
 
@@ -637,7 +642,7 @@ void loop() {
 
 ### 🎯 本關配線學習目標
 
-- 兩顆 HC-SR04 在麵包板上分區擺放，不混淆
+- 兩顆 PING))) 在麵包板上分區擺放，不混淆
 - 用「深度」參數完成安裝位置換算
 - 一般腳不夠時，決定把誰搬到 A 腳
 
@@ -653,7 +658,7 @@ void loop() {
 
 1. 畫出垃圾桶示意圖：兩顆感測器各裝在哪裡、朝哪裡看？
 2. 桶內感測器量到 9 cm，表示垃圾裝了幾成滿？請寫出換算過程（限制卡 B 用 80 cm 算）。
-3. 本關一般腳位需要幾隻？（兩顆 HC-SR04、伺服、3 顆燈、蜂鳴器、按鈕）限制卡 B 的可用腳位夠嗎？不夠要借幾隻 A 腳？
+3. 本關一般腳位需要幾隻？（兩顆 PING)))、伺服、3 顆燈、蜂鳴器、按鈕）限制卡 B 的可用腳位夠嗎？不夠要借幾隻 A 腳？
 4. 麵包板上怎麼擺，才不會把「桶外」和「桶內」的線接錯？
 5. 限制卡 C：「不鎖蓋、只提醒」要改哪個參數？兩顆伺服怎麼接？
 
@@ -661,8 +666,8 @@ void loop() {
 
 | 元件 | 腳位 |
 | --- | --- |
-| 桶外 HC-SR04 Trig／Echo | |
-| 桶內 HC-SR04 Trig／Echo | |
+| 桶外 PING))) SIG | |
+| 桶內 PING))) SIG | |
 | 桶蓋伺服（C：兩顆共用） | |
 | 容量燈：少／半滿／快滿 | |
 | 蜂鳴器 | |
@@ -670,12 +675,12 @@ void loop() {
 
 ### 🔌 ③ 接線任務
 
-**Step 1：桶外 HC-SR04＋伺服**
+**Step 1：桶外 PING)))＋伺服**
 
 1. 桶外感測器放在麵包板**左側**，伺服的紅線接 5V 軌、棕線接 GND 軌、橘線接你規劃的腳位。
 2. ✅ 檢查：工具 1（桶外那顆）、伺服測試器（填角度記錄表：蓋子「關」和「開」各是幾度？）。
 
-**Step 2：桶內 HC-SR04＋容量燈**
+**Step 2：桶內 PING)))＋容量燈**
 
 1. 桶內感測器放在麵包板**右側**，和桶外那顆分開。
 2. 三顆容量燈各串 220Ω。
@@ -693,8 +698,8 @@ void loop() {
 #include <Servo.h>
 
 // ----- 腳位區（沒接的元件填 -1）-----
-int trigOut = ?, echoOut = ?;       // 外側 HC-SR04（偵測人）
-int trigIn  = ?, echoIn  = ?;       // 內側 HC-SR04（偵測容量）
+int sigOut = ?;                     // 外側超音波 SIG（偵測人）
+int sigIn  = ?;                     // 內側超音波 SIG（偵測容量）
 int pinServo = ?;                   // 蓋子（門）伺服
 int fillLed[3] = { ?, ?, ? };       // 容量燈：少、半滿、快滿
 int pinBuzzer  = ?;                 // 蜂鳴器
@@ -723,11 +728,13 @@ bool lidOpen = false, wasFull = false;
 unsigned long lastNear = 0;
 int lastService = LOW, tick = 0;
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -743,7 +750,7 @@ void closeLid() {                                          // 關蓋途中有人
   for (int a = openAngle; a != closedAngle; a += step) {
     lid.write(a);
     delay(sweepDelay);
-    if (a % 10 == 0 && readCM(trigOut, echoOut) < openCM) {
+    if (a % 10 == 0 && readCM(sigOut) < openCM) {
       sweepTo(a, openAngle);
       lastNear = millis();
       if (useService && pinBuzzer >= 0) tone(pinBuzzer, 1500, 200);
@@ -759,8 +766,6 @@ void closeLid() {                                          // 關蓋途中有人
 void setup() {
   lid.attach(pinServo);
   lid.write(closedAngle);
-  pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT);
-  if (trigIn >= 0) { pinMode(trigIn, OUTPUT); pinMode(echoIn, INPUT); }
   for (int i = 0; i < 3; i++) if (fillLed[i] >= 0) pinMode(fillLed[i], OUTPUT);
   if (btnService >= 0) pinMode(btnService, INPUT);
   Serial.begin(9600);
@@ -772,7 +777,7 @@ void loop() {
   // ---- 內側：裝了幾成滿？ ----
   bool full = false;
   if (useFill) {
-    float dIn = readCM(trigIn, echoIn);
+    float dIn = readCM(sigIn);
     int level = constrain((int)((depthCM - dIn) / depthCM * 100), 0, 100);   // 安裝位置換算
     int idx = 0;
     if (level >= fullLine)     idx = 2;
@@ -816,7 +821,7 @@ void loop() {
   }
 
   // ---- 外側：有人靠近就開蓋 ----
-  float dOut = readCM(trigOut, echoOut);
+  float dOut = readCM(sigOut);
   if (dOut < openCM) {
     lastNear = millis();
     if (!lidOpen) {
@@ -867,7 +872,7 @@ void loop() {
 
 ## 關卡 4：停車場出入口管理（模板 T20）
 
-⭐⭐⭐⭐ **難度**：入口、出口**各一顆 HC-SR04** ＋ 伺服柵欄 ＋ 看板燈 ＋ 蜂鳴器 ＋ 剩餘車位燈 ＋ 旋鈕 → **一般腳不夠，要借 A 腳**
+⭐⭐⭐⭐ **難度**：入口、出口**各一顆 PING)))** ＋ 伺服柵欄 ＋ 看板燈 ＋ 蜂鳴器 ＋ 剩餘車位燈 ＋ 旋鈕 → **完整腳位預算：一般腳、A 腳、`~` 腳一起算**
 
 ### 📖 情境
 
@@ -903,8 +908,8 @@ void loop() {
 | 元件 | 需要幾隻腳 | 腳位 |
 | --- | --- | --- |
 | 總車位旋鈕 | 1（A 腳） | A0 |
-| 入口 HC-SR04 Trig／Echo | 2 | |
-| 出口 HC-SR04 Trig／Echo | 2 | |
+| 入口超音波 SIG | 1 | |
+| 出口超音波 SIG | 1 | |
 | 柵欄伺服（B：兩顆共用） | 1 | |
 | 看板燈 R／G／B（C：三顆單色燈） | 3 | |
 | 蜂鳴器 | 1 | |
@@ -915,12 +920,12 @@ void loop() {
 
 ### 🔌 ③ 接線任務
 
-**Step 1：入口 HC-SR04＋伺服＋蜂鳴器**
+**Step 1：入口 PING)))＋伺服＋蜂鳴器**
 
 1. 入口感測器放在麵包板**左側**；柵欄伺服（限制卡 B：兩顆橘線接同一隻腳）。
 2. ✅ 檢查：工具 1（入口那顆）、伺服測試器（填角度記錄表）、蜂鳴器測試器。
 
-**Step 2：出口 HC-SR04＋看板燈**
+**Step 2：出口 PING)))＋看板燈**
 
 1. 出口感測器放在麵包板**右側**。
 2. 看板燈各串 220Ω。
@@ -938,8 +943,8 @@ void loop() {
 #include <Servo.h>
 
 // ----- 腳位區（沒接的元件填 -1）-----
-int trigIn  = ?, echoIn  = ?;       // 入口 HC-SR04
-int trigOut = ?, echoOut = ?;       // 出口 HC-SR04
+int sigIn  = ?;                     // 入口超音波 SIG
+int sigOut = ?;                     // 出口超音波 SIG
 int pinServo  = ?;                  // 柵欄伺服
 int pinBuzzer = ?;                  // 蜂鳴器
 int pinR = ?, pinG = ?, pinB = ?;   // 看板燈（只用全亮全滅顏色）
@@ -970,11 +975,13 @@ Servo barrier;
 int cars = 0;
 bool wasCarIn = false, wasCarOut = false;
 
-float readCM(int trig, int echo) {
-  digitalWrite(trig, LOW);  delayMicroseconds(2);
-  digitalWrite(trig, HIGH); delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  long t = pulseIn(echo, HIGH, 30000);
+float readCM(int sig) {
+  pinMode(sig, OUTPUT);
+  digitalWrite(sig, LOW);  delayMicroseconds(2);
+  digitalWrite(sig, HIGH); delayMicroseconds(5);
+  digitalWrite(sig, LOW);
+  pinMode(sig, INPUT);
+  long t = pulseIn(sig, HIGH, 30000);
   if (t == 0) return 999;
   return t / 58.0;
 }
@@ -996,8 +1003,6 @@ void report(String what) {
 void setup() {
   barrier.attach(pinServo);
   barrier.write(closedAngle);
-  pinMode(trigIn, OUTPUT);  pinMode(echoIn, INPUT);
-  if (trigOut >= 0) { pinMode(trigOut, OUTPUT); pinMode(echoOut, INPUT); }
   if (pinR >= 0) pinMode(pinR, OUTPUT);
   if (pinG >= 0) pinMode(pinG, OUTPUT);
   if (pinB >= 0) pinMode(pinB, OUTPUT);
@@ -1011,7 +1016,7 @@ void loop() {
   if (cars > capacity) cars = capacity;
 
   // ---- 入口 ----
-  bool carIn = readCM(trigIn, echoIn) < carCM;
+  bool carIn = readCM(sigIn) < carCM;
   if (carIn && !wasCarIn) {
     if (cars >= capacity) {
       tone(pinBuzzer, refuseTone, 600);
@@ -1020,7 +1025,7 @@ void loop() {
       tone(pinBuzzer, welcomeTone, 100);
       barrier.write(openAngle);
       unsigned long t0 = millis();
-      while (readCM(trigIn, echoIn) < carCM) {             // 車還在柵欄下：絕對不放下
+      while (readCM(sigIn) < carCM) {             // 車還在柵欄下：絕對不放下
         if (millis() - t0 > (unsigned long)passTimeout) {
           tone(pinBuzzer, refuseTone, 300);
           Serial.println("Car not moving - please check");
@@ -1040,7 +1045,7 @@ void loop() {
 
   // ---- 出口與看板燈 ----
   if (useExit) {
-    bool carOut = readCM(trigOut, echoOut) < carCM;
+    bool carOut = readCM(sigOut) < carCM;
     if (carOut && !wasCarOut && cars > 0) {
       cars--;
       report("Car OUT.");
@@ -1106,11 +1111,11 @@ void loop() {
 >
 > | 關卡 | 情境 | 套用模板 | 元件 | 配線重點 |
 > | --- | --- | --- | --- | --- |
-> | Lv.1 | 圖書館座位使用偵測 | T17 | HC-SR04＋2 LED | 連續偵測才算數、指定 A 腳 |
-> | Lv.2 | 遊樂設施身高檢測 | T18 | HC-SR04＋RGB | 安裝位置換算、逐腳判斷 |
-> | Lv.3 | 社區水塔水位面板 | T18 | HC-SR04＋10 LED＋蜂鳴器 | 換算＋長條燈方向＋兩燈共腳 |
-> | Lv.4 | 診所自動門防夾 | T19 | HC-SR04＋2 伺服＋蜂鳴器 | 只用一顆感測器、雙開門 |
-> | Lv.5 | 展覽館人流管制 | T20 | 2 HC-SR04＋2 伺服＋RGB＋蜂鳴器＋4 LED＋旋鈕 | **一般腳嚴重不夠** |
+> | Lv.1 | 圖書館座位使用偵測 | T17 | PING)))＋2 LED | 連續偵測才算數、指定 A 腳 |
+> | Lv.2 | 遊樂設施身高檢測 | T18 | PING)))＋RGB | 安裝位置換算、逐腳判斷 |
+> | Lv.3 | 社區水塔水位面板 | T18 | PING)))＋10 LED＋蜂鳴器 | 換算＋長條燈方向＋兩燈共腳 |
+> | Lv.4 | 診所自動門防夾 | T19 | PING)))＋2 伺服＋蜂鳴器 | 只用一顆感測器、雙開門 |
+> | Lv.5 | 展覽館人流管制 | T20 | 2 PING)))＋2 伺服＋RGB＋蜂鳴器＋4 LED＋旋鈕 | **一般腳不夠、要借 A 腳** |
 > | Lv.6 | 顧問提案 | 自選 | 自訂 | 自己設計情境 |
 >
 > 📌 **作答規則**：先畫「感測器安裝示意圖」，再填「腳位規劃表」「參數修改表」，然後接線；接好後先用工具檢查，最後才上傳程式。Lv.3 之後每關要附**配線設計單**。
@@ -1121,17 +1126,17 @@ void loop() {
 
 **情境**：大學圖書館想知道自習座位的使用率。每張桌子底下裝一顆超音波，朝向椅子方向：有人坐著時距離很近（40 cm 內）。但經過的人、拉一下椅子也會被偵測到，所以規則是：**連續 3 秒都偵測到才算「有人使用」**。紅燈表示有人、綠燈表示空位。**圖書館要安靜，不能有聲音**。
 
-**元件**：1 顆 HC-SR04＋2 顆單色 LED（紅、綠）
+**元件**：1 顆 PING)))＋2 顆單色 LED（紅、綠）
 
 **套用模板**：T17
 
-**限制條件**：桌下線槽只接到 **A1～A3**，HC-SR04 的 Trig、Echo 必須接在這裡面。
+**限制條件**：桌下線槽只接到 **A1～A3**，超音波的 SIG 必須接在這裡面。
 
 **參數修改表**（請填寫）：
 
 | 參數 | 模板原本的值 | 改成 | 為什麼 |
 | --- | --- | --- | --- |
-| `pinTrig`、`pinEcho` | `?` | | |
+| `pinSig` | `?` | | |
 | `ledAction` | `?` | | 紅燈還是綠燈？ |
 | `ledIdle` | `-1` | | |
 | `pinBuzzer`、`pinKnob` | `?`、`-1` | | |
@@ -1149,7 +1154,7 @@ void loop() {
 
 **情境**：遊樂園雲霄飛車入口要自動檢查身高，**120 cm 以上**才能搭乘。感測器裝在入口上方 **200 cm** 高的橫桿上，往下量到頭頂的距離。身高符合亮綠燈，不符合亮紅燈。
 
-**元件**：1 顆 HC-SR04＋1 顆 RGB LED（**不需要**蜂鳴器、長條燈）
+**元件**：1 顆 PING)))＋1 顆 RGB LED（**不需要**蜂鳴器、長條燈）
 
 **套用模板**：T18
 
@@ -1179,7 +1184,7 @@ void loop() {
 
 **情境**：社區頂樓水塔深 **100 cm**，超音波裝在水塔頂蓋往下量水面。用 5 顆燈顯示水位（**水越多亮越多格**），RGB 不需要。水位低於 **20 cm** 時蜂鳴器開始提醒，越低嗶越急，低於 **10 cm** 長鳴。**管理室和頂樓機房各一組 5 格水位燈**，兩組同步顯示。
 
-**元件**：1 顆 HC-SR04＋10 顆單色 LED＋1 顆蜂鳴器
+**元件**：1 顆 PING)))＋10 顆單色 LED＋1 顆蜂鳴器
 
 **套用模板**：T18
 
@@ -1206,13 +1211,13 @@ void loop() {
 
 **情境**：診所的雙開自動門。有人走近（50 cm 內）時兩扇門同步打開，人離開 3 秒後慢慢關上。**關門過程中只要偵測到有人，立刻重新打開**並發出提醒聲。這扇門**不需要**容量偵測。
 
-**元件**：1 顆 HC-SR04＋2 顆伺服＋1 顆蜂鳴器
+**元件**：1 顆 PING)))＋2 顆伺服＋1 顆蜂鳴器
 
 **套用模板**：T19
 
 **你要想的問題**：
 
-- 本關只有一顆感測器，要接在 `trigOut／echoOut` 還是 `trigIn／echoIn`？另一組填什麼？
+- 本關只有一顆感測器，要接在 `sigOut` 還是 `sigIn`？另一個填什麼？
 - 提醒聲要響，哪一個功能開關要打開？維護鈕沒接，模板會出錯嗎？
 - 門關得太快，防夾來不及反應。要改哪個參數讓門關得慢一點？
 
@@ -1237,7 +1242,7 @@ void loop() {
 
 **情境**：展覽館入口和出口各裝一顆超音波（朝向通道，**80 cm 內**算有人）。入口是**雙開閘門**（兩顆伺服同步）：有人且未額滿時開門，人通過後 1.5 秒關上；額滿時不開並發出拒絕聲。看板 RGB 顯示綠（充足）／黃（剩 5 人以下）／紅（額滿）；4 顆燈顯示剩餘名額比例。館方用旋鈕設定上限（1～60 人）。
 
-**元件**：2 顆 HC-SR04＋2 顆伺服＋1 顆 RGB＋1 顆蜂鳴器＋4 顆單色 LED＋1 顆旋鈕
+**元件**：2 顆 PING)))＋2 顆伺服＋1 顆 RGB＋1 顆蜂鳴器＋4 顆單色 LED＋1 顆旋鈕
 
 **套用模板**：T20
 
@@ -1248,7 +1253,7 @@ void loop() {
 | 元件 | 需要幾隻腳 | 需要 `~` 腳嗎？ |
 | --- | --- | --- |
 | 旋鈕 | 1（A 腳） | — |
-| 2 顆 HC-SR04 | | |
+| 2 顆 PING))) | | |
 | 2 顆伺服 | | |
 | RGB（綠、黃、紅） | | |
 | 蜂鳴器 | | |
@@ -1290,7 +1295,7 @@ void loop() {
 
 **最低規格**：
 
-- 至少 1 顆 HC-SR04，並畫出**感測器安裝示意圖**
+- 至少 1 顆 PING)))，並畫出**感測器安裝示意圖**
 - 至少用到 8 隻腳位
 - 至少修改模板參數區的 **5 個參數**
 - 至少用到一個本週或前幾週的配線技巧（安裝位置換算、角色互換、兩燈共腳、共用訊號線、借 A 腳）
@@ -1306,7 +1311,7 @@ void loop() {
 | --- | --- |
 | 情境名稱 | |
 | 套用模板 | T17／T18／T19／T20 |
-| 感測器安裝示意圖 | 每顆 HC-SR04 裝在哪、朝哪看、量到的距離代表什麼 |
+| 感測器安裝示意圖 | 每顆 PING))) 裝在哪、朝哪看、量到的距離代表什麼 |
 | 元件清單 | 元件名稱 × 數量（含 220Ω、10kΩ） |
 | 腳位分配表 | 元件 → 腳位（標註 `~` 腳、借用 A 腳） |
 | `~` 腳預算 | 有伺服？有蜂鳴器？哪些燈需要 `~` 腳？ |
@@ -1319,9 +1324,10 @@ void loop() {
 
 | 現象 | 先檢查這裡 | 修正方式 |
 | --- | --- | --- |
-| 距離一直顯示 999 | Trig、Echo 是否接反；VCC、GND 是否接上 | 用工具 1 逐顆測試 |
-| 距離一直是 0 或亂跳 | 是否選到 3 隻腳的感測器版本 | 換成 4 隻腳的 HC-SR04 |
-| 拖曳 A 感測器，卻是 B 的功能在動 | 兩顆感測器的線是否接反 | 整組對調 Trig、Echo（技巧 2） |
+| 距離一直顯示 999 | SIG 是否接在程式寫的腳位；5V、GND 是否接上 | 用工具 1 逐顆測試 |
+| 距離一直是 0 或亂跳 | 是否拿了網路上 4 腳 HC-SR04 的程式（Trig、Echo 分開） | 改用本週模板的 `readCM(sig)` |
+| 兩顆感測器的數字一起變，或其中一顆一直 999 | 兩條 SIG 是否插到同一隻腳 | 每顆 SIG 各接一隻腳，再用工具 1 逐顆測 |
+| 拖曳 A 感測器，卻是 B 的功能在動 | 兩條 SIG 線是否接反 | 對調兩條 SIG 線（技巧 2） |
 | 換算後的數字是負的或怪怪的 | `mountCM`、`depthCM` 是否填對 | 重新量安裝高度或深度 |
 | 一靠近就觸發好幾次 | 距離門檻是否剛好卡在讀值附近 | 依距離記錄表調整門檻 |
 | 調光燈只有全亮全滅 | 是否接在 9、10（有伺服）或 3、11（有蜂鳴器） | 查 ~ 腳可用表改接 |
@@ -1346,7 +1352,7 @@ void loop() {
 
 | 項目 | 比重 | 說明 |
 | --- | --- | --- |
-| 腳位規劃與 A 腳借用 | 25% | 符合限制卡；Trig、Echo 不佔 `~` 腳；一般腳不夠時借用合理 |
+| 腳位規劃與 A 腳借用 | 25% | 符合限制卡；SIG 不佔 `~` 腳；一般腳不夠時借用合理 |
 | 電路正確性 | 25% | 每個 Step 通過工具檢查，兩顆感測器分區清楚 |
 | 配線變化挑戰 | 20% | 正確運用角色互換、兩燈共腳、共用訊號線等技巧 |
 | 參數修改表與安裝換算 | 15% | 換算參數正確並說明理由 |
@@ -1358,7 +1364,7 @@ void loop() {
 
 | 時段 | 內容 |
 | --- | --- |
-| 第 1 節前 30 分鐘 | 認識 HC-SR04、三個新技巧、測距檢查器 |
+| 第 1 節前 30 分鐘 | 認識 PING)))、三個新技巧、測距檢查器 |
 | 第 1 節後段 | 關卡 1 |
 | 第 2 節 | 關卡 2、關卡 3 |
 | 第 3 節前段 | 關卡 4 |
@@ -1370,10 +1376,10 @@ void loop() {
 
 | 名稱 | 白話解釋 |
 | --- | --- |
-| 超音波感測器（HC-SR04） | 發出聲波、聽回音來量距離，4 隻腳、不用電阻 |
-| Trig／Echo | 發射腳／接收腳，各佔一隻數位腳 |
+| 超音波感測器（PING)))） | 發出聲波、聽回音來量距離，3 隻腳（GND、5V、SIG）、不用電阻 |
+| SIG | 訊號腳：同一隻腳先發射、再接收，只佔一隻數位腳 |
 | 安裝位置換算 | 把「到感測器的距離」換成客戶想知道的數字（身高、水位、容量） |
-| 角色互換 | 兩顆感測器裝反時，整組對調 Trig、Echo 線 |
+| 角色互換 | 兩顆感測器裝反時，對調兩條 SIG 線 |
 | 輪流量 | 多顆超音波一顆一顆量，避免互相干擾 |
 | 防夾 | 關閉途中偵測到人就重新打開 |
 | 距離記錄表 | 用測距檢查器實測每顆感測器的紀錄 |
@@ -1383,16 +1389,16 @@ void loop() {
 ## 反思與延伸討論
 
 1. 本週每個情境都要先想「感測器站在哪、看向哪」。換算錯一個數字，整個系統的判斷都會錯。這和工廠的「量具校正」有什麼關係？
-2. 本週的兩顆感測器裝反，只要對調兩組線就好；伺服的方向卻只能改參數。請整理目前學過的元件：哪些問題靠改線解決、哪些靠改參數？
+2. 本週的兩顆感測器裝反，只要對調兩條 SIG 線就好；伺服的方向卻只能改參數。請整理目前學過的元件：哪些問題靠改線解決、哪些靠改參數？
 3. 超音波看不到軟的東西（布料、毛絨玩具）、斜面也會量不準。如果你是顧問，要怎麼在提案裡誠實說明這些限制，又不讓客戶失去信心？
 
 ---
 
 ## 本週檢核清單
 
-- [ ] 能正確接上 HC-SR04（VCC、Trig、Echo、GND），並用測距檢查器填好距離記錄表
+- [ ] 能正確接上 PING)))（GND、5V、SIG），並用測距檢查器填好距離記錄表
 - [ ] 能畫出感測器安裝示意圖，並用參數完成安裝位置換算
-- [ ] 能用「整組對調」修正兩顆感測器角色裝反的問題
+- [ ] 能用「對調 SIG 線」修正兩顆感測器角色裝反的問題
 - [ ] 能在一般腳不夠時合理借用 A 腳
 - [ ] 完成關卡 1～4，並取得同學驗收簽名
 - [ ] 完成練習題 Lv.1～Lv.3，挑戰 Lv.4～Lv.6
