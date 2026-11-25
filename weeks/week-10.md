@@ -269,6 +269,8 @@ void loop() {
 }
 ```
 
+<img width="855" height="522" alt="image" src="https://github.com/user-attachments/assets/e29549b9-d4e3-40d9-9663-0a9e12178d2d" />
+
 **馬達記錄表**（每次接馬達都要填）：
 
 | 項目 | 接法 A | 接法 B | 接法 C | 接法 D |
